@@ -50,7 +50,7 @@ public class UiCanvasManager : MonoBehaviour
             text.text = unitTypes[i];
         }
         Button button = GetChildWithName(selectUnitType, "ButtonCancel").GetComponent<Button>();
-        button.onClick.AddListener(SelectUnitTypeState);
+        button.onClick.AddListener(CloseAll);
 
         //setup selectLocation child objects
         button = GetChildWithName(selectLocation, "ButtonBack").GetComponent<Button>();
