@@ -707,7 +707,12 @@ MonoBehaviour:
   yOffset:
   - 1.25
   - 1.5
-  unitTypeColor: []
+  unitTypeColor:
+  - {r: 0.65957606, g: 0.5030705, b: 0.8962264, a: 0}
+  - {r: 0.8962264, g: 0.51152545, b: 0.51152545, a: 0}
+  - {r: 0.47163534, g: 0.7169812, b: 0.32128873, a: 0}
+  - {r: 0.9601056, g: 0.9622642, b: 0.35857958, a: 0}
+  - {r: 0.1802243, g: 0.78869766, b: 0.8490566, a: 0}
   defaultColor: {r: 0.5377358, g: 0.31198823, b: 0.31198823, a: 1}
   selectionColor: {r: 1, g: 0, b: 0, a: 1}
   confirmedColor: {r: 0, g: 1, b: 0, a: 1}
@@ -1345,7 +1350,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &958716743
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1616,9 +1621,10 @@ GameObject:
   - component: {fileID: 1022001825}
   - component: {fileID: 1022001824}
   - component: {fileID: 1022001823}
+  - component: {fileID: 1022001827}
   m_Layer: 5
   m_Name: ButtonConfirm
-  m_TagString: Untagged
+  m_TagString: Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1722,6 +1728,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1022001821}
   m_CullTransparentMesh: 0
+--- !u!114 &1022001827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022001821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46fae714515240445b6c30b7fd6227e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1035532469
 GameObject:
   m_ObjectHideFlags: 0
@@ -1890,7 +1908,7 @@ GameObject:
   - component: {fileID: 1054884435}
   m_Layer: 5
   m_Name: ButtonCancel
-  m_TagString: Untagged
+  m_TagString: Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2138,7 +2156,7 @@ GameObject:
   - component: {fileID: 1460620666}
   m_Layer: 5
   m_Name: ButtonBack
-  m_TagString: Untagged
+  m_TagString: Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class BlockPrefab : MonoBehaviour
 {
-    public int Id { get; set; }
+    public int Index { get; set; }
+    public int UnitId { get; set; }
     public float Offset { get; set; }
     public Vector3 Position { get; private set; }
 
     // Start is called before the first frame update
     void Start()
     {
-        Offset = Id;
+        UnitId = -1;    //-1 belongs means unoccupancy
+        Offset = Index;
         Position = this.transform.localPosition;
     }
 

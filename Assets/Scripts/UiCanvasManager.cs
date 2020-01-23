@@ -18,7 +18,6 @@ public class UiCanvasManager : MonoBehaviour
     [SerializeField]
     private string[] unitTypes;
 
-
     //singleton
     private static UiCanvasManager _instance;
     public static UiCanvasManager Instance { get { return _instance; } }
@@ -62,6 +61,7 @@ public class UiCanvasManager : MonoBehaviour
         button = GetChildWithName(submissionForm, "ButtonCancel").GetComponent<Button>();
         button.onClick.AddListener(SelectUnitTypeState);
         button = GetChildWithName(submissionForm, "ButtonSubmit").GetComponent<Button>();
+        button.onClick.AddListener(BuildingBlockManager.Instance.PublishConfirmedBlocks);
         button.onClick.AddListener(CloseAll);
 
         openUnitSelectionButton.SetActive(true);
@@ -104,7 +104,7 @@ public class UiCanvasManager : MonoBehaviour
 
     public void SubmissionFormState()
     {
-        BuildingBlockManager.Instance.ConfirmationLock = true;
+        BuildingBlockManager.Instance.ConfirmationLock = true;  //sanity check- handled in button script
         openUnitSelectionButton.SetActive(false);
         selectUnitType.SetActive(false);
         selectLocation.SetActive(false);
