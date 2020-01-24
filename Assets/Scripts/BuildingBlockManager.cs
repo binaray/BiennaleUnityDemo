@@ -6,6 +6,9 @@ using UnityEngine.EventSystems;
 public class BuildingBlockManager : MonoBehaviour
 {
     [SerializeField]
+    private bool RefreshPrefs = false;
+
+    [SerializeField]
     private BlockPrefab blockPrefab;
     [SerializeField]
     private int xBlockCount = 1;
@@ -60,8 +63,9 @@ public class BuildingBlockManager : MonoBehaviour
     }
     public bool ConfirmationLock { get; set; }
     private int unitIdCount;
-    private HashSet<int> selectedBlocks = new HashSet<int>();
-    private HashSet<int> confirmedBlocks = new HashSet<int>();
+    private UnitWrapper unitWrapper;
+    private SortedSet<int> selectedBlocks = new SortedSet<int>();
+    private SortedSet<int> confirmedBlocks = new SortedSet<int>();
     [SerializeField]
     private Color defaultColor = Color.white;
     [SerializeField]
@@ -87,7 +91,9 @@ public class BuildingBlockManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        unitIdCount = 0; //TODO: retrieve from player pref
+        unitIdCount = PlayerPrefs.GetInt("unitIdCount", 0);
+        unitWrapper = new UnitWrapper();
+
         SelectionLock = false;
         ConfirmationLock = false;
         if (blockPrefab != null)
@@ -148,7 +154,7 @@ public class BuildingBlockManager : MonoBehaviour
                         SelectUnitBlocks(blockIndex);
                         break;
                     case "Button":
-                        confirmedBlocks = new HashSet<int>(selectedBlocks);
+                        confirmedBlocks = new SortedSet<int>(selectedBlocks);
                         break;
                     default:
                         break;
@@ -244,7 +250,7 @@ public class BuildingBlockManager : MonoBehaviour
                 SelectionLock = true;
         }
         //else no space :(
-    }    
+    }
 
     public void ClearSelectedBlocks()
     {
@@ -257,19 +263,56 @@ public class BuildingBlockManager : MonoBehaviour
 
     public void SetConfirmedBlocks()
     {
-        confirmedBlocks = new HashSet<int>(selectedBlocks);
+        confirmedBlocks = new SortedSet<int>(selectedBlocks);
     }
 
     public void PublishConfirmedBlocks()
     {
         //add to player pref
         //set block unit color
-        foreach (int i in selectedBlocks)
-        {
-            blocks[i].UnitId = unitIdCount++;
-            blocks[i].SetColor(unitTypeColor[UnitTypeSelection - 1]);
-        }
+        Unit unit = new Unit(confirmedBlocks.Min, UnitTypeSelection, unitIdCount++, "Hello!");
+        AddUnit(unit);
         selectedBlocks.Clear();
         confirmedBlocks.Clear();
+    }
+
+
+    [System.Serializable]
+    class UnitWrapper { public List<Unit> occupiedUnits = new List<Unit>(); }
+
+    [System.Serializable]
+    class Unit
+    {
+        public int blockIndex; //takes in the leftmost (smallest) blockIndex as anchor for graphics and effects
+        public int unitType;
+        public int unitId;
+        public string message;
+
+        public Unit(int blockIndex, int unitType, int unitId, string message)
+        {
+            this.blockIndex = blockIndex;
+            this.unitType = unitType;
+            this.unitId = unitId;
+            this.message = message;
+        }
+    }
+
+    void AddUnit(Unit unit)
+    {
+        for (int i = 0; i < UnitTypeSelection; i++)
+        {
+            int blockIdToShade = unit.blockIndex + i;
+            blocks[blockIdToShade].UnitId = unitIdCount;
+            blocks[blockIdToShade].SetColor(unitTypeColor[UnitTypeSelection - 1]);
+        }
+        unitWrapper.occupiedUnits.Add(unit);
+        unitIdCount++;
+        //foreach (int i in confirmedBlocks)
+        //{
+        //    blocks[i].UnitId = unitIdCount++;
+        //    blocks[i].SetColor(unitTypeColor[UnitTypeSelection - 1]);
+        //}
+        string json = JsonUtility.ToJson(unitWrapper);
+        Debug.LogError(json);
     }
 }
