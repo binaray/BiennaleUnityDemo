@@ -192,25 +192,23 @@ public class BuildingBlockManager : MonoBehaviour
         //Debug.Log(string.Format("row: {0} col: {1}", row, col));
 
         //int midIndex = (UnitTypeSelection % 2 == 0) ? UnitTypeSelection / 2 - 1 : UnitTypeSelection / 2;
-        selectedBlocks.Add(blockIndex);
-        blocksLeft--;
+        if (blocks[blockIndex].UnitId < 0)
+        {
+            selectedBlocks.Add(blockIndex);
+            blocksLeft--;
+        }
+        else return;
+
+        bool canInsertLeft = true;
+        bool canInsertRight = true;
+
         for (int i = 1; i < xBlockCount; i++) 
         {
-            if (blocksLeft < 1) break;  //sanity check- breaks the 1 unit case;
-            int blockColIndexToAdd = col + i;
-            if (blockColIndexToAdd < xBlockCount)
-            {
-                int indexToAdd = blockColIndexToAdd + row * xBlockCount;
-                if (blocks[indexToAdd].UnitId < 0)
-                {
-                    selectedBlocks.Add(indexToAdd);
-                    blocksLeft--;
-                    if (blocksLeft < 1) break;
-                }
-            }
+            if (blocksLeft < 1 || (!canInsertRight && !canInsertLeft)) break;  //sanity check- breaks the 1 unit case;
 
-            blockColIndexToAdd = col - i;
-            if (blockColIndexToAdd >= 0)
+            //try inserting to the right
+            int blockColIndexToAdd = col + i;
+            if (blockColIndexToAdd < xBlockCount && canInsertRight)
             {
                 int indexToAdd = blockColIndexToAdd + row * xBlockCount;
                 if (blocks[indexToAdd].UnitId < 0)
@@ -219,7 +217,24 @@ public class BuildingBlockManager : MonoBehaviour
                     blocksLeft--;
                     if (blocksLeft < 1) break;
                 }
+                else canInsertRight = false;
             }
+            else canInsertRight = false;
+
+            //try inserting to the left
+            blockColIndexToAdd = col - i;
+            if (blockColIndexToAdd >= 0 && canInsertLeft)
+            {
+                int indexToAdd = blockColIndexToAdd + row * xBlockCount;
+                if (blocks[indexToAdd].UnitId < 0)
+                {
+                    selectedBlocks.Add(indexToAdd);
+                    blocksLeft--;
+                    if (blocksLeft < 1) break;
+                }
+                else canInsertLeft = false;
+            }
+            else canInsertLeft = false;
         }
         if (blocksLeft < 1)
         {
@@ -229,7 +244,7 @@ public class BuildingBlockManager : MonoBehaviour
                 SelectionLock = true;
         }
         //else no space :(
-    }
+    }    
 
     public void ClearSelectedBlocks()
     {
