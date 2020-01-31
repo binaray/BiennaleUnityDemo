@@ -5,6 +5,9 @@ using UnityEngine.EventSystems;
 
 public class BuildingBlockManager : MonoBehaviour
 {
+    private const string UNIT_ID_COUNT_PREF = "UNIT_ID_COUNT_PREF";
+    private const string UNIT_DB_STRING_PREF = "UNIT_DB_STRING_PREF";
+
     [SerializeField]
     private bool RefreshPrefs = false;
 
@@ -79,20 +82,23 @@ public class BuildingBlockManager : MonoBehaviour
     private void Awake()
     {
         if (_instance != null && _instance != this)
-        {
             Destroy(this.gameObject);
-        }
         else
-        {
             _instance = this;
-        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        unitIdCount = PlayerPrefs.GetInt("unitIdCount", 0);
-        unitWrapper = new UnitWrapper();
+        if (RefreshPrefs)
+            PlayerPrefs.DeleteAll();
+
+        unitIdCount = PlayerPrefs.GetInt(UNIT_ID_COUNT_PREF, 0);
+        string savedJson = PlayerPrefs.GetString(UNIT_DB_STRING_PREF, "");
+        if (savedJson != "")
+            unitWrapper = UnitWrapper.CreateFromJson(savedJson);
+        else 
+            unitWrapper = new UnitWrapper();
 
         SelectionLock = false;
         ConfirmationLock = false;
@@ -112,6 +118,17 @@ public class BuildingBlockManager : MonoBehaviour
                 }
                 xPos = .0f;
                 yPos += yOffset[y % yOffset.Length];
+            }
+        }
+
+        foreach (Unit unit in unitWrapper.occupiedUnits)
+        {
+            int blocksLeft = unit.unitType;
+            for (int i = 0; i < blocksLeft; i++)
+            {
+                int blockIndex = unit.blockIndex + i;
+                blocks[blockIndex].UnitId = unit.unitId;
+                blocks[blockIndex].SetColor(unitTypeColor[unit.unitType - 1]);
             }
         }
     }
@@ -146,15 +163,14 @@ public class BuildingBlockManager : MonoBehaviour
             if (Physics.Raycast(ray, out hit, 100))
             {
                 Debug.DrawLine(ray.origin, hit.point);
-                Debug.Log(hit.transform.gameObject.name);
+                //Debug.Log(hit.transform.gameObject.name);
                 switch (hit.collider.tag)
                 {
                     case "BuildingBlock":
-                        int blockIndex = hit.transform.gameObject.GetComponent<BlockPrefab>().Index;
+                        BlockPrefab block = hit.transform.gameObject.GetComponent<BlockPrefab>();
+                        int blockIndex = block.Index;
+                        Debug.Log(string.Format("index: {0}; unitId: {1}", block.Index, block.UnitId));
                         SelectUnitBlocks(blockIndex);
-                        break;
-                    case "Button":
-                        confirmedBlocks = new SortedSet<int>(selectedBlocks);
                         break;
                     default:
                         break;
@@ -278,7 +294,13 @@ public class BuildingBlockManager : MonoBehaviour
 
 
     [System.Serializable]
-    class UnitWrapper { public List<Unit> occupiedUnits = new List<Unit>(); }
+    class UnitWrapper {
+        public List<Unit> occupiedUnits = new List<Unit>();
+        public static UnitWrapper CreateFromJson(string jsonString)
+        {
+            return JsonUtility.FromJson<UnitWrapper>(jsonString);
+        }
+    }
 
     [System.Serializable]
     class Unit
@@ -314,5 +336,7 @@ public class BuildingBlockManager : MonoBehaviour
         //}
         string json = JsonUtility.ToJson(unitWrapper);
         Debug.LogError(json);
+        PlayerPrefs.SetInt(UNIT_ID_COUNT_PREF, unitIdCount);
+        PlayerPrefs.SetString(UNIT_DB_STRING_PREF, json);
     }
 }

@@ -9,10 +9,15 @@ public class BlockPrefab : MonoBehaviour
     public float Offset { get; set; }
     public Vector3 Position { get; private set; }
 
+    private void Awake()
+    {
+        //null values before assignment on start
+        UnitId = -1;    //-1 belongs means unoccupancy
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        UnitId = -1;    //-1 belongs means unoccupancy
         Offset = Index;
         Position = this.transform.localPosition;
     }

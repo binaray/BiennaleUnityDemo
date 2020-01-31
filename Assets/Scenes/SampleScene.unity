@@ -697,6 +697,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ee3feae15cf4f542baae3efa1b4adde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  RefreshPrefs: 0
   blockPrefab: {fileID: 1913465633, guid: bb9a81c5759cd3c48ad44bf1dcceedf7, type: 3}
   xBlockCount: 13
   yBlockCount: 30
