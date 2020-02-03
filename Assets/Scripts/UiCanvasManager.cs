@@ -84,6 +84,7 @@ public class UiCanvasManager : MonoBehaviour
         submissionForm.SetActive(false);
     }
 
+
     public void SelectUnitTypeState()
     {
         BuildingBlockManager.Instance.UnitTypeSelection = 0;
