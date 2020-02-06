@@ -17,6 +17,8 @@ public class UiCanvasManager : MonoBehaviour
     private GameObject buttonPrefab;
     [SerializeField]
     private string[] unitTypes;
+    [SerializeField]
+    private DialogManager dialogManager;
 
     //singleton
     private static UiCanvasManager _instance;
@@ -37,7 +39,7 @@ public class UiCanvasManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //setup selectUnitType child objects
+        ///setup selectUnitType child objects
         GameObject unitTypeButtons = GetChildWithName(selectUnitType, "UnitTypeButtons");
         for (int i = 0; i < unitTypes.Length; i++)
         {
@@ -68,6 +70,7 @@ public class UiCanvasManager : MonoBehaviour
         selectUnitType.SetActive(false);
         selectLocation.SetActive(false);
         submissionForm.SetActive(false);
+        //*/
     }
 
     // Update is called once per frame
