@@ -135,19 +135,7 @@ public class BuildingBlockManager : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-        /*//sine simulation
-        for (int y = 0; y < yBlockCount; y++)
-        {
-            for (int x = 0; x < xBlockCount; x++)
-            {
-                int i = x + xBlockCount * y;
-                blocks[i].Offset += Time.deltaTime;
-                blocks[i].gameObject.transform.localPosition = blocks[i].Position + new Vector3(0, 0, amplitudeX * Mathf.Cos(omegaX * blocks[i].Offset));
-            }
-        }
-        //*/
-        
+    {        
         if (Input.GetMouseButtonUp(0))
         {            
             SelectionLock = false;
