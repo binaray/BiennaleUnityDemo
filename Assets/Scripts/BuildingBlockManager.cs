@@ -24,12 +24,6 @@ public class BuildingBlockManager : MonoBehaviour
 
     //runtime reference to blocks
     private List<BlockPrefab> blocks = new List<BlockPrefab>();
-    /*//sine simulation
-    private float amplitudeX = 5.0f;
-    private float amplitudeY = 5.0f;
-    private float omegaX = 1.0f;
-    private float omegaY = 5.0f;
-    //*/
     [SerializeField]
     private Color[] unitTypeColor;
 
@@ -43,7 +37,7 @@ public class BuildingBlockManager : MonoBehaviour
         set
         {
             this.unitTypeSelection = value;
-            UiCanvasManager.Instance.SelectLocationState();
+            //UiCanvasManager.Instance.SelectLocationState();
             //print(string.Format("Selection {0} set", this.unitTypeSelection));
         }
     }

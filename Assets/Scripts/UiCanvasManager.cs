@@ -6,13 +6,7 @@ using UnityEngine.UI;
 public class UiCanvasManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject openUnitSelectionButton;
-    [SerializeField]
-    private GameObject selectUnitType;
-    [SerializeField]
     private GameObject selectLocation;
-    [SerializeField]
-    private GameObject submissionForm;
     [SerializeField]
     private GameObject buttonPrefab;
     [SerializeField]
@@ -39,7 +33,7 @@ public class UiCanvasManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ///setup selectUnitType child objects
+        /*//setup selectUnitType child objects
         GameObject unitTypeButtons = GetChildWithName(selectUnitType, "UnitTypeButtons");
         for (int i = 0; i < unitTypes.Length; i++)
         {
@@ -78,43 +72,7 @@ public class UiCanvasManager : MonoBehaviour
     {
         
     }
-
-    public void CloseAll()
-    {
-        openUnitSelectionButton.SetActive(true);
-        selectUnitType.SetActive(false);
-        selectLocation.SetActive(false);
-        submissionForm.SetActive(false);
-    }
-
-
-    public void SelectUnitTypeState()
-    {
-        BuildingBlockManager.Instance.UnitTypeSelection = 0;
-        BuildingBlockManager.Instance.SelectionLock = false;
-        openUnitSelectionButton.SetActive(false);
-        selectUnitType.SetActive(true);
-        selectLocation.SetActive(false);
-        submissionForm.SetActive(false);
-    }
-    public void SelectLocationState()
-    {
-        BuildingBlockManager.Instance.ConfirmationLock = false;
-        openUnitSelectionButton.SetActive(false);
-        selectUnitType.SetActive(false);
-        selectLocation.SetActive(true);
-        submissionForm.SetActive(false);
-    }
-
-    public void SubmissionFormState()
-    {
-        BuildingBlockManager.Instance.ConfirmationLock = true;  //sanity check- handled in button script
-        openUnitSelectionButton.SetActive(false);
-        selectUnitType.SetActive(false);
-        selectLocation.SetActive(false);
-        submissionForm.SetActive(true);
-    }
-
+    
     GameObject GetChildWithName(GameObject obj, string name)
     {
         Transform trans = obj.transform;
