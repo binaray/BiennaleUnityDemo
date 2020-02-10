@@ -22,6 +22,17 @@ public class BuildingBlockManager : MonoBehaviour
     [SerializeField]
     private float[] yOffset = { 1.0f };
 
+    //location mapping: input space which must be mapped according to server definition
+    [SerializeField]
+    private int leftSection = 4;
+    [SerializeField]
+    private int middleSection = 5;
+    [SerializeField]
+    private int rightSection = 4;
+    [SerializeField]
+    private int floors = 30;
+    private int blocksPerFloor = 0;
+
     //runtime reference to blocks
     private List<BlockPrefab> blocks = new List<BlockPrefab>();
     [SerializeField]
@@ -60,7 +71,7 @@ public class BuildingBlockManager : MonoBehaviour
     }
     public bool ConfirmationLock { get; set; }
     private int unitIdCount;
-    private UnitWrapper unitWrapper;
+    private BuildingState ownState; //Collection of unit positions to be synchronized to server
     private SortedSet<int> selectedBlocks = new SortedSet<int>();
     private SortedSet<int> confirmedBlocks = new SortedSet<int>();
     [SerializeField]
@@ -90,19 +101,36 @@ public class BuildingBlockManager : MonoBehaviour
         unitIdCount = PlayerPrefs.GetInt(UNIT_ID_COUNT_PREF, 0);
         string savedJson = PlayerPrefs.GetString(UNIT_DB_STRING_PREF, "");
         if (savedJson != "")
-            unitWrapper = UnitWrapper.CreateFromJson(savedJson);
-        else 
-            unitWrapper = new UnitWrapper();
+            ownState = BuildingState.CreateFromJson(savedJson);
+        else
+            ownState = new BuildingState();
 
+        blocksPerFloor = middleSection + rightSection + leftSection;
         SelectionLock = false;
         ConfirmationLock = false;
         if (blockPrefab != null)
         {
             float xPos = .0f;
             float yPos = .0f;
-            for (int y = 0; y < yBlockCount; y++)
+            for (int y = 0; y < floors; y++)
             {
-                for (int x = 0; x < xBlockCount; x++)
+                for (int x = 0; x < leftSection; x++)
+                {
+                    BlockPrefab block = Instantiate(blockPrefab, new Vector3(xPos, yPos, 0), Quaternion.identity, this.transform);
+                    block.Index = x + xBlockCount * y;
+                    block.SetColor(defaultColor);
+                    blocks.Add(block);
+                    xPos += xOffset[x % xOffset.Length];
+                }
+                for (int x = 0; x < middleSection; x++)
+                {
+                    BlockPrefab block = Instantiate(blockPrefab, new Vector3(xPos, yPos, 0), Quaternion.identity, this.transform);
+                    block.Index = x + xBlockCount * y;
+                    block.SetColor(defaultColor);
+                    blocks.Add(block);
+                    xPos += xOffset[x % xOffset.Length];
+                }
+                for (int x = 0; x < rightSection; x++)
                 {
                     BlockPrefab block = Instantiate(blockPrefab, new Vector3(xPos, yPos, 0), Quaternion.identity, this.transform);
                     block.Index = x + xBlockCount * y;
@@ -115,16 +143,16 @@ public class BuildingBlockManager : MonoBehaviour
             }
         }
 
-        foreach (Unit unit in unitWrapper.occupiedUnits)
-        {
-            int blocksLeft = unit.unitType;
-            for (int i = 0; i < blocksLeft; i++)
-            {
-                int blockIndex = unit.blockIndex + i;
-                blocks[blockIndex].UnitId = unit.unitId;
-                blocks[blockIndex].SetColor(unitTypeColor[unit.unitType - 1]);
-            }
-        }
+        //foreach (Unit unit in unitWrapper.occupiedUnits)
+        //{
+        //    int blocksLeft = unit.unitType;
+        //    for (int i = 0; i < blocksLeft; i++)
+        //    {
+        //        int blockIndex = unit.blockIndex + i;
+        //        blocks[blockIndex].UnitId = unit.unitId;
+        //        blocks[blockIndex].SetColor(unitTypeColor[unit.unitType - 1]);
+        //    }
+        //}
     }
 
     // Update is called once per frame
@@ -274,49 +302,22 @@ public class BuildingBlockManager : MonoBehaviour
         confirmedBlocks.Clear();
     }
 
-
-    [System.Serializable]
-    class UnitWrapper {
-        public List<Unit> occupiedUnits = new List<Unit>();
-        public static UnitWrapper CreateFromJson(string jsonString)
-        {
-            return JsonUtility.FromJson<UnitWrapper>(jsonString);
-        }
-    }
-
-    [System.Serializable]
-    class Unit
-    {
-        public int blockIndex; //takes in the leftmost (smallest) blockIndex as anchor for graphics and effects
-        public int unitType;
-        public int unitId;
-        public string message;
-
-        public Unit(int blockIndex, int unitType, int unitId, string message)
-        {
-            this.blockIndex = blockIndex;
-            this.unitType = unitType;
-            this.unitId = unitId;
-            this.message = message;
-        }
-    }
-
     void AddUnit(Unit unit)
     {
-        for (int i = 0; i < UnitTypeSelection; i++)
-        {
-            int blockIdToShade = unit.blockIndex + i;
-            blocks[blockIdToShade].UnitId = unitIdCount;
-            blocks[blockIdToShade].SetColor(unitTypeColor[UnitTypeSelection - 1]);
-        }
-        unitWrapper.occupiedUnits.Add(unit);
-        unitIdCount++;
+        //for (int i = 0; i < UnitTypeSelection; i++)
+        //{
+        //    int blockIdToShade = unit.blockIndex + i;
+        //    blocks[blockIdToShade].UnitId = unitIdCount;
+        //    blocks[blockIdToShade].SetColor(unitTypeColor[UnitTypeSelection - 1]);
+        //}
+        //unitWrapper.occupiedUnits.Add(unit);
+        //unitIdCount++;
         //foreach (int i in confirmedBlocks)
         //{
         //    blocks[i].UnitId = unitIdCount++;
         //    blocks[i].SetColor(unitTypeColor[UnitTypeSelection - 1]);
         //}
-        string json = JsonUtility.ToJson(unitWrapper);
+        string json = JsonUtility.ToJson(ownState);
         Debug.LogError(json);
         PlayerPrefs.SetInt(UNIT_ID_COUNT_PREF, unitIdCount);
         PlayerPrefs.SetString(UNIT_DB_STRING_PREF, json);

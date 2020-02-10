@@ -933,7 +933,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ee3feae15cf4f542baae3efa1b4adde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RefreshPrefs: 0
+  RefreshPrefs: 1
   blockPrefab: {fileID: 1913465633, guid: bb9a81c5759cd3c48ad44bf1dcceedf7, type: 3}
   xBlockCount: 13
   yBlockCount: 30
@@ -944,6 +944,10 @@ MonoBehaviour:
   yOffset:
   - 1.25
   - 1.5
+  leftSection: 4
+  middleSection: 5
+  rightSection: 4
+  floors: 30
   unitTypeColor:
   - {r: 0.65957606, g: 0.5030705, b: 0.8962264, a: 0}
   - {r: 0.8962264, g: 0.51152545, b: 0.51152545, a: 0}
