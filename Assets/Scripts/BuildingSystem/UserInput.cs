@@ -7,18 +7,28 @@ using UnityEngine;
 [System.Serializable]
 public class UserInput
 {
+    public string name;
     public string sectionIndex;
     public int floorRangeIndex;
     public int pax;
     public int avatarId;
-    public int favLocIndex;
+    public string favLocation;
 
-    public UserInput(string sectionIndex, int floorRangeIndex, int pax, int avatarId, int favLocIndex)
+    public UserInput() { }
+    public UserInput(string name, int pax, int avatarId, string favLocIndex)
     {
+        this.name = name;
+        this.pax = pax;
+        this.avatarId = avatarId;
+        this.favLocation = favLocIndex;
+    }
+    public UserInput(string name, string sectionIndex, int floorRangeIndex, int pax, int avatarId, string favLocIndex)
+    {
+        this.name = name;
         this.sectionIndex = sectionIndex;
         this.floorRangeIndex = floorRangeIndex;
         this.pax = pax;
         this.avatarId = avatarId;
-        this.favLocIndex = favLocIndex;
+        this.favLocation = favLocIndex;
     }
 }

@@ -32,7 +32,6 @@ public class BuildingBlockManager : MonoBehaviour
     private int blocksPerFloor = 0;
 
     //runtime reference to blocks in the following format [floor][Section][blocks] for easier selection
-    //private BlockPrefab[,,] blocks;
     private List<BlockPrefab> blocks = new List<BlockPrefab>();
     [SerializeField]
     private Color[] unitTypeColor;
@@ -264,61 +263,6 @@ public class BuildingBlockManager : MonoBehaviour
 
         prevSelection[0] = sectionLowerBound;
         prevSelection[1] = rangeIndex;
-
-        ///TO IMPORT TO SERVER SIDE
-        //int midIndex = (UnitTypeSelection % 2 == 0) ? UnitTypeSelection / 2 - 1 : UnitTypeSelection / 2;
-        //if (blocks[blockIndex].UnitId < 0)
-        //{
-        //    selectedBlocks.Add(blockIndex);
-        //    blocksLeft--;
-        //}
-        //else return;
-
-        //bool canInsertLeft = true;
-        //bool canInsertRight = true;
-
-        //for (int i = 1; i < blocksPerFloor; i++) 
-        //{
-        //    if (blocksLeft < 1 || (!canInsertRight && !canInsertLeft)) break;  //sanity check- breaks the 1 unit case;
-
-        //    //try inserting to the right
-        //    int blockColIndexToAdd = col + i;
-        //    if (blockColIndexToAdd < blocksPerFloor && canInsertRight)
-        //    {
-        //        int indexToAdd = blockColIndexToAdd + row * blocksPerFloor;
-        //        if (blocks[indexToAdd].UnitId < 0)
-        //        {
-        //            selectedBlocks.Add(indexToAdd);
-        //            blocksLeft--;
-        //            if (blocksLeft < 1) break;
-        //        }
-        //        else canInsertRight = false;
-        //    }
-        //    else canInsertRight = false;
-
-        //    //try inserting to the left
-        //    blockColIndexToAdd = col - i;
-        //    if (blockColIndexToAdd >= 0 && canInsertLeft)
-        //    {
-        //        int indexToAdd = blockColIndexToAdd + row * blocksPerFloor;
-        //        if (blocks[indexToAdd].UnitId < 0)
-        //        {
-        //            selectedBlocks.Add(indexToAdd);
-        //            blocksLeft--;
-        //            if (blocksLeft < 1) break;
-        //        }
-        //        else canInsertLeft = false;
-        //    }
-        //    else canInsertLeft = false;
-        //}
-        //if (blocksLeft < 1)
-        //{
-        //    foreach (int i in selectedBlocks)
-        //        blocks[i].SetColor(selectionColor);
-        //    if (Input.GetMouseButtonUp(0))
-        //        SelectionLock = true;
-        //}
-        //else no space :(
     }
 
     public void ClearSelectedBlocks()
@@ -345,21 +289,9 @@ public class BuildingBlockManager : MonoBehaviour
         confirmedBlocks.Clear();
     }
 
+    //deprecated: server should be handling units now; to remove
     void AddUnit(Unit unit)
     {
-        //for (int i = 0; i < UnitTypeSelection; i++)
-        //{
-        //    int blockIdToShade = unit.blockIndex + i;
-        //    blocks[blockIdToShade].UnitId = unitIdCount;
-        //    blocks[blockIdToShade].SetColor(unitTypeColor[UnitTypeSelection - 1]);
-        //}
-        //unitWrapper.occupiedUnits.Add(unit);
-        //unitIdCount++;
-        //foreach (int i in confirmedBlocks)
-        //{
-        //    blocks[i].UnitId = unitIdCount++;
-        //    blocks[i].SetColor(unitTypeColor[UnitTypeSelection - 1]);
-        //}
         string json = JsonUtility.ToJson(ownState);
         Debug.LogError(json);
         PlayerPrefs.SetInt(UNIT_ID_COUNT_PREF, unitIdCount);

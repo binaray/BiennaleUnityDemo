@@ -868,7 +868,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 352728969}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1675373172}
+        m_MethodName: NextAvatarSelection
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &352728969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3221,6 +3232,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8770bda578e5013479fa3d730673440e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UpdateTimeDiv: 1
 --- !u!1 &1538936258
 GameObject:
   m_ObjectHideFlags: 0
@@ -3448,7 +3460,18 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1675373172}
+        m_MethodName: CheckForm
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
@@ -3502,13 +3525,14 @@ GameObject:
   - component: {fileID: 1675373169}
   - component: {fileID: 1675373171}
   - component: {fileID: 1675373170}
+  - component: {fileID: 1675373172}
   m_Layer: 5
   m_Name: RegisterNewTenant
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1675373169
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3568,6 +3592,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1675373168}
   m_CullTransparentMesh: 0
+--- !u!114 &1675373172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1675373168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91b951c93a051d342bde8d4797f55868, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  avatarImage: {fileID: 589912432}
+  avatarResourceStrings:
+  - agent
+  - builder
+  - pipsqueak_v2
+  nameInput: {fileID: 1631106831}
+  paxInput: {fileID: 2109444329}
+  favPlaceInput: {fileID: 988945687}
+  submit: {fileID: 477420029}
 --- !u!1 &1694520455
 GameObject:
   m_ObjectHideFlags: 0
@@ -3645,7 +3690,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1694520458}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1675373172}
+        m_MethodName: PrevAvatarSelection
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1694520458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4254,7 +4310,18 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1675373172}
+        m_MethodName: CheckForm
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
