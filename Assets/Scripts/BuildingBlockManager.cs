@@ -14,10 +14,6 @@ public class BuildingBlockManager : MonoBehaviour
     [SerializeField]
     private BlockPrefab blockPrefab;
     [SerializeField]
-    private int xBlockCount = 1;
-    [SerializeField]
-    private int yBlockCount = 1;
-    [SerializeField]
     private float[] xOffset = { 1.0f };
     [SerializeField]
     private float[] yOffset = { 1.0f };
@@ -30,15 +26,19 @@ public class BuildingBlockManager : MonoBehaviour
     [SerializeField]
     private int rightSection = 4;
     [SerializeField]
+    private int floorRange = 5;
+    [SerializeField]
     private int floors = 30;
     private int blocksPerFloor = 0;
 
-    //runtime reference to blocks
+    //runtime reference to blocks in the following format [floor][Section][blocks] for easier selection
+    //private BlockPrefab[,,] blocks;
     private List<BlockPrefab> blocks = new List<BlockPrefab>();
     [SerializeField]
     private Color[] unitTypeColor;
 
     //selector vars
+    private int[] prevSelection = new int[] { -1, -1 };
     private int unitTypeSelection = 0;
     public int UnitTypeSelection
     {
@@ -52,21 +52,21 @@ public class BuildingBlockManager : MonoBehaviour
             //print(string.Format("Selection {0} set", this.unitTypeSelection));
         }
     }
-    private bool selectionLock;
+    private bool _selectionLock;
     public bool SelectionLock {
         get 
         {
-            return this.selectionLock;
+            return this._selectionLock;
         }
         set
         {
-            if (value)
-                foreach (int i in selectedBlocks)
-                    blocks[i].SetColor(confirmedColor);
-            else
-                if (!ConfirmationLock)
-                    ClearSelectedBlocks();
-            this.selectionLock = value;
+            //if (value)
+            //    foreach (int i in selectedBlocks)
+            //        blocks[i].SetColor(confirmedColor);
+            //else
+            //    if (!ConfirmationLock)
+            //        ClearSelectedBlocks();
+            this._selectionLock = value;
         }
     }
     public bool ConfirmationLock { get; set; }
@@ -105,6 +105,7 @@ public class BuildingBlockManager : MonoBehaviour
         else
             ownState = new BuildingState();
 
+        //create and index blocks to their input selection space; left/mid/right, 1-5/6-10/..
         blocksPerFloor = middleSection + rightSection + leftSection;
         SelectionLock = false;
         ConfirmationLock = false;
@@ -114,26 +115,10 @@ public class BuildingBlockManager : MonoBehaviour
             float yPos = .0f;
             for (int y = 0; y < floors; y++)
             {
-                for (int x = 0; x < leftSection; x++)
+                for (int x = 0; x < blocksPerFloor; x++)
                 {
                     BlockPrefab block = Instantiate(blockPrefab, new Vector3(xPos, yPos, 0), Quaternion.identity, this.transform);
-                    block.Index = x + xBlockCount * y;
-                    block.SetColor(defaultColor);
-                    blocks.Add(block);
-                    xPos += xOffset[x % xOffset.Length];
-                }
-                for (int x = 0; x < middleSection; x++)
-                {
-                    BlockPrefab block = Instantiate(blockPrefab, new Vector3(xPos, yPos, 0), Quaternion.identity, this.transform);
-                    block.Index = x + xBlockCount * y;
-                    block.SetColor(defaultColor);
-                    blocks.Add(block);
-                    xPos += xOffset[x % xOffset.Length];
-                }
-                for (int x = 0; x < rightSection; x++)
-                {
-                    BlockPrefab block = Instantiate(blockPrefab, new Vector3(xPos, yPos, 0), Quaternion.identity, this.transform);
-                    block.Index = x + xBlockCount * y;
+                    block.Index = x + blocksPerFloor * y;
                     block.SetColor(defaultColor);
                     blocks.Add(block);
                     xPos += xOffset[x % xOffset.Length];
@@ -162,8 +147,6 @@ public class BuildingBlockManager : MonoBehaviour
         {            
             SelectionLock = false;
         }
-
-
 
         if (!SelectionLock && !ConfirmationLock)
         {
@@ -201,89 +184,149 @@ public class BuildingBlockManager : MonoBehaviour
     {
         ClearSelectedBlocks();
         int blocksLeft;
-        switch (UnitTypeSelection)
-        {
-            case 1:
-                blocksLeft = 1;
-                break;
-            case 2:
-            case 3:
-                blocksLeft = 2;
-                break;
-            case 4:
-            case 5:
-                blocksLeft = 3;
-                break;
-            default:
-                return;
-        }
+        //switch (UnitTypeSelection)
+        //{
+        //    case 1:
+        //        blocksLeft = 1;
+        //        break;
+        //    case 2:
+        //    case 3:
+        //        blocksLeft = 2;
+        //        break;
+        //    case 4:
+        //    case 5:
+        //        blocksLeft = 3;
+        //        break;
+        //    default:
+        //        return;
+        //}
         blocksLeft = UnitTypeSelection;
 
-        int row = blockIndex / xBlockCount;
-        int col = blockIndex - row * xBlockCount;
-        //Debug.Log(string.Format("row: {0} col: {1}", row, col));
+        int row = blockIndex / blocksPerFloor;
+        int col = blockIndex - row * blocksPerFloor;
+        int rangeIndex = row / floorRange;
+        string section;
+        int floorLowerBound = rangeIndex * floorRange;
+        int sectionLowerBound;
+        int sectionUpperBound;
 
+        if (col < leftSection)
+        {
+            section = "left";
+            sectionLowerBound = 0;
+            sectionUpperBound = leftSection;
+        }
+        else if (col < leftSection + middleSection)
+        {
+            section = "middle";
+            sectionLowerBound = leftSection;
+            sectionUpperBound = leftSection + middleSection;
+        }
+        else
+        {
+            section = "right";
+            sectionLowerBound = leftSection + middleSection;
+            sectionUpperBound = blocksPerFloor;
+        }
+ 
+        if (prevSelection[0] != sectionLowerBound || prevSelection[1] != rangeIndex)
+        {
+            if (prevSelection[0] > -1)
+            {
+                int prevfloorLowerBound = prevSelection[1] * floorRange;
+                int prevSectionUpperBound = (prevSelection[0] == 0) ? leftSection : (prevSelection[0] == leftSection) ? leftSection + middleSection : blocksPerFloor;
+                for (int j = prevfloorLowerBound; j < prevfloorLowerBound + floorRange; j++)
+                {
+                    for (int i = prevSelection[0]; i < prevSectionUpperBound; i++)
+                    {
+                        blocks[i + j * blocksPerFloor].SetColor(defaultColor);
+                        //selectedBlocks.Add(i + j * blocksPerFloor);
+                    }
+                }
+            }
+        }
+
+        for (int j = floorLowerBound; j < floorLowerBound + floorRange; j++)
+        {
+            for (int i = sectionLowerBound; i < sectionUpperBound; i++)
+            {
+                if (Input.GetMouseButtonUp(0))
+                {
+                    SelectionLock = true;
+                    blocks[i + j * blocksPerFloor].SetColor(confirmedColor);
+                }
+                else
+                    blocks[i + j * blocksPerFloor].SetColor(selectionColor);
+                //selectedBlocks.Add(i + j * blocksPerFloor);
+            }
+        }
+        Debug.LogError(string.Format("rangeIndex: {0} section: {1}", rangeIndex, section));
+
+        prevSelection[0] = sectionLowerBound;
+        prevSelection[1] = rangeIndex;
+
+        ///TO IMPORT TO SERVER SIDE
         //int midIndex = (UnitTypeSelection % 2 == 0) ? UnitTypeSelection / 2 - 1 : UnitTypeSelection / 2;
-        if (blocks[blockIndex].UnitId < 0)
-        {
-            selectedBlocks.Add(blockIndex);
-            blocksLeft--;
-        }
-        else return;
+        //if (blocks[blockIndex].UnitId < 0)
+        //{
+        //    selectedBlocks.Add(blockIndex);
+        //    blocksLeft--;
+        //}
+        //else return;
 
-        bool canInsertLeft = true;
-        bool canInsertRight = true;
+        //bool canInsertLeft = true;
+        //bool canInsertRight = true;
 
-        for (int i = 1; i < xBlockCount; i++) 
-        {
-            if (blocksLeft < 1 || (!canInsertRight && !canInsertLeft)) break;  //sanity check- breaks the 1 unit case;
+        //for (int i = 1; i < blocksPerFloor; i++) 
+        //{
+        //    if (blocksLeft < 1 || (!canInsertRight && !canInsertLeft)) break;  //sanity check- breaks the 1 unit case;
 
-            //try inserting to the right
-            int blockColIndexToAdd = col + i;
-            if (blockColIndexToAdd < xBlockCount && canInsertRight)
-            {
-                int indexToAdd = blockColIndexToAdd + row * xBlockCount;
-                if (blocks[indexToAdd].UnitId < 0)
-                {
-                    selectedBlocks.Add(indexToAdd);
-                    blocksLeft--;
-                    if (blocksLeft < 1) break;
-                }
-                else canInsertRight = false;
-            }
-            else canInsertRight = false;
+        //    //try inserting to the right
+        //    int blockColIndexToAdd = col + i;
+        //    if (blockColIndexToAdd < blocksPerFloor && canInsertRight)
+        //    {
+        //        int indexToAdd = blockColIndexToAdd + row * blocksPerFloor;
+        //        if (blocks[indexToAdd].UnitId < 0)
+        //        {
+        //            selectedBlocks.Add(indexToAdd);
+        //            blocksLeft--;
+        //            if (blocksLeft < 1) break;
+        //        }
+        //        else canInsertRight = false;
+        //    }
+        //    else canInsertRight = false;
 
-            //try inserting to the left
-            blockColIndexToAdd = col - i;
-            if (blockColIndexToAdd >= 0 && canInsertLeft)
-            {
-                int indexToAdd = blockColIndexToAdd + row * xBlockCount;
-                if (blocks[indexToAdd].UnitId < 0)
-                {
-                    selectedBlocks.Add(indexToAdd);
-                    blocksLeft--;
-                    if (blocksLeft < 1) break;
-                }
-                else canInsertLeft = false;
-            }
-            else canInsertLeft = false;
-        }
-        if (blocksLeft < 1)
-        {
-            foreach (int i in selectedBlocks)
-                blocks[i].SetColor(selectionColor);
-            if (Input.GetMouseButtonUp(0))
-                SelectionLock = true;
-        }
+        //    //try inserting to the left
+        //    blockColIndexToAdd = col - i;
+        //    if (blockColIndexToAdd >= 0 && canInsertLeft)
+        //    {
+        //        int indexToAdd = blockColIndexToAdd + row * blocksPerFloor;
+        //        if (blocks[indexToAdd].UnitId < 0)
+        //        {
+        //            selectedBlocks.Add(indexToAdd);
+        //            blocksLeft--;
+        //            if (blocksLeft < 1) break;
+        //        }
+        //        else canInsertLeft = false;
+        //    }
+        //    else canInsertLeft = false;
+        //}
+        //if (blocksLeft < 1)
+        //{
+        //    foreach (int i in selectedBlocks)
+        //        blocks[i].SetColor(selectionColor);
+        //    if (Input.GetMouseButtonUp(0))
+        //        SelectionLock = true;
+        //}
         //else no space :(
     }
 
     public void ClearSelectedBlocks()
     {
-        foreach (int i in selectedBlocks)
-        {
-            blocks[i].SetColor(defaultColor);
-        }
+        //foreach (int i in selectedBlocks)
+        //{
+        //    blocks[i].SetColor(defaultColor);
+        //}
         selectedBlocks.Clear();
     }
 

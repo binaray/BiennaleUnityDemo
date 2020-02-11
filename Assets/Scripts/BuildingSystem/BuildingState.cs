@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//json serializable which is used to compare states with the server's
 
 [System.Serializable]
 public class BuildingState

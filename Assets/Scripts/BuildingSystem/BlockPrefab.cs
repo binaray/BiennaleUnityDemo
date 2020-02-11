@@ -6,7 +6,7 @@ public class BlockPrefab : MonoBehaviour
 {
     public int Index { get; set; }
     public int UnitId { get; set; }
-    public float Offset { get; set; }
+    public int Section { get; set; } //section index; 0:left, 1:mid, 2:right
     public Vector3 Position { get; private set; }
 
     private void Awake()
@@ -18,7 +18,6 @@ public class BlockPrefab : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Offset = Index;
         Position = this.transform.localPosition;
     }
 

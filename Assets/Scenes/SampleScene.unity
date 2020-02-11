@@ -935,18 +935,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RefreshPrefs: 1
   blockPrefab: {fileID: 1913465633, guid: bb9a81c5759cd3c48ad44bf1dcceedf7, type: 3}
-  xBlockCount: 13
-  yBlockCount: 30
   xOffset:
   - 1
+  - 1
+  - 1
   - 2
-  - 1.5
+  - 1
+  - 1
+  - 1
+  - 1
+  - 2
+  - 1
+  - 1
+  - 1
   yOffset:
+  - 1
+  - 1.25
+  - 1
   - 1.25
   - 1.5
   leftSection: 4
   middleSection: 5
   rightSection: 4
+  floorRange: 5
   floors: 30
   unitTypeColor:
   - {r: 0.65957606, g: 0.5030705, b: 0.8962264, a: 0}
@@ -1126,7 +1137,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 477420030}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 565147645}
+        m_MethodName: SetTrigger
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: TriggerUserIntro
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &477420030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2850,6 +2872,7 @@ GameObject:
   - component: {fileID: 1464035716}
   - component: {fileID: 1464035718}
   - component: {fileID: 1464035717}
+  - component: {fileID: 1464035719}
   m_Layer: 5
   m_Name: UserIntroduction
   m_TagString: Untagged
@@ -2912,6 +2935,57 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1464035715}
   m_CullTransparentMesh: 0
+--- !u!114 &1464035719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1464035715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 0
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 1464035717}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 565147645}
+        m_MethodName: SetTrigger
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: TriggerSelectLocation
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1504361878
 GameObject:
   m_ObjectHideFlags: 0
@@ -3079,6 +3153,7 @@ GameObject:
   - component: {fileID: 1523243155}
   - component: {fileID: 1523243154}
   - component: {fileID: 1523243153}
+  - component: {fileID: 1523243156}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -3134,6 +3209,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1523243156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1523243152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8770bda578e5013479fa3d730673440e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1538936258
 GameObject:
   m_ObjectHideFlags: 0
@@ -3421,7 +3508,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1675373169
 RectTransform:
   m_ObjectHideFlags: 0
