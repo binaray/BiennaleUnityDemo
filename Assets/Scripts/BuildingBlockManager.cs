@@ -68,7 +68,7 @@ public class BuildingBlockManager : MonoBehaviour
             this._selectionLock = value;
         }
     }
-    public bool ConfirmationLock { get; set; }
+    public bool IsSelectionState { get; set; }
     private int unitIdCount;
     private BuildingState ownState; //Collection of unit positions to be synchronized to server
     private SortedSet<int> selectedBlocks = new SortedSet<int>();
@@ -80,15 +80,13 @@ public class BuildingBlockManager : MonoBehaviour
     [SerializeField]
     private Color confirmedColor = Color.green;
 
-    //singleton
-    private static BuildingBlockManager _instance;
-    public static BuildingBlockManager Instance { get { return _instance; } }    
+    public static BuildingBlockManager Instance { get; private set; }
     private void Awake()
     {
-        if (_instance != null && _instance != this)
+        if (Instance != null && Instance != this)
             Destroy(this.gameObject);
         else
-            _instance = this;
+            Instance = this;
     }
 
     // Start is called before the first frame update
@@ -107,7 +105,7 @@ public class BuildingBlockManager : MonoBehaviour
         //create and index blocks to their input selection space; left/mid/right, 1-5/6-10/..
         blocksPerFloor = middleSection + rightSection + leftSection;
         SelectionLock = false;
-        ConfirmationLock = false;
+        IsSelectionState = false;
         if (blockPrefab != null)
         {
             float xPos = .0f;
@@ -147,7 +145,7 @@ public class BuildingBlockManager : MonoBehaviour
             SelectionLock = false;
         }
 
-        if (!SelectionLock && !ConfirmationLock)
+        if (!SelectionLock && IsSelectionState)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;

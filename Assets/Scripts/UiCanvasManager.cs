@@ -14,18 +14,16 @@ public class UiCanvasManager : MonoBehaviour
     [SerializeField]
     private DialogManager dialogManager;
 
-    //singleton
-    private static UiCanvasManager _instance;
-    public static UiCanvasManager Instance { get { return _instance; } }
+    public static UiCanvasManager Instance { get; private set; }
     private void Awake()
     {
-        if (_instance != null && _instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(this.gameObject);
         }
         else
         {
-            _instance = this;
+            Instance = this;
         }
     }
 
