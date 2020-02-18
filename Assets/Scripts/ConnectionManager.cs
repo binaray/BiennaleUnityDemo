@@ -12,6 +12,7 @@ public class ConnectionManager : MonoBehaviour
     [SerializeField]
     private string endpoint;
     private UserInput userInput;
+    public int SuggestedUnitTypeIndex { get; set; }
     private bool isConnecting = false;
 
     public static ConnectionManager Instance { get; private set; }
@@ -23,14 +24,32 @@ public class ConnectionManager : MonoBehaviour
             Instance = this;
     }
 
-    public void StartNewUserInput(string name, int pax, int avatarId, string favLocIndex) => userInput = new UserInput(name, pax, avatarId, favLocIndex);
+    public void StartNewUserInput(string avatarName, int avatarIndex, int pax, string sharedSpaceName)
+    {
+        userInput = new UserInput(avatarName, avatarIndex, pax, sharedSpaceName);
+        SuggestedUnitTypeIndex = Constants.PaxToUnitTypeIndex(pax);
+    }
+    public void SetUserInputLocation(int unitTypeIndex, int floorRangeIndex, int sectionIndex)
+    {
+        userInput.unitTypeIndex = unitTypeIndex;
+        userInput.floorRangeIndex = floorRangeIndex;
+        userInput.sectionIndex = sectionIndex;
+    }
+
+    public void UploadUserInput()
+    {
+        StartCoroutine(IEUploadUserInput(callback: result =>
+        {
+            Debug.LogWarning(result);
+        }));
+    }
 
     void Start()
     {
-        StartCoroutine(RetrieveServerState());
+        StartCoroutine(IERetrieveServerState());
     }
 
-    private IEnumerator RetrieveServerState(System.Action<string> callback = null)
+    private IEnumerator IERetrieveServerState()
     {
         yield return new WaitForSeconds(updateDuration);
         if (!isConnecting)
@@ -38,7 +57,7 @@ public class ConnectionManager : MonoBehaviour
             isConnecting = true;
             WWWForm form = new WWWForm();
 
-            UnityWebRequest www = UnityWebRequest.Post(endpoint + "state.php", form);
+            UnityWebRequest www = UnityWebRequest.Post(Constants.ServerEnpoint + "state.php", form);
             yield return www.SendWebRequest();
 
             if (www.isNetworkError || www.isHttpError)
@@ -49,41 +68,40 @@ public class ConnectionManager : MonoBehaviour
             {
                 // Show results as text
                 Debug.Log(www.downloadHandler.text);
-                callback(www.downloadHandler.text);
-                Debug.Log("Form upload complete!");
-                StartCoroutine(RetrieveServerState());
+                StartCoroutine(IERetrieveServerState());
             }
             isConnecting = false;
         }
-        StartCoroutine(RetrieveServerState());
+        StartCoroutine(IERetrieveServerState());
     }
 
-    private IEnumerator UploadUserInput(System.Action<string> callback = null)
+    private IEnumerator IEUploadUserInput(System.Action<string> callback = null)
     {
         yield return new WaitForSeconds(1.0f);
         if (!isConnecting)
         {
             isConnecting = true;
             WWWForm form = new WWWForm();
+            Debug.LogWarning(JsonUtility.ToJson(userInput));
             form.AddField("UserInput", JsonUtility.ToJson(userInput));
 
-            UnityWebRequest www = UnityWebRequest.Post(endpoint + "input.php", form);
+            UnityWebRequest www = UnityWebRequest.Post(Constants.ServerEnpoint + "input.php", form);
+            //UnityWebRequest www = UnityWebRequest.Post("https://ptsv2.com/t/biennale2020/post", form);
             yield return www.SendWebRequest();
 
             if (www.isNetworkError || www.isHttpError)
             {
                 Debug.LogError(www.error);
-                StartCoroutine(UploadUserInput());
+                StartCoroutine(IEUploadUserInput());
             }
             else
             {
                 // Show results as text
                 Debug.Log(www.downloadHandler.text);
                 callback(www.downloadHandler.text);
-                Debug.Log("Form upload complete!");
             }
             isConnecting = false;
         }
-        else StartCoroutine(UploadUserInput());
+        else StartCoroutine(IEUploadUserInput());
     }
 }

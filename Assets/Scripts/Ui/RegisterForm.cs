@@ -6,11 +6,9 @@ public class RegisterForm : MonoBehaviour
 {
     [SerializeField]
     private Image avatarImage;
-    private int avatarSelector = 0;
+    private int avatarIndex = 0;
     [SerializeField]
-    private string[] avatarResourceStrings;
-    [SerializeField]
-    private InputField nameInput;
+    private InputField avatarNameInput;
     [SerializeField]
     private InputField paxInput;
     [SerializeField]
@@ -33,9 +31,9 @@ public class RegisterForm : MonoBehaviour
     public void CheckForm()
     {
         int pax;
-        if (nameInput.text != "" && paxInput.text != "" && int.TryParse(paxInput.text, out pax)) 
+        if (avatarNameInput.text != "" && paxInput.text != "" && int.TryParse(paxInput.text, out pax)) 
         {
-            ConnectionManager.Instance.StartNewUserInput(nameInput.text, pax, avatarSelector, favPlaceInput.itemText.text);
+            ConnectionManager.Instance.StartNewUserInput(avatarNameInput.text, avatarIndex, pax, favPlaceInput.itemText.text);
             submit.interactable = true;
         }
         else
@@ -46,13 +44,13 @@ public class RegisterForm : MonoBehaviour
 
     public void NextAvatarSelection()
     {
-        avatarSelector = (avatarSelector + 1) % avatarResourceStrings.Length;
-        avatarImage.sprite = Resources.Load<Sprite>("Sprites/Tenants/" + avatarResourceStrings[avatarSelector]);
+        avatarIndex = (avatarIndex + 1) % Constants.AvatarResourceStrings.Length;
+        avatarImage.sprite = Resources.Load<Sprite>("Sprites/Tenants/" + Constants.AvatarResourceStrings[avatarIndex]);
     }
 
     public void PrevAvatarSelection()
     {
-        if (--avatarSelector < 0) avatarSelector = avatarResourceStrings.Length - 1;
-        avatarImage.sprite = Resources.Load<Sprite>("Sprites/Tenants/" + avatarResourceStrings[avatarSelector]);
+        if (--avatarIndex < 0) avatarIndex = Constants.AvatarResourceStrings.Length - 1;
+        avatarImage.sprite = Resources.Load<Sprite>("Sprites/Tenants/" + Constants.AvatarResourceStrings[avatarIndex]);
     }
 }

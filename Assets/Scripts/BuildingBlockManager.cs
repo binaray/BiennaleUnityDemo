@@ -180,7 +180,7 @@ public class BuildingBlockManager : MonoBehaviour
     void SelectUnitBlocks(int blockIndex)
     {
         ClearSelectedBlocks();
-        int blocksLeft;
+        //int blocksLeft;
         //switch (UnitTypeSelection)
         //{
         //    case 1:
@@ -197,31 +197,31 @@ public class BuildingBlockManager : MonoBehaviour
         //    default:
         //        return;
         //}
-        blocksLeft = UnitTypeSelection;
+        //blocksLeft = UnitTypeSelection;
 
         int row = blockIndex / blocksPerFloor;
         int col = blockIndex - row * blocksPerFloor;
         int rangeIndex = row / floorRange;
-        string section;
+        int sectionIndex;
         int floorLowerBound = rangeIndex * floorRange;
         int sectionLowerBound;
         int sectionUpperBound;
 
         if (col < leftSection)
         {
-            section = "left";
+            sectionIndex = 0;    //left
             sectionLowerBound = 0;
             sectionUpperBound = leftSection;
         }
         else if (col < leftSection + middleSection)
         {
-            section = "middle";
+            sectionIndex = 1;    //middle
             sectionLowerBound = leftSection;
             sectionUpperBound = leftSection + middleSection;
         }
         else
         {
-            section = "right";
+            sectionIndex = 2;  //right
             sectionLowerBound = leftSection + middleSection;
             sectionUpperBound = blocksPerFloor;
         }
@@ -251,13 +251,14 @@ public class BuildingBlockManager : MonoBehaviour
                 {
                     SelectionLock = true;
                     blocks[i + j * blocksPerFloor].SetColor(confirmedColor);
+                    ConnectionManager.Instance.SetUserInputLocation(ConnectionManager.Instance.SuggestedUnitTypeIndex, rangeIndex, sectionIndex);
                 }
                 else
                     blocks[i + j * blocksPerFloor].SetColor(selectionColor);
                 //selectedBlocks.Add(i + j * blocksPerFloor);
             }
         }
-        Debug.LogError(string.Format("rangeIndex: {0} section: {1}", rangeIndex, section));
+        Debug.Log(string.Format("rangeIndex: {0} sectionIndex: {1}", rangeIndex, sectionIndex));
 
         prevSelection[0] = sectionLowerBound;
         prevSelection[1] = rangeIndex;
@@ -272,27 +273,4 @@ public class BuildingBlockManager : MonoBehaviour
         selectedBlocks.Clear();
     }
 
-    public void SetConfirmedBlocks()
-    {
-        confirmedBlocks = new SortedSet<int>(selectedBlocks);
-    }
-
-    public void PublishConfirmedBlocks()
-    {
-        //add to player pref
-        //set block unit color
-        Unit unit = new Unit(confirmedBlocks.Min, UnitTypeSelection, unitIdCount++, "Hello!");
-        AddUnit(unit);
-        selectedBlocks.Clear();
-        confirmedBlocks.Clear();
-    }
-
-    //deprecated: server should be handling units now; to remove
-    void AddUnit(Unit unit)
-    {
-        string json = JsonUtility.ToJson(ownState);
-        Debug.LogError(json);
-        PlayerPrefs.SetInt(UNIT_ID_COUNT_PREF, unitIdCount);
-        PlayerPrefs.SetString(UNIT_DB_STRING_PREF, json);
-    }
 }
