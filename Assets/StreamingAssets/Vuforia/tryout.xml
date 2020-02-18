@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig>
+<Tracking>
+<ModelTarget name="200218_Test Model 3 (no 1000)" motionHint="static"/>
+
+</Tracking>
+
+<Assembly name="200218_Test Model 3 (no 1000)s_assembly" assemblyId="c7bc05bdb0734c158cd197057b0cdc7b">
+<Part name="200218_Test Model 3 (no 1000)" translation="0 0 0" rotation="AD: 0 0 1 0"/>
+<EntryPoint name="viewpoint_0001" translation="0.35 1 1" rotation="AD: -3.0546389304088795e-14 1.4142135623730951 -1.414213562373095 180" trained="no">
+
+</EntryPoint>
+
+</Assembly>
+<ModelTargetDatabase name="tryout" />
+</QCARConfig>
