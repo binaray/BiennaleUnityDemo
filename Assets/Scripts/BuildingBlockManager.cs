@@ -108,19 +108,19 @@ public class BuildingBlockManager : MonoBehaviour
         IsSelectionState = false;
         if (blockPrefab != null)
         {
-            float xPos = .0f;
-            float yPos = .0f;
+            float xPos = this.gameObject.transform.position.x;
+            float yPos = this.gameObject.transform.position.y;
             for (int y = 0; y < floors; y++)
             {
                 for (int x = 0; x < blocksPerFloor; x++)
                 {
-                    BlockPrefab block = Instantiate(blockPrefab, new Vector3(xPos, yPos, 0), Quaternion.identity, this.transform);
+                    BlockPrefab block = Instantiate(blockPrefab, new Vector3(xPos, yPos, this.gameObject.transform.position.z), Quaternion.identity, this.transform);
                     block.Index = x + blocksPerFloor * y;
                     block.SetColor(defaultColor);
                     blocks.Add(block);
                     xPos += xOffset[x % xOffset.Length];
                 }
-                xPos = .0f;
+                xPos = this.gameObject.transform.position.x;
                 yPos += yOffset[y % yOffset.Length];
             }
         }
@@ -150,7 +150,7 @@ public class BuildingBlockManager : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit, 100))
+            if (Physics.Raycast(ray, out hit, 1000))
             {
                 Debug.DrawLine(ray.origin, hit.point);
                 //Debug.Log(hit.transform.gameObject.name);
