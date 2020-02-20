@@ -10,7 +10,7 @@ public static class Constants
         {0, "One room"},
         {1, "Two room"},
         {2, "Three room"},
-        {3, "Four room"}    
+        {3, "Four room"}
     };
     public static readonly Dictionary<int, int> UnitDefSize = new Dictionary<int, int>()
     {

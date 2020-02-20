@@ -15,6 +15,8 @@ public class ConnectionManager : MonoBehaviour
     public int SuggestedUnitTypeIndex { get; set; }
     private bool isConnecting = false;
 
+    private Dictionary<int, Unit> oldState;
+
     public static ConnectionManager Instance { get; private set; }
     private void Awake()
     {
@@ -41,6 +43,8 @@ public class ConnectionManager : MonoBehaviour
         StartCoroutine(IEUploadUserInput(callback: result =>
         {
             Debug.LogWarning(result);
+            Dictionary<int, Unit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<int, Unit>>(result);
+
         }));
     }
 
