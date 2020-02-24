@@ -3,16 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Unit class for storing and handling unit states
-[System.Serializable]
-public class Unit
+public class UnitObject : MonoBehaviour
 {
-    public int id;
     public int anchorIndex;
     public int floorIndex;
     public int unitTypeIndex;
     public Props props;
 
-    public Unit(int unitTypeIndex, int floorIndex,  int anchorIndex, Props props)
+    public UnitObject(Unit other)
+    {
+        this.unitTypeIndex = other.unitTypeIndex;
+        this.floorIndex = other.floorIndex;
+        this.anchorIndex = other.anchorIndex;
+        this.props = other.props;
+    }
+
+    public UnitObject(int unitTypeIndex, int floorIndex, int anchorIndex, Props props)
     {
         this.unitTypeIndex = unitTypeIndex;
         this.floorIndex = floorIndex;

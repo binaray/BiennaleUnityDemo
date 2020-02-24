@@ -5,8 +5,6 @@ using UnityEngine.EventSystems;
 
 public class BuildingBlockManager : MonoBehaviour
 {
-    private const string UNIT_ID_COUNT_PREF = "UNIT_ID_COUNT_PREF";
-    private const string UNIT_DB_STRING_PREF = "UNIT_DB_STRING_PREF";
 
     [SerializeField]
     private bool RefreshPrefs = false;
@@ -28,8 +26,9 @@ public class BuildingBlockManager : MonoBehaviour
     [SerializeField]
     private int floorRange = 5;
     [SerializeField]
-    private int floors = 30;
-    private int blocksPerFloor = 0;
+    private int floors = 32;
+    [HideInInspector]
+    public int blocksPerFloor = 0;
 
     //runtime reference to blocks in the following format [floor][Section][blocks] for easier selection
     private List<BlockPrefab> blocks = new List<BlockPrefab>();
@@ -38,39 +37,9 @@ public class BuildingBlockManager : MonoBehaviour
 
     //selector vars
     private int[] prevSelection = new int[] { -1, -1 };
-    private int unitTypeSelection = 0;
-    public int UnitTypeSelection
-    {
-        get { 
-            return this.unitTypeSelection; 
-        }
-        set
-        {
-            this.unitTypeSelection = value;
-            //UiCanvasManager.Instance.SelectLocationState();
-            //print(string.Format("Selection {0} set", this.unitTypeSelection));
-        }
-    }
-    private bool _selectionLock;
-    public bool SelectionLock {
-        get 
-        {
-            return this._selectionLock;
-        }
-        set
-        {
-            //if (value)
-            //    foreach (int i in selectedBlocks)
-            //        blocks[i].SetColor(confirmedColor);
-            //else
-            //    if (!ConfirmationLock)
-            //        ClearSelectedBlocks();
-            this._selectionLock = value;
-        }
-    }
+    public bool SelectionLock { get; set; }
     public bool IsSelectionState { get; set; }
-    private int unitIdCount;
-    private BuildingState ownState; //Collection of unit positions to be synchronized to server
+
     private SortedSet<int> selectedBlocks = new SortedSet<int>();
     private SortedSet<int> confirmedBlocks = new SortedSet<int>();
     [SerializeField]
@@ -95,13 +64,6 @@ public class BuildingBlockManager : MonoBehaviour
         if (RefreshPrefs)
             PlayerPrefs.DeleteAll();
 
-        unitIdCount = PlayerPrefs.GetInt(UNIT_ID_COUNT_PREF, 0);
-        string savedJson = PlayerPrefs.GetString(UNIT_DB_STRING_PREF, "");
-        if (savedJson != "")
-            ownState = BuildingState.CreateFromJson(savedJson);
-        else
-            ownState = new BuildingState();
-
         //create and index blocks to their input selection space; left/mid/right, 1-5/6-10/..
         blocksPerFloor = middleSection + rightSection + leftSection;
         SelectionLock = false;
@@ -124,17 +86,8 @@ public class BuildingBlockManager : MonoBehaviour
                 yPos += yOffset[y % yOffset.Length];
             }
         }
-
-        //foreach (Unit unit in unitWrapper.occupiedUnits)
-        //{
-        //    int blocksLeft = unit.unitType;
-        //    for (int i = 0; i < blocksLeft; i++)
-        //    {
-        //        int blockIndex = unit.blockIndex + i;
-        //        blocks[blockIndex].UnitId = unit.unitId;
-        //        blocks[blockIndex].SetColor(unitTypeColor[unit.unitType - 1]);
-        //    }
-        //}
+        //turns off to hide this
+        gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -273,4 +226,8 @@ public class BuildingBlockManager : MonoBehaviour
         selectedBlocks.Clear();
     }
 
+    public Vector3 PositionAtBlockIndex(int anchorIndex)
+    {
+        return blocks[anchorIndex].transform.position;
+    }
 }

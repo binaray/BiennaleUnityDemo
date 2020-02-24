@@ -3,8 +3,16 @@ using System.Collections.Generic;
 
 public static class Constants
 {
-    public const string ServerEnpoint = "http://localhost/repos/BiennaleParcelationServer/parcelation/";
+    //PlayerPrefs
+    public const string UNIT_DB_STRING_PREF = "UNIT_DB_STRING_PREF";
+
+    //Server endpoint
+    public const string ServerEnpoint = "http://192.168.64.2/repos/BiennaleParcelationServer/parcelation/";
+
+    //Resource definitions
     public static readonly string[] AvatarResourceStrings = { "agent", "builder", "pipsqueak_v2" };
+
+    //Unit definitions
     public static readonly Dictionary<int, string> UnitDefName = new Dictionary<int, string>()
     {
         {0, "One room"},
@@ -20,6 +28,7 @@ public static class Constants
         {3, 3}
     };
 
+    //Pax to unit mapping
     public static int PaxToUnitTypeIndex(int pax)
     {
         switch (pax)

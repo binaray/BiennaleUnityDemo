@@ -15,8 +15,6 @@ public class ConnectionManager : MonoBehaviour
     public int SuggestedUnitTypeIndex { get; set; }
     private bool isConnecting = false;
 
-    private Dictionary<int, Unit> oldState;
-
     public static ConnectionManager Instance { get; private set; }
     private void Awake()
     {
@@ -70,8 +68,10 @@ public class ConnectionManager : MonoBehaviour
             }
             else
             {
-                // Show results as text
-                Debug.Log(www.downloadHandler.text);
+                // TODO: error handle if return is invalid
+                Debug.Log("Server state response: "+ www.downloadHandler.text);
+                Dictionary<int, Unit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<int, Unit>>(www.downloadHandler.text);
+                BuildingStateManager.Instance.UpdateBuildingState(newState);
                 StartCoroutine(IERetrieveServerState());
             }
             isConnecting = false;
