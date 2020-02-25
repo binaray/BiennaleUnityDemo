@@ -38,7 +38,18 @@ public class BuildingBlockManager : MonoBehaviour
     //selector vars
     private int[] prevSelection = new int[] { -1, -1 };
     public bool SelectionLock { get; set; }
-    public bool IsSelectionState { get; set; }
+    private bool isSelectionState;
+    public bool IsSelectionState {
+        get
+        {
+            return isSelectionState;
+        }
+        set
+        {
+            this.gameObject.SetActive(value);
+            isSelectionState = value;
+        }
+    }
 
     private SortedSet<int> selectedBlocks = new SortedSet<int>();
     private SortedSet<int> confirmedBlocks = new SortedSet<int>();

@@ -14,30 +14,30 @@ public class UserInput
     public SharedSpaceInput sharedSpaceInput;
     public Props props;
 
-    public UserInput(string avatarName, int avatarIndex, int unitTypeIndex, int sectionIndex, int floorRangeIndex, int pax, string sharedSpaceName)
+    public UserInput(string avatarName, int avatarIndex, int unitTypeIndex, int sectionIndex, int floorRangeIndex, int pax, int sharedSpaceIndex)
     {
         props = new Props(avatarName, avatarIndex);
-        sharedSpaceInput = new SharedSpaceInput(sharedSpaceName);
+        sharedSpaceInput = new SharedSpaceInput(sharedSpaceIndex);
         this.unitTypeIndex = unitTypeIndex;
         this.sectionIndex = sectionIndex;
         this.floorRangeIndex = floorRangeIndex;
         this.pax = pax;
     }
-    public UserInput(string avatarName, int avatarIndex, int pax, string sharedSpaceName)
+    public UserInput(string avatarName, int avatarIndex, int pax, int sharedSpaceIndex)
     {
         props = new Props(avatarName, avatarIndex);
-        sharedSpaceInput = new SharedSpaceInput(sharedSpaceName);
+        sharedSpaceInput = new SharedSpaceInput(sharedSpaceIndex);
         this.pax = pax;
     }
 }
 [System.Serializable]
 public class SharedSpaceInput
 {
-    public string locationName;
+    public int SharedSpaceIndex;
 
-    public SharedSpaceInput(string locationName)
+    public SharedSpaceInput(int SharedSpaceIndex)
     {
-        this.locationName = locationName;
+        this.SharedSpaceIndex = SharedSpaceIndex;
     }
 }
 
@@ -52,4 +52,13 @@ public class Props
         this.avatarName = avatarName;
         this.avatarIndex = avatarIndex;
     }
+}
+
+// For storing request result
+[System.Serializable]
+public class UserInputResult
+{
+    public int unitId = -1;
+    public int returnCode = -1;
+    public Dictionary<int, Unit> state;
 }

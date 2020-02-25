@@ -3400,7 +3400,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   updateDuration: 5
   maxRetries: 3
-  endpoint: http://localhost/repos/BiennaleParcelationServer/parcelation/
 --- !u!1 &1538936258
 GameObject:
   m_ObjectHideFlags: 0

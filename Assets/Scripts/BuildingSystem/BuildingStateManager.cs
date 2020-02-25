@@ -67,6 +67,7 @@ public class BuildingStateManager : MonoBehaviour
             int anchorIndex = newState[key].GetAnchorIndex();
             int unitTypeIndex = newState[key].unitTypeIndex;
             currentState[key] = Instantiate(unitTypeTemplate[unitTypeIndex], BuildingBlockManager.Instance.PositionAtBlockIndex(anchorIndex), Quaternion.identity, this.transform);
+            currentState[key].SetUnitProperties(newState[key]);
             //TODO: queue a magical animation here
         }
     }

@@ -9,8 +9,6 @@ public class ConnectionManager : MonoBehaviour
     private float updateDuration = 5.0f;
     [SerializeField]
     private int maxRetries = 3;
-    [SerializeField]
-    private string endpoint;
     private UserInput userInput;
     public int SuggestedUnitTypeIndex { get; set; }
     private bool isConnecting = false;
@@ -24,9 +22,9 @@ public class ConnectionManager : MonoBehaviour
             Instance = this;
     }
 
-    public void StartNewUserInput(string avatarName, int avatarIndex, int pax, string sharedSpaceName)
+    public void StartNewUserInput(string avatarName, int avatarIndex, int pax, int sharedSpaceIndex)
     {
-        userInput = new UserInput(avatarName, avatarIndex, pax, sharedSpaceName);
+        userInput = new UserInput(avatarName, avatarIndex, pax, sharedSpaceIndex);
         SuggestedUnitTypeIndex = Constants.PaxToUnitTypeIndex(pax);
     }
     public void SetUserInputLocation(int unitTypeIndex, int floorRangeIndex, int sectionIndex)
@@ -41,8 +39,10 @@ public class ConnectionManager : MonoBehaviour
         StartCoroutine(IEUploadUserInput(callback: result =>
         {
             Debug.LogWarning(result);
-            Dictionary<int, Unit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<int, Unit>>(result);
-
+            UserInputResult res = Newtonsoft.Json.JsonConvert.DeserializeObject<UserInputResult>(result);
+            Debug.LogError(res.unitId);
+            //Debug.LogError(res.state);
+            BuildingStateManager.Instance.UpdateBuildingState(res.state);
         }));
     }
 

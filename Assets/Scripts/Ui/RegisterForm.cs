@@ -16,24 +16,12 @@ public class RegisterForm : MonoBehaviour
     [SerializeField]
     private Button submit;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void CheckForm()
     {
         int pax;
         if (avatarNameInput.text != "" && paxInput.text != "" && int.TryParse(paxInput.text, out pax)) 
         {
-            ConnectionManager.Instance.StartNewUserInput(avatarNameInput.text, avatarIndex, pax, favPlaceInput.itemText.text);
+            ConnectionManager.Instance.StartNewUserInput(avatarNameInput.text, avatarIndex, pax, favPlaceInput.value);
             submit.interactable = true;
         }
         else

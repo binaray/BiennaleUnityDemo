@@ -10,12 +10,13 @@ public class UnitObject : MonoBehaviour
     public int unitTypeIndex;
     public Props props;
 
-    public UnitObject(Unit other)
+    public void SetUnitProperties(Unit unit)
     {
-        this.unitTypeIndex = other.unitTypeIndex;
-        this.floorIndex = other.floorIndex;
-        this.anchorIndex = other.anchorIndex;
-        this.props = other.props;
+        //TODO: set display properties reflecting such here.
+        this.unitTypeIndex = unit.unitTypeIndex;
+        this.floorIndex = unit.floorIndex;
+        this.anchorIndex = unit.anchorIndex;
+        this.props = unit.props;
     }
 
     public UnitObject(int unitTypeIndex, int floorIndex, int anchorIndex, Props props)
