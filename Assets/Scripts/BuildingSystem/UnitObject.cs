@@ -27,6 +27,11 @@ public class UnitObject : MonoBehaviour
         this.props = props;
     }
 
+    public void MoveToAnchorIndex(int anchorIndex)
+    {
+        this.gameObject.transform.position = BuildingBlockManager.Instance.PositionAtBlockIndex(anchorIndex);
+    }
+
     public int GetAnchorIndex()
     {
         return floorIndex * BuildingBlockManager.Instance.blocksPerFloor + anchorIndex;

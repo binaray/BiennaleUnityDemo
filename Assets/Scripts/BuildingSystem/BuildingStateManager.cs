@@ -46,10 +46,12 @@ public class BuildingStateManager : MonoBehaviour
         //Deletion
         HashSet<int> toModify = new HashSet<int>(currentKeys);
         toModify.ExceptWith(newKeys);
+        DeleteUnits(toModify);
 
         //Edit
         toModify = new HashSet<int>(newKeys);
         toModify.IntersectWith(currentKeys);
+        CheckAndEditUnits(toModify, newState);
 
         //New insertion
         toModify = new HashSet<int>(newKeys);
@@ -59,6 +61,17 @@ public class BuildingStateManager : MonoBehaviour
         //TODO: save current state on application exit for offline support
     }
 
+    public void ClearBuildingState()
+    {
+        if (currentState.Count > 0)
+        {
+            HashSet<int> currentKeys = new HashSet<int>(currentState.Keys);
+            DeleteUnits(currentKeys);
+        }
+
+    }
+
+    //Inserts keys based on properties in the new state
     private void InsertUnits(HashSet<int> insertKeys, Dictionary<int, Unit> newState)
     {
         foreach (int key in insertKeys)
@@ -72,9 +85,31 @@ public class BuildingStateManager : MonoBehaviour
         }
     }
 
-    private void DeleteUnits()
+    private void CheckAndEditUnits(HashSet<int> editKeys, Dictionary<int, Unit> newState)
     {
+        foreach (int key in editKeys)
+        {
+            Debug.LogWarning("Editing " + key + ": " + newState[key].ToString());
+            //anchor position changed
+            if (currentState[key].anchorIndex!=newState[key].anchorIndex || currentState[key].floorIndex != newState[key].floorIndex)
+            {
+                int anchorIndex = newState[key].GetAnchorIndex();
+                currentState[key].MoveToAnchorIndex(anchorIndex);
+                Debug.LogWarning("Moved " + key);
+            }
+        }
+    }
 
+    //Deletes units based on current state
+    private void DeleteUnits(HashSet<int> deleteKeys)
+    {
+        foreach(int key in deleteKeys)
+        {
+            Debug.LogWarning("Deleted " + key + ": " + currentState[key].ToString());
+            Destroy(currentState[key]);
+            currentState.Remove(key);
+            //TODO: queue a magical animation here
+        }
     }
 
 }

@@ -70,8 +70,13 @@ public class ConnectionManager : MonoBehaviour
             {
                 // TODO: error handle if return is invalid
                 Debug.Log("Server state response: "+ www.downloadHandler.text);
-                Dictionary<int, Unit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<int, Unit>>(www.downloadHandler.text);
-                BuildingStateManager.Instance.UpdateBuildingState(newState);
+                if (string.IsNullOrEmpty(www.downloadHandler.text))
+                    BuildingStateManager.Instance.ClearBuildingState();
+                else
+                {
+                    Dictionary<int, Unit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<int, Unit>>(www.downloadHandler.text);
+                    BuildingStateManager.Instance.UpdateBuildingState(newState);
+                }
                 StartCoroutine(IERetrieveServerState());
             }
             isConnecting = false;
