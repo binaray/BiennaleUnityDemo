@@ -2823,7 +2823,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Birch
-    second: {fileID: 2100000, guid: 9d88954624e51044bb5da23428f6cf0b, type: 2}
+    second: {fileID: 2100000, guid: ff059fc016fcf8d4a88162b27e334cba, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -2833,22 +2833,22 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: _BIRCH
-    second: {fileID: 2100000, guid: 9d88954624e51044bb5da23428f6cf0b, type: 2}
+    second: {fileID: 2100000, guid: ff059fc016fcf8d4a88162b27e334cba, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: _CONCRETE (1)
-    second: {fileID: 2100000, guid: b07a5952185664d4c86f7b6006f6775c, type: 2}
+    second: {fileID: 2100000, guid: 37524ae4594222f4f8acd7b76234f79a, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: _CONCRETE [imported]
-    second: {fileID: 2100000, guid: b07a5952185664d4c86f7b6006f6775c, type: 2}
+    second: {fileID: 2100000, guid: 37524ae4594222f4f8acd7b76234f79a, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: _CONCRETE [imported] (1)
-    second: {fileID: 2100000, guid: b07a5952185664d4c86f7b6006f6775c, type: 2}
+    second: {fileID: 2100000, guid: 37524ae4594222f4f8acd7b76234f79a, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
