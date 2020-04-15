@@ -7,9 +7,16 @@ public class ParcelationManager : MonoBehaviour
     [SerializeField]
     private GameObject floorPrefab;
     [SerializeField]
-    float yOffset = 1.076657f;
+    float yOffset = 0.0454f;
     [SerializeField]
-    int floorCount = 32;
+    int floorCount = 34;
+
+    private Dictionary<string, RoomUnitColor> roomUnitColor = new Dictionary<string, RoomUnitColor>()
+        {
+            { "0", new RoomUnitColor(new Color(1,0,0,0.5f),new Color(1,0,0)) },
+            { "1", new RoomUnitColor(new Color(0,1,0,0.5f),new Color(0,1,0)) },
+            { "2", new RoomUnitColor(new Color(0,0,1,0.5f),new Color(0,0,1)) },
+        };
 
     //floors generated at runtime which index corresponds to level
     private List<Floor> floors = new List<Floor>();
@@ -26,6 +33,13 @@ public class ParcelationManager : MonoBehaviour
             o.transform.SetParent(this.transform);
             o.transform.localPosition = new Vector3(0, yPos, 0);
             floors.Add(o.GetComponent<Floor>());
+
+            List<RoomUnitColor> roomUnitColors = new List<RoomUnitColor>();
+            for (int j = 0; j < 16; j++)
+            {
+                roomUnitColors.Add(roomUnitColor["1"]);
+            }
+            floors[i].SetUnitColorArray(roomUnitColors);
             yPos += yOffset;
         }        
     }
@@ -34,5 +48,17 @@ public class ParcelationManager : MonoBehaviour
     void Update()
     {
         
+    }
+}
+
+public class RoomUnitColor
+{
+    public Color _Color { get; set; }
+    public Color _EmissionColor { get; set; }
+
+    public RoomUnitColor(Color color, Color emissionColor)
+    {
+        _Color = color;
+        _EmissionColor = emissionColor;
     }
 }
