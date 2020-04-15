@@ -28,7 +28,6 @@ public class ParcelationManager : MonoBehaviour
 
         for (int i = 0; i < floorCount; i++)
         {
-            Debug.Log(yOffset);
             GameObject o = Instantiate(floorPrefab);
             o.transform.SetParent(this.transform);
             o.transform.localPosition = new Vector3(0, yPos, 0);
@@ -37,7 +36,7 @@ public class ParcelationManager : MonoBehaviour
             List<RoomUnitColor> roomUnitColors = new List<RoomUnitColor>();
             for (int j = 0; j < 16; j++)
             {
-                roomUnitColors.Add(roomUnitColor["1"]);
+                roomUnitColors.Add(roomUnitColor["0"]);
             }
             floors[i].SetUnitColorArray(roomUnitColors);
             yPos += yOffset;

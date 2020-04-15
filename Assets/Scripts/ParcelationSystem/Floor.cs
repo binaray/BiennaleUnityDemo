@@ -32,6 +32,7 @@ public class Floor : MonoBehaviour
             Renderer r = roomUnits[i].GetComponent<Renderer>();
             r.material.SetColor("_Color", roomUnitColors[i]._Color);
             r.material.SetColor("_EmissionColor", roomUnitColors[i]._EmissionColor);
+            Debug.Log(string.Format("Color set r={0}", roomUnitColors[i]._Color.r));
         }
     }
 }
