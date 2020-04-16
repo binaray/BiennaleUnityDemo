@@ -84,6 +84,10 @@ public class UiCanvasManager : MonoBehaviour
     private GameObject scanQrScreen;
     [SerializeField]
     private GameObject parcelationVisScreen;
+    [SerializeField]
+    private GameObject menuScreen;
+
+    private bool transitionLock = false;
 
     public static UiCanvasManager Instance { get; private set; }
     private void Awake()
@@ -128,8 +132,29 @@ public class UiCanvasManager : MonoBehaviour
         parcelationVisScreen.SetActive(false);
     }
 
+    IEnumerator MenuScreenState()
+    {
+        menuScreen.SetActive(true);
+        Animator anim = menuScreen.GetComponent<Animator>();
+        anim.SetBool("isMenuShown", true);
+        while (currentState == GameState.MenuScreen)
+        {
+            yield return null;
+        }
+        transitionLock = true;
+        anim.SetBool("isMenuShown", false);
+        //yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length + anim.GetCurrentAnimatorStateInfo(0).normalizedTime);
+        while (!anim.GetCurrentAnimatorStateInfo(0).IsName("MenuScreenExit"))
+        {
+            yield return null;
+        }
+        menuScreen.SetActive(false);
+        transitionLock = false;
+    }
+
     public void ChangeState(GameState newState)
     {
+        if (transitionLock) return;
         if (newState != GameState.ScanQrScreen)
             lastRecentState = newState;
         Debug.LogWarning("Last recent state: " + lastRecentState);
@@ -137,13 +162,24 @@ public class UiCanvasManager : MonoBehaviour
         StartCoroutine(BgStateTransition(newState, isCompleted => {
             StartCoroutine(newState.ToString() + "State");
         }));
+        Debug.Log("Current state: " + currentState);
     }
 
     public void ParcelationVisScreen()
     {
         ChangeState(GameState.ParcelationVisScreen);
     }
+
+    public void MenuScreen()
+    {
+        ChangeState(GameState.MenuScreen);
+    }
     
+    IEnumerator Wait()
+    {
+        yield return new WaitForSeconds(.01f);
+    }
+
     GameObject GetChildWithName(GameObject obj, string name)
     {
         Transform trans = obj.transform;
