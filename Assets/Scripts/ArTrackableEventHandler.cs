@@ -82,8 +82,8 @@ public class ArTrackableEventHandler : MonoBehaviour, ITrackableEventHandler
     {
         if (mTrackableBehaviour)
         {
-            Debug.LogWarning("State changed to: " + UiCanvasManager.Instance.lastRecentState);
-            UiCanvasManager.Instance.ChangeState(UiCanvasManager.Instance.lastRecentState);
+            if (UiCanvasManager.Instance.currentState == UiCanvasManager.GameState.ScanQrScreen) 
+                UiCanvasManager.Instance.ChangeState(UiCanvasManager.Instance.lastRecentState);
             var rendererComponents = mTrackableBehaviour.GetComponentsInChildren<Renderer>(true);
             var colliderComponents = mTrackableBehaviour.GetComponentsInChildren<Collider>(true);
             var canvasComponents = mTrackableBehaviour.GetComponentsInChildren<Canvas>(true);

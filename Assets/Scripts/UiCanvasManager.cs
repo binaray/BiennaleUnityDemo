@@ -9,7 +9,8 @@ public class UiCanvasManager : MonoBehaviour
     {
         ScanQrScreen,
         StartScreen,
-        ParcelationVisScreen
+        ParcelationVisScreen,
+        MenuScreen
     }
     [HideInInspector]
     public GameState currentState;
@@ -39,6 +40,7 @@ public class UiCanvasManager : MonoBehaviour
                 targetAdditive_Color = new Color(0, 0, 0);
                 targetMultiplyColor = new Color(1, 1, 1);
                 break;
+            case GameState.MenuScreen:
             case GameState.ScanQrScreen:
                 targetBlur = 1;
                 targetAdditive_Color = new Color(0.5f, 0.5f, 0.5f);
