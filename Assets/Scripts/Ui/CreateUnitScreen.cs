@@ -8,7 +8,7 @@ public class CreateUnitScreen : MonoBehaviour
     private GameObject questionView;
     private int questionCount = 0;
     [SerializeField]
-    private float questionTransitionTime = 0.3f;
+    private float questionTransitionTime = 0.2f;
     private bool transitionLock = false;
 
     [SerializeField]
