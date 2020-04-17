@@ -10,7 +10,8 @@ public class UiCanvasManager : MonoBehaviour
         ScanQrScreen,
         StartScreen,
         ParcelationVisScreen,
-        MenuScreen
+        MenuScreen,
+        CreateUnitScreen
     }
     [HideInInspector]
     public GameState currentState;
@@ -86,6 +87,8 @@ public class UiCanvasManager : MonoBehaviour
     private GameObject parcelationVisScreen;
     [SerializeField]
     private GameObject menuScreen;
+    [SerializeField]
+    private GameObject createUnitScreen;
 
     private bool transitionLock = false;
 
@@ -143,7 +146,9 @@ public class UiCanvasManager : MonoBehaviour
         }
         transitionLock = true;
         anim.SetBool("isMenuShown", false);
-        //yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length + anim.GetCurrentAnimatorStateInfo(0).normalizedTime);
+
+        //yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length + anim.GetCurrentAnimatorStateInfo(0).normalizedTime); //--does not work as intended
+        //[hack] because animation speed is negative we use the ! here
         while (!anim.GetCurrentAnimatorStateInfo(0).IsName("MenuScreenExit"))
         {
             yield return null;
@@ -152,12 +157,22 @@ public class UiCanvasManager : MonoBehaviour
         transitionLock = false;
     }
 
+    IEnumerator CreateUnitScreenState()
+    {
+        createUnitScreen.SetActive(true);
+        while (currentState == GameState.CreateUnitScreen)
+        {
+            yield return null;
+        }
+        createUnitScreen.SetActive(false);
+    }
+
     public void ChangeState(GameState newState)
     {
         if (transitionLock) return;
         if (newState != GameState.ScanQrScreen)
             lastRecentState = newState;
-        Debug.LogWarning("Last recent state: " + lastRecentState);
+        //Debug.LogWarning("Last recent state: " + lastRecentState);
         currentState = newState;
         StartCoroutine(BgStateTransition(newState, isCompleted => {
             StartCoroutine(newState.ToString() + "State");
@@ -174,10 +189,10 @@ public class UiCanvasManager : MonoBehaviour
     {
         ChangeState(GameState.MenuScreen);
     }
-    
-    IEnumerator Wait()
+
+    public void CreateUnitScreen()
     {
-        yield return new WaitForSeconds(.01f);
+        ChangeState(GameState.CreateUnitScreen);
     }
 
     GameObject GetChildWithName(GameObject obj, string name)
