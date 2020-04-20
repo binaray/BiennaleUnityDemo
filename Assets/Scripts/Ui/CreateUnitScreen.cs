@@ -10,7 +10,8 @@ public class CreateUnitScreen : MonoBehaviour
         "What is your age group?",
         "How many people are staying including yourself?",
         "Do you want it affordable?",
-        "Select your required rooms. Note you can have a maximum total of 6."
+        "Select your required rooms. \nNote you can have a maximum total of 6.",
+        "Select your preferred residential location."
     };
     [SerializeField]
     private TMPro.TextMeshProUGUI questionTextMesh;
@@ -36,7 +37,6 @@ public class CreateUnitScreen : MonoBehaviour
         { ButtonState.Selected, new Color(0, 0, 0, 1)},
         { ButtonState.Unselected, new Color(.75f, .75f, .75f, .5f)}
     };
-    private List<bool> questionsDone = new List<bool>();
 
     //q0 params
     private List<Transform> q0ButtonTranforms = new List<Transform>();
@@ -163,6 +163,9 @@ public class CreateUnitScreen : MonoBehaviour
         { RequiredRooms.Study, 0 }
     };
 
+    //q5 params
+    public int SelectedLocation { get; private set; }
+
     // To prevent bug where things get accessed before OnEnable is called
     void Awake()
     {
@@ -171,7 +174,6 @@ public class CreateUnitScreen : MonoBehaviour
         {
             questions.Add(questionView.transform.GetChild(i).gameObject);
             QuestionSetup(i);
-            questionsDone.Add(false);
         }
         Refresh();
         //Debug.LogError(UiCanvasManager.Instance.GetComponent<RectTransform>().GetComponent<RectTransform>().sizeDelta.x);
@@ -189,8 +191,8 @@ public class CreateUnitScreen : MonoBehaviour
                     button.GetComponent<Button>().onClick.AddListener(() =>
                     {
                         SelectedLivingArrangement = (LivingArrangement)tempInt;
-                        questionsDone[0] = true;
                         //Debug.LogWarning(((LivingArrangement)tempInt).ToString());
+                        NextQuestion();
                     });
                     q0ButtonTranforms.Add(button);
                 }
@@ -203,7 +205,7 @@ public class CreateUnitScreen : MonoBehaviour
                     button.GetComponent<Button>().onClick.AddListener(() =>
                     {
                         SelectedAgeGroup = (AgeGroup)tempInt;
-                        questionsDone[1] = true;
+                        NextQuestion();
                     });
                     q1ButtonTranforms.Add(button);
                 }
@@ -215,7 +217,6 @@ public class CreateUnitScreen : MonoBehaviour
                 {
                     txt.text = value.ToString();
                     SelectedPax = (int)value;
-                    questionsDone[2] = true;
                     Debug.LogWarning(string.Format("Selected pax: {0}", SelectedPax));
                 });
                 break;
@@ -224,13 +225,13 @@ public class CreateUnitScreen : MonoBehaviour
                 buttonYes.GetComponent<Button>().onClick.AddListener(() =>
                 {
                     SelectedAffordable = ButtonState.Selected;
-                    questionsDone[3] = true;
+                    NextQuestion();
                 });
                 buttonNo = questions[questionNum].transform.GetChild(1);
                 buttonNo.GetComponent<Button>().onClick.AddListener(() =>
                 {
                     SelectedAffordable = ButtonState.Unselected;
-                    questionsDone[3] = true;
+                    NextQuestion();
                 });
                 break;
             case 4:
@@ -290,9 +291,33 @@ public class CreateUnitScreen : MonoBehaviour
                     SelectedRequiredRooms[RequiredRooms.Study] = value;
                 });
                 break;
+            case 5:
+                for (int i = 0; i < questions[questionNum].transform.childCount; i++)
+                {
+                    int tempInt = i;
+                    Transform button = questions[questionNum].transform.GetChild(tempInt);
+                    button.GetComponent<Button>().onClick.AddListener(() =>
+                    {
+                        SelectedLocation = tempInt;
+                        NextQuestion();
+                    });
+                }
+                break;
             default:
                 break;
         }
+    }
+
+    public void SubmitData()
+    {
+        QuestionResults userInput = new QuestionResults();
+        userInput.livingArrangement = SelectedLivingArrangement.ToString();
+        userInput.ageGroup = SelectedAgeGroup.ToString();
+        userInput.pax = SelectedPax;
+        userInput.affordable = (SelectedAffordable == 0 ? false : true);
+        userInput.requiredRooms[RequiredRooms.SingleBedroom.ToString()] = SelectedRequiredRooms[RequiredRooms.SingleBedroom];
+        userInput.requiredRooms[RequiredRooms.SharedBedroom.ToString()] = SelectedRequiredRooms[RequiredRooms.SharedBedroom];
+        userInput.requiredRooms[RequiredRooms.Study.ToString()] = SelectedRequiredRooms[RequiredRooms.Study];
     }
 
     void Refresh()
@@ -301,7 +326,6 @@ public class CreateUnitScreen : MonoBehaviour
         for (int i = 0; i < questions.Count; i++)
         {
             questions[i].SetActive(false);
-            questionsDone[i] = false;
         }
         SelectedLivingArrangement = LivingArrangement.None;
         SelectedAgeGroup = AgeGroup.None;
@@ -425,9 +449,9 @@ public class CreateUnitScreen : MonoBehaviour
 
 public enum ButtonState
 {
-    None,
-    Selected,
-    Unselected
+    None = -1,
+    Unselected,
+    Selected
 }
 
 public enum LivingArrangement
@@ -464,11 +488,12 @@ public class QuestionResults
     public string ageGroup;
     public int pax;
     public bool affordable;
-    public Dictionary<string, int> roomsRequired = new Dictionary<string, int>()
+    public Dictionary<string, int> requiredRooms = new Dictionary<string, int>()
     {
         { RequiredRooms.SingleBedroom.ToString(), 0 },
         { RequiredRooms.SharedBedroom.ToString(), 0 },
         { RequiredRooms.Study.ToString(), 0 }
     };
     public string[] location = new string[2];
+    public string[] preferredSharedSpaces = new string[3];
 }
