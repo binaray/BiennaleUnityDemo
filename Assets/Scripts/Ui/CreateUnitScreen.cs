@@ -59,6 +59,32 @@ public class CreateUnitScreen : MonoBehaviour
             else
                 foreach (Transform button in q0ButtonTranforms)
                     SetButtonState(button, ButtonState.Default);
+            switch (value)
+            {
+                case LivingArrangement.Single:
+                    SelectedPax = 1;
+                    skipQ2Flag = true;
+                    break;
+                case LivingArrangement.CoupleWoChildren:
+                    SelectedPax = 2;
+                    skipQ2Flag = true;
+                    break;
+                default:
+                case LivingArrangement.AssistedLiving:
+                case LivingArrangement.FlatshareCoHousing:
+                case LivingArrangement.SingleParentFamily:
+                    q2Slider.value = 2;
+                    q2Slider.minValue = 2;
+                    skipQ2Flag = false;
+                    break;
+                case LivingArrangement.NuclearFamily:
+                case LivingArrangement.MultigenerationalExtended:
+                    q2Slider.value = 3;
+                    q2Slider.minValue = 3;
+                    skipQ2Flag = false;
+                    break;
+            }
+            Debug.LogWarning(string.Format("Living arranement pax: {0}", SelectedPax));
             _selectedLivingArrangement = value;
         }
     }
@@ -91,6 +117,9 @@ public class CreateUnitScreen : MonoBehaviour
     }
 
     //q2 params
+    Slider q2Slider;
+    public int SelectedPax { get; private set; }
+    private bool skipQ2Flag = false;
 
     //q3 params
 
@@ -135,6 +164,16 @@ public class CreateUnitScreen : MonoBehaviour
                     });
                     q1ButtonTranforms.Add(button);
                 }
+                break;
+            case 2:
+                TMPro.TextMeshProUGUI txt = questions[questionNum].transform.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>();
+                q2Slider = questions[questionNum].transform.GetChild(1).GetComponent<Slider>();
+                q2Slider.onValueChanged.AddListener((value) => 
+                {
+                    txt.text = value.ToString();
+                    SelectedPax = (int)value;
+                    Debug.LogWarning(string.Format("Selected pax: {0}", SelectedPax));
+                });
                 break;
             default:
                 break;
