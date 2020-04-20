@@ -5,6 +5,15 @@ using UnityEngine.UI;
 
 public class CreateUnitScreen : MonoBehaviour
 {
+    private string[] questionTexts = {
+        "Choose your preferred living arrangement:",
+        "What is your age group?",
+        "How many people are staying including yourself?",
+        "Do you want it affordable?",
+        "Select your required rooms"
+    };
+    [SerializeField]
+    private TMPro.TextMeshProUGUI questionTextMesh;
     [SerializeField]
     private GameObject questionView;
     private int questionCount = 0;
@@ -20,13 +29,15 @@ public class CreateUnitScreen : MonoBehaviour
     private int currentQuestionNum = 0;
     private List<GameObject> questions = new List<GameObject>();
 
-    //q0 params
+    //general UI properties
     private Dictionary<ButtonState, Color> buttonStateColors = new Dictionary<ButtonState, Color>()
     {
         { ButtonState.Default, new Color(.75f, .75f, .75f, 1)},
         { ButtonState.Selected, new Color(0, 0, 0, 1)},
         { ButtonState.Unselected, new Color(.75f, .75f, .75f, .5f)}
     };
+
+    //q0 params
     private List<Transform> q0ButtonTranforms = new List<Transform>();
     private LivingArrangement _selectedLivingArrangement;
     public LivingArrangement SelectedLivingArrangement {
@@ -36,32 +47,52 @@ public class CreateUnitScreen : MonoBehaviour
         }
         private set
         {
-            Debug.LogWarning(((LivingArrangement)value).ToString());
+            //Debug.LogWarning(((LivingArrangement)value).ToString());
             if (value != LivingArrangement.None)
                 for (int i = 0; i < q0ButtonTranforms.Count; i++)
                 {
                     if (i == (int)value)
-                        SetQ0ButtonState(q0ButtonTranforms[i], ButtonState.Selected);
+                        SetButtonState(q0ButtonTranforms[i], ButtonState.Selected);
                     else
-                        SetQ0ButtonState(q0ButtonTranforms[i], ButtonState.Unselected);
+                        SetButtonState(q0ButtonTranforms[i], ButtonState.Unselected);
                 }
             else
                 foreach (Transform button in q0ButtonTranforms)
-                    SetQ0ButtonState(button, ButtonState.Default);
+                    SetButtonState(button, ButtonState.Default);
             _selectedLivingArrangement = value;
         }
     }
-    private void SetQ0ButtonState(Transform button, ButtonState state)
-    {
-        RawImage img = button.GetChild(0).GetComponent<RawImage>();
-        GameObject txt = button.GetChild(1).gameObject;
 
-        img.color = buttonStateColors[state];
-        if (state == ButtonState.Selected)
-            txt.SetActive(true);
-        else
-            txt.SetActive(false);
+    //q1 params
+    private List<Transform> q1ButtonTranforms = new List<Transform>();
+    private AgeGroup _selectedAgeGroup;
+    public AgeGroup SelectedAgeGroup
+    {
+        get
+        {
+            return _selectedAgeGroup;
+        }
+        private set
+        {
+            Debug.LogWarning(((AgeGroup)value).ToString());
+            if (value != AgeGroup.None)
+                for (int i = 0; i < q1ButtonTranforms.Count; i++)
+                {
+                    if (i == (int)value)
+                        SetButtonState(q1ButtonTranforms[i], ButtonState.Selected);
+                    else
+                        SetButtonState(q1ButtonTranforms[i], ButtonState.Unselected);
+                }
+            else
+                foreach (Transform button in q1ButtonTranforms)
+                    SetButtonState(button, ButtonState.Default);
+            _selectedAgeGroup = value;
+        }
     }
+
+    //q2 params
+
+    //q3 params
 
     // To prevent bug where things get accessed before OnEnable is called
     void Awake()
@@ -78,7 +109,6 @@ public class CreateUnitScreen : MonoBehaviour
 
     void QuestionSetup(int questionNum)
     {
-        //Transform[] children = questions[questionNum].GetComponentsInChildren<Transform>();
         switch (questionNum)
         {
             case 0:
@@ -95,6 +125,16 @@ public class CreateUnitScreen : MonoBehaviour
                 }
                 break;
             case 1:
+                for (int i = 0; i < questions[questionNum].transform.childCount; i++)
+                {
+                    int tempInt = i;
+                    Transform button = questions[questionNum].transform.GetChild(tempInt);
+                    button.GetComponent<Button>().onClick.AddListener(() =>
+                    {
+                        SelectedAgeGroup = (AgeGroup)tempInt;
+                    });
+                    q1ButtonTranforms.Add(button);
+                }
                 break;
             default:
                 break;
@@ -107,13 +147,27 @@ public class CreateUnitScreen : MonoBehaviour
         foreach (GameObject q in questions)
             q.SetActive(false);
         SelectedLivingArrangement = LivingArrangement.None;
+        SelectedAgeGroup = AgeGroup.None;
         transitionLock = false;
+    }
+
+    private void SetButtonState(Transform button, ButtonState state)
+    {
+        RawImage img = button.GetChild(0).GetComponent<RawImage>();
+        GameObject txt = button.GetChild(1).gameObject;
+
+        img.color = buttonStateColors[state];
+        if (state == ButtonState.Selected)
+            txt.SetActive(true);
+        else
+            txt.SetActive(false);
     }
 
     void ChangeQuestion(int newQuestionNum)
     {
         if (!transitionLock)
         {
+            questionTextMesh.text = questionTexts[newQuestionNum];
             StartCoroutine(QuestionTransition(newQuestionNum));
             if (newQuestionNum < 1)
             {
@@ -139,14 +193,14 @@ public class CreateUnitScreen : MonoBehaviour
 
     IEnumerator QuestionTransition(int newQuestionNum)
     {
-        Debug.LogWarning(currentQuestionNum);
-        Debug.LogWarning(newQuestionNum);
+        //Debug.LogWarning(currentQuestionNum);
+        //Debug.LogWarning(newQuestionNum);
         transitionLock = true;
         float canvasWidth = UiCanvasManager.Instance.GetComponent<RectTransform>().GetComponent<RectTransform>().sizeDelta.x;
         RectTransform r0 = questions[currentQuestionNum].GetComponent<RectTransform>();
         RectTransform r1 = questions[newQuestionNum].GetComponent<RectTransform>();
         Vector3 r0Target;
-        Vector3 r1Target = new Vector3(0, 0, 0); ;
+        Vector3 r1Target = new Vector3(0, 0, 0);
 
         if (newQuestionNum >= currentQuestionNum)
         {
@@ -223,6 +277,14 @@ public enum LivingArrangement
     MultigenerationalExtended
 }
 
+public enum AgeGroup
+{
+    None = -1,
+    Youth,
+    Midlife,
+    Elderly
+}
+
 public enum RequiredRooms
 {
     SingleBedroom,
@@ -241,6 +303,7 @@ public class QuestionResults
     {
         { RequiredRooms.SingleBedroom.ToString(), 0 },
         { RequiredRooms.SharedBedroom.ToString(), 0 },
-        { RequiredRooms.Study.ToString(), 0 },
+        { RequiredRooms.Study.ToString(), 0 }
     };
+    public string[] location = new string[2];
 }
