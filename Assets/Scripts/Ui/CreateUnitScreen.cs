@@ -32,7 +32,7 @@ public class CreateUnitScreen : MonoBehaviour
     //general UI properties
     private Dictionary<ButtonState, Color> buttonStateColors = new Dictionary<ButtonState, Color>()
     {
-        { ButtonState.Default, new Color(.75f, .75f, .75f, 1)},
+        { ButtonState.None, new Color(.75f, .75f, .75f, 1)},
         { ButtonState.Selected, new Color(0, 0, 0, 1)},
         { ButtonState.Unselected, new Color(.75f, .75f, .75f, .5f)}
     };
@@ -58,7 +58,7 @@ public class CreateUnitScreen : MonoBehaviour
                 }
             else
                 foreach (Transform button in q0ButtonTranforms)
-                    SetButtonState(button, ButtonState.Default);
+                    SetButtonState(button, ButtonState.None);
             switch (value)
             {
                 case LivingArrangement.Single:
@@ -100,7 +100,6 @@ public class CreateUnitScreen : MonoBehaviour
         }
         private set
         {
-            Debug.LogWarning(((AgeGroup)value).ToString());
             if (value != AgeGroup.None)
                 for (int i = 0; i < q1ButtonTranforms.Count; i++)
                 {
@@ -111,7 +110,7 @@ public class CreateUnitScreen : MonoBehaviour
                 }
             else
                 foreach (Transform button in q1ButtonTranforms)
-                    SetButtonState(button, ButtonState.Default);
+                    SetButtonState(button, ButtonState.None);
             _selectedAgeGroup = value;
         }
     }
@@ -122,6 +121,34 @@ public class CreateUnitScreen : MonoBehaviour
     private bool skipQ2Flag = false;
 
     //q3 params
+    Transform buttonYes, buttonNo;
+    private ButtonState _selectedAffordable;
+    public ButtonState SelectedAffordable   //Button state is used here as a tristate for boolean.
+    {
+        get
+        {
+            return _selectedAffordable;
+        }
+        private set
+        {
+            if (value == ButtonState.Selected) 
+            {
+                SetButtonState(buttonYes, ButtonState.Selected);
+                SetButtonState(buttonNo, ButtonState.Unselected);
+            }
+            else if (value == ButtonState.Unselected)
+            {
+                SetButtonState(buttonYes, ButtonState.Unselected);
+                SetButtonState(buttonNo, ButtonState.Selected);
+            }
+            else
+            {
+                SetButtonState(buttonYes, ButtonState.None);
+                SetButtonState(buttonNo, ButtonState.None);
+            }
+            _selectedAffordable = value;
+        }
+    }
 
     // To prevent bug where things get accessed before OnEnable is called
     void Awake()
@@ -175,6 +202,18 @@ public class CreateUnitScreen : MonoBehaviour
                     Debug.LogWarning(string.Format("Selected pax: {0}", SelectedPax));
                 });
                 break;
+            case 3:
+                buttonYes = questions[questionNum].transform.GetChild(0);
+                buttonYes.GetComponent<Button>().onClick.AddListener(() =>
+                {
+                    SelectedAffordable = ButtonState.Selected;
+                });
+                buttonNo = questions[questionNum].transform.GetChild(1);
+                buttonNo.GetComponent<Button>().onClick.AddListener(() =>
+                {
+                    SelectedAffordable = ButtonState.Unselected;
+                });
+                break;
             default:
                 break;
         }
@@ -187,6 +226,7 @@ public class CreateUnitScreen : MonoBehaviour
             q.SetActive(false);
         SelectedLivingArrangement = LivingArrangement.None;
         SelectedAgeGroup = AgeGroup.None;
+        SelectedAffordable = ButtonState.None;
         transitionLock = false;
     }
 
@@ -299,7 +339,7 @@ public class CreateUnitScreen : MonoBehaviour
 
 public enum ButtonState
 {
-    Default,
+    None,
     Selected,
     Unselected
 }
