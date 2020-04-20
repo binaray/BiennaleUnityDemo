@@ -10,7 +10,7 @@ public class CreateUnitScreen : MonoBehaviour
         "What is your age group?",
         "How many people are staying including yourself?",
         "Do you want it affordable?",
-        "Select your required rooms"
+        "Select your required rooms. Note you can have a maximum total of 6."
     };
     [SerializeField]
     private TMPro.TextMeshProUGUI questionTextMesh;
@@ -36,6 +36,7 @@ public class CreateUnitScreen : MonoBehaviour
         { ButtonState.Selected, new Color(0, 0, 0, 1)},
         { ButtonState.Unselected, new Color(.75f, .75f, .75f, .5f)}
     };
+    private List<bool> questionsDone = new List<bool>();
 
     //q0 params
     private List<Transform> q0ButtonTranforms = new List<Transform>();
@@ -150,6 +151,18 @@ public class CreateUnitScreen : MonoBehaviour
         }
     }
 
+    //q4 params
+    private int maxRoomCount = 6;
+    TMPro.TMP_Dropdown singleBedroomsDropdown;
+    TMPro.TMP_Dropdown sharedBedroomsDropdown;
+    TMPro.TMP_Dropdown studyroomsDropdown;
+    public Dictionary<RequiredRooms, int> SelectedRequiredRooms = new Dictionary<RequiredRooms, int>()
+    {
+        { RequiredRooms.SingleBedroom, 0 },
+        { RequiredRooms.SharedBedroom, 0 },
+        { RequiredRooms.Study, 0 }
+    };
+
     // To prevent bug where things get accessed before OnEnable is called
     void Awake()
     {
@@ -158,6 +171,7 @@ public class CreateUnitScreen : MonoBehaviour
         {
             questions.Add(questionView.transform.GetChild(i).gameObject);
             QuestionSetup(i);
+            questionsDone.Add(false);
         }
         Refresh();
         //Debug.LogError(UiCanvasManager.Instance.GetComponent<RectTransform>().GetComponent<RectTransform>().sizeDelta.x);
@@ -175,6 +189,7 @@ public class CreateUnitScreen : MonoBehaviour
                     button.GetComponent<Button>().onClick.AddListener(() =>
                     {
                         SelectedLivingArrangement = (LivingArrangement)tempInt;
+                        questionsDone[0] = true;
                         //Debug.LogWarning(((LivingArrangement)tempInt).ToString());
                     });
                     q0ButtonTranforms.Add(button);
@@ -188,6 +203,7 @@ public class CreateUnitScreen : MonoBehaviour
                     button.GetComponent<Button>().onClick.AddListener(() =>
                     {
                         SelectedAgeGroup = (AgeGroup)tempInt;
+                        questionsDone[1] = true;
                     });
                     q1ButtonTranforms.Add(button);
                 }
@@ -199,6 +215,7 @@ public class CreateUnitScreen : MonoBehaviour
                 {
                     txt.text = value.ToString();
                     SelectedPax = (int)value;
+                    questionsDone[2] = true;
                     Debug.LogWarning(string.Format("Selected pax: {0}", SelectedPax));
                 });
                 break;
@@ -207,11 +224,70 @@ public class CreateUnitScreen : MonoBehaviour
                 buttonYes.GetComponent<Button>().onClick.AddListener(() =>
                 {
                     SelectedAffordable = ButtonState.Selected;
+                    questionsDone[3] = true;
                 });
                 buttonNo = questions[questionNum].transform.GetChild(1);
                 buttonNo.GetComponent<Button>().onClick.AddListener(() =>
                 {
                     SelectedAffordable = ButtonState.Unselected;
+                    questionsDone[3] = true;
+                });
+                break;
+            case 4:
+                singleBedroomsDropdown = questions[questionNum].transform.GetChild(0).GetComponent<TMPro.TMP_Dropdown>();
+                sharedBedroomsDropdown = questions[questionNum].transform.GetChild(1).GetComponent<TMPro.TMP_Dropdown>();
+                studyroomsDropdown = questions[questionNum].transform.GetChild(2).GetComponent<TMPro.TMP_Dropdown>();
+
+                singleBedroomsDropdown.onValueChanged.AddListener((value) =>
+                {
+                    int sharedBedroomsMax = maxRoomCount - value - studyroomsDropdown.value;
+                    List<TMPro.TMP_Dropdown.OptionData> aData = new List<TMPro.TMP_Dropdown.OptionData>();
+                    for (int i = 0; i < sharedBedroomsMax + 1; i++) 
+                        aData.Add(new TMPro.TMP_Dropdown.OptionData(i.ToString()));
+                    sharedBedroomsDropdown.options = aData;
+                    sharedBedroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.SharedBedroom];
+
+                    int studyroomMax = maxRoomCount - value - sharedBedroomsDropdown.value;
+                    List<TMPro.TMP_Dropdown.OptionData> bData = new List<TMPro.TMP_Dropdown.OptionData>();
+                    for (int i = 0; i < studyroomMax + 1; i++)
+                        bData.Add(new TMPro.TMP_Dropdown.OptionData(i.ToString()));
+                    studyroomsDropdown.options = bData;
+                    studyroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.Study];
+                    SelectedRequiredRooms[RequiredRooms.SingleBedroom] = value;
+                });
+                sharedBedroomsDropdown.onValueChanged.AddListener((value) =>
+                {
+                    int singleBedroomsMax = maxRoomCount - value - studyroomsDropdown.value;
+                    List<TMPro.TMP_Dropdown.OptionData> newData = new List<TMPro.TMP_Dropdown.OptionData>();
+                    for (int i = 0; i < singleBedroomsMax + 1; i++)
+                        newData.Add(new TMPro.TMP_Dropdown.OptionData(i.ToString()));
+                    singleBedroomsDropdown.options = newData;
+                    singleBedroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.SingleBedroom];
+
+                    int studyroomMax = maxRoomCount - value - singleBedroomsDropdown.value;
+                    List<TMPro.TMP_Dropdown.OptionData> bData = new List<TMPro.TMP_Dropdown.OptionData>();
+                    for (int i = 0; i < studyroomMax + 1; i++)
+                        bData.Add(new TMPro.TMP_Dropdown.OptionData(i.ToString()));
+                    studyroomsDropdown.options = bData;
+                    studyroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.Study];
+                    SelectedRequiredRooms[RequiredRooms.SharedBedroom] = value;
+                });
+                studyroomsDropdown.onValueChanged.AddListener((value) =>
+                {
+                    int singleBedroomsMax = maxRoomCount - value - sharedBedroomsDropdown.value;
+                    List<TMPro.TMP_Dropdown.OptionData> newData = new List<TMPro.TMP_Dropdown.OptionData>();
+                    for (int i = 0; i < singleBedroomsMax + 1; i++)
+                        newData.Add(new TMPro.TMP_Dropdown.OptionData(i.ToString()));
+                    singleBedroomsDropdown.options = newData;
+                    singleBedroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.SingleBedroom];
+
+                    int sharedBedroomsMax = maxRoomCount - value - singleBedroomsDropdown.value;
+                    List<TMPro.TMP_Dropdown.OptionData> bData = new List<TMPro.TMP_Dropdown.OptionData>();
+                    for (int i = 0; i < sharedBedroomsMax + 1; i++)
+                        bData.Add(new TMPro.TMP_Dropdown.OptionData(i.ToString()));
+                    sharedBedroomsDropdown.options = bData;
+                    sharedBedroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.SharedBedroom];
+                    SelectedRequiredRooms[RequiredRooms.Study] = value;
                 });
                 break;
             default:
@@ -222,11 +298,18 @@ public class CreateUnitScreen : MonoBehaviour
     void Refresh()
     {
         currentQuestionNum = 0;
-        foreach (GameObject q in questions)
-            q.SetActive(false);
+        for (int i = 0; i < questions.Count; i++)
+        {
+            questions[i].SetActive(false);
+            questionsDone[i] = false;
+        }
         SelectedLivingArrangement = LivingArrangement.None;
         SelectedAgeGroup = AgeGroup.None;
+        //q2Slider's value is set in SelectedLivingArrangement so we don't have to call refresh it again here;
         SelectedAffordable = ButtonState.None;
+        singleBedroomsDropdown.value = 0;
+        sharedBedroomsDropdown.value = 0;
+        studyroomsDropdown.value = 0;
         transitionLock = false;
     }
 
@@ -267,6 +350,9 @@ public class CreateUnitScreen : MonoBehaviour
                 nextButton.gameObject.SetActive(false);
                 prevButton.gameObject.SetActive(true);
             }
+            Debug.LogWarning("single: "+ SelectedRequiredRooms[RequiredRooms.SingleBedroom]);
+            Debug.LogWarning("shared: " + SelectedRequiredRooms[RequiredRooms.SharedBedroom]);
+            Debug.LogWarning("study:  " + SelectedRequiredRooms[RequiredRooms.Study]);
         }
     }
 
