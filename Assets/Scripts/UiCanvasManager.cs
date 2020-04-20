@@ -96,12 +96,15 @@ public class UiCanvasManager : MonoBehaviour
     private void Awake()
     {
         if (Instance != null && Instance != this)
-        {
             Destroy(this.gameObject);
-        }
         else
-        {
             Instance = this;
+
+        //Turn off any stray screens left on from debugging
+        int screenCount = background.transform.childCount;
+        for (int i = 0; i < screenCount; ++i)
+        {
+            background.transform.GetChild(i).gameObject.SetActive(false);
         }
     }
 
