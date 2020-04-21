@@ -30,6 +30,8 @@ public class CreateUnitScreen : MonoBehaviour
     private RectTransform nextButton;
     [SerializeField]
     private RectTransform prevButton;
+    [SerializeField]
+    private RectTransform submitButton;
 
     private int currentQuestionNum = 0;
     private List<GameObject> questions = new List<GameObject>();
@@ -400,7 +402,8 @@ public class CreateUnitScreen : MonoBehaviour
         int col = SelectedLocation - row * colSt.Length + 1;
         userInput.location[0] = rowSt[row]; //row
         userInput.location[1] = colSt[col]; //col
-
+        foreach (SharedSpace ss in SelectedSharedSpaces)
+            userInput.preferredSharedSpaces.Add(ss.ToString());
     }
 
     void Refresh()
@@ -447,6 +450,7 @@ public class CreateUnitScreen : MonoBehaviour
                 nextButton.localPosition = new Vector3(0, 0, 0);
                 nextButton.gameObject.SetActive(true);
                 prevButton.gameObject.SetActive(false);
+                submitButton.gameObject.SetActive(false);
             }
             else if (newQuestionNum < questionCount - 1)
             {
@@ -454,12 +458,14 @@ public class CreateUnitScreen : MonoBehaviour
                 prevButton.localPosition = new Vector3(-100, 0, 0);
                 nextButton.gameObject.SetActive(true);
                 prevButton.gameObject.SetActive(true);
+                submitButton.gameObject.SetActive(false);
             }
             else
             {
                 prevButton.localPosition = new Vector3(0, 0, 0);
                 nextButton.gameObject.SetActive(false);
                 prevButton.gameObject.SetActive(true);
+                submitButton.gameObject.SetActive(true);
             }
             //Debug.LogWarning("single: "+ SelectedRequiredRooms[RequiredRooms.SingleBedroom]);
             //Debug.LogWarning("shared: " + SelectedRequiredRooms[RequiredRooms.SharedBedroom]);
@@ -598,5 +604,5 @@ public class QuestionResults
         { RequiredRooms.Study.ToString(), 0 }
     };
     public string[] location = new string[2];
-    public string[] preferredSharedSpaces = new string[3];
+    public List<string> preferredSharedSpaces = new List<string>();
 }
