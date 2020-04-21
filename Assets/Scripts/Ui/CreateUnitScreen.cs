@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Non-dynamic class handler for questions. Add new questions by adding child into questionView and setup in QuestionSetup
+/// </summary>
 public class CreateUnitScreen : MonoBehaviour
 {
     private string[] questionTexts = {
@@ -11,7 +14,8 @@ public class CreateUnitScreen : MonoBehaviour
         "How many people are staying including yourself?",
         "Do you want it affordable?",
         "Select your required rooms. \nNote you can have a maximum total of 6.",
-        "Select your preferred residential location."
+        "Select your preferred residential location.",
+        "Vote for up to 3 preferred shared spaces."
     };
     [SerializeField]
     private TMPro.TextMeshProUGUI questionTextMesh;
@@ -151,7 +155,7 @@ public class CreateUnitScreen : MonoBehaviour
         }
     }
 
-    //q4 params
+    //q4 params //NO GETTER SETTER FOR THIS. STATIC IMPLEMENTATION IN SETUP
     private int maxRoomCount = 6;
     TMPro.TMP_Dropdown singleBedroomsDropdown;
     TMPro.TMP_Dropdown sharedBedroomsDropdown;
@@ -164,7 +168,40 @@ public class CreateUnitScreen : MonoBehaviour
     };
 
     //q5 params
-    public int SelectedLocation { get; private set; }
+    //int rowCount = 4, colCount = 3;
+    string[] rowSt = { "1-8","9-16","17-24","25-34" };
+    string[] colSt = { "left", "mid", "right" };
+    List<Transform> q5ButtonTranforms = new List<Transform>();
+    private int _selectedLocation;
+    public int SelectedLocation {
+        get
+        {
+            return _selectedLocation;
+        }
+        private set
+        {
+            if (value > -1)
+            {
+                for (int i = 0; i < q5ButtonTranforms.Count; i++)
+                {
+                    if (i == value)
+                        SetQ5ButtonState(q5ButtonTranforms[i], true);
+                    else
+                        SetQ5ButtonState(q5ButtonTranforms[i], false);
+                }
+            }
+            else
+                foreach (Transform button in q5ButtonTranforms)
+                    SetQ5ButtonState(button, false);
+            //Debug.LogWarning("Selected location index: " + value);
+            _selectedLocation = value;
+        }
+    }   //1 dimensional index representing 2d index
+
+    //q6 params //NO GETTER SETTER FOR THIS. STATIC IMPLEMENTATION IN SETUP
+    private int maxSharedSpaceSelectionCount = 3;
+    private HashSet<SharedSpace> SelectedSharedSpaces = new HashSet<SharedSpace>();
+    private List<Transform> q6ButtonTransforms = new List<Transform>();
 
     // To prevent bug where things get accessed before OnEnable is called
     void Awake()
@@ -235,61 +272,63 @@ public class CreateUnitScreen : MonoBehaviour
                 });
                 break;
             case 4:
-                singleBedroomsDropdown = questions[questionNum].transform.GetChild(0).GetComponent<TMPro.TMP_Dropdown>();
-                sharedBedroomsDropdown = questions[questionNum].transform.GetChild(1).GetComponent<TMPro.TMP_Dropdown>();
-                studyroomsDropdown = questions[questionNum].transform.GetChild(2).GetComponent<TMPro.TMP_Dropdown>();
-
-                singleBedroomsDropdown.onValueChanged.AddListener((value) =>
                 {
-                    int sharedBedroomsMax = maxRoomCount - value - studyroomsDropdown.value;
-                    List<TMPro.TMP_Dropdown.OptionData> aData = new List<TMPro.TMP_Dropdown.OptionData>();
-                    for (int i = 0; i < sharedBedroomsMax + 1; i++) 
-                        aData.Add(new TMPro.TMP_Dropdown.OptionData(i.ToString()));
-                    sharedBedroomsDropdown.options = aData;
-                    sharedBedroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.SharedBedroom];
+                    singleBedroomsDropdown = questions[questionNum].transform.GetChild(0).GetComponent<TMPro.TMP_Dropdown>();
+                    sharedBedroomsDropdown = questions[questionNum].transform.GetChild(1).GetComponent<TMPro.TMP_Dropdown>();
+                    studyroomsDropdown = questions[questionNum].transform.GetChild(2).GetComponent<TMPro.TMP_Dropdown>();
 
-                    int studyroomMax = maxRoomCount - value - sharedBedroomsDropdown.value;
-                    List<TMPro.TMP_Dropdown.OptionData> bData = new List<TMPro.TMP_Dropdown.OptionData>();
-                    for (int i = 0; i < studyroomMax + 1; i++)
-                        bData.Add(new TMPro.TMP_Dropdown.OptionData(i.ToString()));
-                    studyroomsDropdown.options = bData;
-                    studyroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.Study];
-                    SelectedRequiredRooms[RequiredRooms.SingleBedroom] = value;
-                });
-                sharedBedroomsDropdown.onValueChanged.AddListener((value) =>
-                {
-                    int singleBedroomsMax = maxRoomCount - value - studyroomsDropdown.value;
-                    List<TMPro.TMP_Dropdown.OptionData> newData = new List<TMPro.TMP_Dropdown.OptionData>();
-                    for (int i = 0; i < singleBedroomsMax + 1; i++)
-                        newData.Add(new TMPro.TMP_Dropdown.OptionData(i.ToString()));
-                    singleBedroomsDropdown.options = newData;
-                    singleBedroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.SingleBedroom];
+                    singleBedroomsDropdown.onValueChanged.AddListener((value) =>
+                    {
+                        int sharedBedroomsMax = maxRoomCount - value - studyroomsDropdown.value;
+                        List<TMPro.TMP_Dropdown.OptionData> aData = new List<TMPro.TMP_Dropdown.OptionData>();
+                        for (int i = 0; i < sharedBedroomsMax + 1; i++)
+                            aData.Add(new TMPro.TMP_Dropdown.OptionData(i.ToString()));
+                        sharedBedroomsDropdown.options = aData;
+                        sharedBedroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.SharedBedroom];
 
-                    int studyroomMax = maxRoomCount - value - singleBedroomsDropdown.value;
-                    List<TMPro.TMP_Dropdown.OptionData> bData = new List<TMPro.TMP_Dropdown.OptionData>();
-                    for (int i = 0; i < studyroomMax + 1; i++)
-                        bData.Add(new TMPro.TMP_Dropdown.OptionData(i.ToString()));
-                    studyroomsDropdown.options = bData;
-                    studyroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.Study];
-                    SelectedRequiredRooms[RequiredRooms.SharedBedroom] = value;
-                });
-                studyroomsDropdown.onValueChanged.AddListener((value) =>
-                {
-                    int singleBedroomsMax = maxRoomCount - value - sharedBedroomsDropdown.value;
-                    List<TMPro.TMP_Dropdown.OptionData> newData = new List<TMPro.TMP_Dropdown.OptionData>();
-                    for (int i = 0; i < singleBedroomsMax + 1; i++)
-                        newData.Add(new TMPro.TMP_Dropdown.OptionData(i.ToString()));
-                    singleBedroomsDropdown.options = newData;
-                    singleBedroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.SingleBedroom];
+                        int studyroomMax = maxRoomCount - value - sharedBedroomsDropdown.value;
+                        List<TMPro.TMP_Dropdown.OptionData> bData = new List<TMPro.TMP_Dropdown.OptionData>();
+                        for (int i = 0; i < studyroomMax + 1; i++)
+                            bData.Add(new TMPro.TMP_Dropdown.OptionData(i.ToString()));
+                        studyroomsDropdown.options = bData;
+                        studyroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.Study];
+                        SelectedRequiredRooms[RequiredRooms.SingleBedroom] = value;
+                    });
+                    sharedBedroomsDropdown.onValueChanged.AddListener((value) =>
+                    {
+                        int singleBedroomsMax = maxRoomCount - value - studyroomsDropdown.value;
+                        List<TMPro.TMP_Dropdown.OptionData> newData = new List<TMPro.TMP_Dropdown.OptionData>();
+                        for (int i = 0; i < singleBedroomsMax + 1; i++)
+                            newData.Add(new TMPro.TMP_Dropdown.OptionData(i.ToString()));
+                        singleBedroomsDropdown.options = newData;
+                        singleBedroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.SingleBedroom];
 
-                    int sharedBedroomsMax = maxRoomCount - value - singleBedroomsDropdown.value;
-                    List<TMPro.TMP_Dropdown.OptionData> bData = new List<TMPro.TMP_Dropdown.OptionData>();
-                    for (int i = 0; i < sharedBedroomsMax + 1; i++)
-                        bData.Add(new TMPro.TMP_Dropdown.OptionData(i.ToString()));
-                    sharedBedroomsDropdown.options = bData;
-                    sharedBedroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.SharedBedroom];
-                    SelectedRequiredRooms[RequiredRooms.Study] = value;
-                });
+                        int studyroomMax = maxRoomCount - value - singleBedroomsDropdown.value;
+                        List<TMPro.TMP_Dropdown.OptionData> bData = new List<TMPro.TMP_Dropdown.OptionData>();
+                        for (int i = 0; i < studyroomMax + 1; i++)
+                            bData.Add(new TMPro.TMP_Dropdown.OptionData(i.ToString()));
+                        studyroomsDropdown.options = bData;
+                        studyroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.Study];
+                        SelectedRequiredRooms[RequiredRooms.SharedBedroom] = value;
+                    });
+                    studyroomsDropdown.onValueChanged.AddListener((value) =>
+                    {
+                        int singleBedroomsMax = maxRoomCount - value - sharedBedroomsDropdown.value;
+                        List<TMPro.TMP_Dropdown.OptionData> newData = new List<TMPro.TMP_Dropdown.OptionData>();
+                        for (int i = 0; i < singleBedroomsMax + 1; i++)
+                            newData.Add(new TMPro.TMP_Dropdown.OptionData(i.ToString()));
+                        singleBedroomsDropdown.options = newData;
+                        singleBedroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.SingleBedroom];
+
+                        int sharedBedroomsMax = maxRoomCount - value - singleBedroomsDropdown.value;
+                        List<TMPro.TMP_Dropdown.OptionData> bData = new List<TMPro.TMP_Dropdown.OptionData>();
+                        for (int i = 0; i < sharedBedroomsMax + 1; i++)
+                            bData.Add(new TMPro.TMP_Dropdown.OptionData(i.ToString()));
+                        sharedBedroomsDropdown.options = bData;
+                        sharedBedroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.SharedBedroom];
+                        SelectedRequiredRooms[RequiredRooms.Study] = value;
+                    });
+                }
                 break;
             case 5:
                 for (int i = 0; i < questions[questionNum].transform.childCount; i++)
@@ -301,10 +340,49 @@ public class CreateUnitScreen : MonoBehaviour
                         SelectedLocation = tempInt;
                         NextQuestion();
                     });
+                    q5ButtonTranforms.Add(button);
+                }
+                break;
+            case 6:
+                for (int i = 0; i < questions[questionNum].transform.childCount; i++)
+                {
+                    int tempInt = i;
+                    Transform button = questions[questionNum].transform.GetChild(tempInt);
+                    button.GetComponent<Button>().onClick.AddListener(() =>
+                    {
+                        if (SelectedSharedSpaces.Contains((SharedSpace)tempInt))
+                        {
+                            SelectedSharedSpaces.Remove((SharedSpace)tempInt);
+                            SetQ5ButtonState(button, false);
+                        }
+                        else
+                        {
+                            if (SelectedSharedSpaces.Count < maxSharedSpaceSelectionCount)
+                            {
+                                SelectedSharedSpaces.Add((SharedSpace)tempInt);
+                                SetQ5ButtonState(button, true);
+                            }
+                        }
+                    });
+                    q6ButtonTransforms.Add(button);
                 }
                 break;
             default:
                 break;
+        }
+    }
+
+
+
+    void SetQ5ButtonState(Transform button,bool state)
+    {
+        if (state)
+        {
+            button.GetChild(0).GetComponent<RawImage>().color = Color.white;
+        }
+        else
+        {
+            button.GetChild(0).GetComponent<RawImage>().color = Color.black;
         }
     }
 
@@ -318,6 +396,11 @@ public class CreateUnitScreen : MonoBehaviour
         userInput.requiredRooms[RequiredRooms.SingleBedroom.ToString()] = SelectedRequiredRooms[RequiredRooms.SingleBedroom];
         userInput.requiredRooms[RequiredRooms.SharedBedroom.ToString()] = SelectedRequiredRooms[RequiredRooms.SharedBedroom];
         userInput.requiredRooms[RequiredRooms.Study.ToString()] = SelectedRequiredRooms[RequiredRooms.Study];
+        int row = SelectedLocation / colSt.Length;
+        int col = SelectedLocation - row * colSt.Length + 1;
+        userInput.location[0] = rowSt[row]; //row
+        userInput.location[1] = colSt[col]; //col
+
     }
 
     void Refresh()
@@ -334,6 +417,10 @@ public class CreateUnitScreen : MonoBehaviour
         singleBedroomsDropdown.value = 0;
         sharedBedroomsDropdown.value = 0;
         studyroomsDropdown.value = 0;
+        SelectedLocation = -1;
+        SelectedSharedSpaces.Clear();
+        foreach (Transform t in q6ButtonTransforms)
+            SetQ5ButtonState(t, false);
         transitionLock = false;
     }
 
@@ -374,9 +461,9 @@ public class CreateUnitScreen : MonoBehaviour
                 nextButton.gameObject.SetActive(false);
                 prevButton.gameObject.SetActive(true);
             }
-            Debug.LogWarning("single: "+ SelectedRequiredRooms[RequiredRooms.SingleBedroom]);
-            Debug.LogWarning("shared: " + SelectedRequiredRooms[RequiredRooms.SharedBedroom]);
-            Debug.LogWarning("study:  " + SelectedRequiredRooms[RequiredRooms.Study]);
+            //Debug.LogWarning("single: "+ SelectedRequiredRooms[RequiredRooms.SingleBedroom]);
+            //Debug.LogWarning("shared: " + SelectedRequiredRooms[RequiredRooms.SharedBedroom]);
+            //Debug.LogWarning("study:  " + SelectedRequiredRooms[RequiredRooms.Study]);
         }
     }
 
@@ -479,6 +566,22 @@ public enum RequiredRooms
     SingleBedroom,
     SharedBedroom,
     Study
+}
+
+public enum SharedSpace
+{
+    Retail,
+    SharedLivingRoom,
+    Playscape,
+    EventSpace,
+    MakerSpace,
+    EbikeStation,
+    HealthClinic,
+    Farm,
+    CoWorking,
+    SharedKitchen,
+    SensoryGarden,
+    Fitness
 }
 
 [System.Serializable]
