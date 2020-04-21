@@ -21,7 +21,7 @@ public class RegisterForm : MonoBehaviour
         int pax;
         if (avatarNameInput.text != "" && paxInput.text != "" && int.TryParse(paxInput.text, out pax)) 
         {
-            ConnectionManager.Instance.StartNewUserInput(avatarNameInput.text, avatarIndex, pax, favPlaceInput.value);
+            //ConnectionManager.Instance.StartNewUserInput(avatarNameInput.text, avatarIndex, pax, favPlaceInput.value);
             submit.interactable = true;
         }
         else

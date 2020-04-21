@@ -404,6 +404,9 @@ public class CreateUnitScreen : MonoBehaviour
         userInput.location[1] = colSt[col]; //col
         foreach (SharedSpace ss in SelectedSharedSpaces)
             userInput.preferredSharedSpaces.Add(ss.ToString());
+        string inputJson = Newtonsoft.Json.JsonConvert.SerializeObject(userInput);
+        Debug.LogError(inputJson);
+        ConnectionManager.Instance.UploadUserInput(inputJson);
     }
 
     void Refresh()

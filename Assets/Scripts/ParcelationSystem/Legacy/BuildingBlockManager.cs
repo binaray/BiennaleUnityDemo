@@ -215,7 +215,7 @@ public class BuildingBlockManager : MonoBehaviour
                 {
                     SelectionLock = true;
                     blocks[i + j * blocksPerFloor].SetColor(confirmedColor);
-                    ConnectionManager.Instance.SetUserInputLocation(ConnectionManager.Instance.SuggestedUnitTypeIndex, rangeIndex, sectionIndex);
+                    //ConnectionManager.Instance.SetUserInputLocation(ConnectionManager.Instance.SuggestedUnitTypeIndex, rangeIndex, sectionIndex);
                 }
                 else
                     blocks[i + j * blocksPerFloor].SetColor(selectionColor);

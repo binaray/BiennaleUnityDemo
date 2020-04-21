@@ -8,8 +8,7 @@ public class ConnectionManager : MonoBehaviour
     [SerializeField]
     private float updateDuration = 5.0f;
     [SerializeField]
-    private int maxRetries = 3;
-    private UserInput userInput;
+    private int maxRetries = 5;
     public int SuggestedUnitTypeIndex { get; set; }
     private bool isConnecting = false;
 
@@ -22,33 +21,10 @@ public class ConnectionManager : MonoBehaviour
             Instance = this;
     }
 
-    public void StartNewUserInput(string avatarName, int avatarIndex, int pax, int sharedSpaceIndex)
-    {
-        userInput = new UserInput(avatarName, avatarIndex, pax, sharedSpaceIndex);
-        SuggestedUnitTypeIndex = Constants.PaxToUnitTypeIndex(pax);
-    }
-    public void SetUserInputLocation(int unitTypeIndex, int floorRangeIndex, int sectionIndex)
-    {
-        userInput.unitTypeIndex = unitTypeIndex;
-        userInput.floorRangeIndex = floorRangeIndex;
-        userInput.sectionIndex = sectionIndex;
-    }
-
-    public void UploadUserInput()
-    {
-        StartCoroutine(IEUploadUserInput(callback: result =>
-        {
-            Debug.LogWarning(result);
-            UserInputResult res = Newtonsoft.Json.JsonConvert.DeserializeObject<UserInputResult>(result);
-            Debug.LogError(res.unitId);
-            //Debug.LogError(res.state);
-            BuildingStateManager.Instance.UpdateBuildingState(res.state);
-        }));
-    }
 
     void Start()
     {
-        StartCoroutine(IERetrieveServerState());
+        //StartCoroutine(IERetrieveServerState());
     }
 
     private IEnumerator IERetrieveServerState()
@@ -84,24 +60,34 @@ public class ConnectionManager : MonoBehaviour
         StartCoroutine(IERetrieveServerState());
     }
 
-    private IEnumerator IEUploadUserInput(System.Action<string> callback = null)
+    public void UploadUserInput(string jsonInput)
     {
-        yield return new WaitForSeconds(1.0f);
+        StartCoroutine(IEUploadUserInput(jsonInput, callback: result =>
+        {
+            Debug.LogWarning(result);
+            //UserInputResult res = Newtonsoft.Json.JsonConvert.DeserializeObject<UserInputResult>(result);
+            //Debug.LogError(res.unitId);
+            //Debug.LogError(res.state);
+            //BuildingStateManager.Instance.UpdateBuildingState(res.state);
+        }));
+    }
+
+    private IEnumerator IEUploadUserInput(string jsonInput, int retries = 0, System.Action<string> callback = null)
+    {
         if (!isConnecting)
         {
             isConnecting = true;
             WWWForm form = new WWWForm();
-            Debug.LogWarning(JsonUtility.ToJson(userInput));
-            form.AddField("UserInput", JsonUtility.ToJson(userInput));
+            form.AddField("UserInput", jsonInput);
 
-            UnityWebRequest www = UnityWebRequest.Post(Constants.ServerEnpoint + "input.php", form);
-            //UnityWebRequest www = UnityWebRequest.Post("https://ptsv2.com/t/biennale2020/post", form);
+            //UnityWebRequest www = UnityWebRequest.Post(Constants.ServerEnpoint + "input.php", form);
+            UnityWebRequest www = UnityWebRequest.Post("https://ptsv2.com/t/biennale2020/post", form);
             yield return www.SendWebRequest();
 
             if (www.isNetworkError || www.isHttpError)
             {
                 Debug.LogError(www.error);
-                StartCoroutine(IEUploadUserInput());
+                StartCoroutine(IEUploadUserInput(jsonInput, ++retries));
             }
             else
             {
@@ -111,6 +97,14 @@ public class ConnectionManager : MonoBehaviour
             }
             isConnecting = false;
         }
-        else StartCoroutine(IEUploadUserInput());
+        else if (retries > maxRetries)
+        {
+            callback(null);
+        }
+        else
+        {
+            yield return new WaitForSeconds(.5f);
+            StartCoroutine(IEUploadUserInput(jsonInput, retries));
+        }
     }
 }
