@@ -111,13 +111,13 @@ public class CreateUnitScreen : MonoBehaviour
                 for (int i = 0; i < q1ButtonTranforms.Count; i++)
                 {
                     if (i == (int)value)
-                        SetButtonState(q1ButtonTranforms[i], ButtonState.Selected);
+                        SetShowTextButtonState(q1ButtonTranforms[i], ButtonState.Selected);
                     else
-                        SetButtonState(q1ButtonTranforms[i], ButtonState.Unselected);
+                        SetShowTextButtonState(q1ButtonTranforms[i], ButtonState.Unselected);
                 }
             else
                 foreach (Transform button in q1ButtonTranforms)
-                    SetButtonState(button, ButtonState.None);
+                    SetShowTextButtonState(button, ButtonState.None);
             _selectedAgeGroup = value;
         }
     }
@@ -140,18 +140,18 @@ public class CreateUnitScreen : MonoBehaviour
         {
             if (value == ButtonState.Selected) 
             {
-                SetButtonState(buttonYes, ButtonState.Selected);
-                SetButtonState(buttonNo, ButtonState.Unselected);
+                SetTextButtonState(buttonYes, ButtonState.Selected);
+                SetTextButtonState(buttonNo, ButtonState.Unselected);
             }
             else if (value == ButtonState.Unselected)
             {
-                SetButtonState(buttonYes, ButtonState.Unselected);
-                SetButtonState(buttonNo, ButtonState.Selected);
+                SetTextButtonState(buttonYes, ButtonState.Unselected);
+                SetTextButtonState(buttonNo, ButtonState.Selected);
             }
             else
             {
-                SetButtonState(buttonYes, ButtonState.None);
-                SetButtonState(buttonNo, ButtonState.None);
+                SetTextButtonState(buttonYes, ButtonState.None);
+                SetTextButtonState(buttonNo, ButtonState.None);
             }
             _selectedAffordable = value;
         }
@@ -428,6 +428,20 @@ public class CreateUnitScreen : MonoBehaviour
         foreach (Transform t in q6ButtonTransforms)
             SetQ5ButtonState(t, false);
         transitionLock = false;
+    }
+    
+    private void SetShowTextButtonState(Transform button, ButtonState state)
+    {
+        RawImage img = button.GetChild(0).GetComponent<RawImage>();
+        TMPro.TextMeshProUGUI txt = button.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>();
+        img.color = buttonStateColors[state];
+        txt.color = buttonStateColors[state];
+    }
+
+    private void SetTextButtonState(Transform button, ButtonState state)
+    {
+        TMPro.TextMeshProUGUI txt = button.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>();
+        txt.color= buttonStateColors[state];
     }
 
     private void SetButtonState(Transform button, ButtonState state)

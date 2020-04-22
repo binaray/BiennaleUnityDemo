@@ -10,13 +10,33 @@ public class ParcelationManager : MonoBehaviour
     float yOffset = 0.0454f;
     [SerializeField]
     int floorCount = 34;
-    
     //floors generated at runtime which index corresponds to level
     private List<Floor> floors = new List<Floor>();
+    private bool _roomMode;
+    public bool RoomMode
+    {
+        get
+        {
+            return _roomMode;
+        }
+        set
+        {
+            foreach (Floor f in floors)
+            {
+                f.SetRoomMode(value);
+            }
+            _roomMode = value;
+        }
+    }
 
-    // Start is called before the first frame update
+    public static ParcelationManager Instance { get; private set; }
     void Awake()
     {
+        if (Instance != null && Instance != this)
+            Destroy(this.gameObject);
+        else
+            Instance = this;
+
         for (int i = 0; i < transform.childCount; i++)
             Destroy(transform.GetChild(i));
 

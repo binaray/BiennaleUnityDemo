@@ -37,9 +37,19 @@ public class Floor : MonoBehaviour
         }
         for (int i = 0; i < roomUnitTypes.Count; i++)
         {
+            roomUnits[0].transform.GetChild(1).GetComponent<Renderer>().material.SetColor("_Color", unitColor[roomUnitTypes[i]]._Color);
             Renderer r = roomUnits[i].transform.GetChild(1).GetComponent<Renderer>();
             r.material.SetColor("_Color", unitColor[roomUnitTypes[i]]._Color);
             r.material.SetColor("_EmissionColor", unitColor[roomUnitTypes[i]]._EmissionColor);
+        }
+    }
+
+    public void SetRoomMode(bool b)
+    {
+        for (int i = 0; i < roomUnits.Count; i++)
+        {
+            roomUnits[i].transform.GetChild(0).gameObject.SetActive(b);
+            roomUnits[i].transform.GetChild(1).gameObject.SetActive(!b);
         }
     }
 }
