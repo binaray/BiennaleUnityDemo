@@ -11,7 +11,8 @@ public class UiCanvasManager : MonoBehaviour
         StartScreen,
         ParcelationVisScreen,
         MenuScreen,
-        CreateUnitScreen
+        CreateUnitScreen,
+        CongratulatoryScreen
     }
     [HideInInspector]
     public GameState currentState;
@@ -37,6 +38,7 @@ public class UiCanvasManager : MonoBehaviour
         switch (newBgState)
         {
             case GameState.ParcelationVisScreen:
+            case GameState.CongratulatoryScreen:
                 targetBlur = 0;
                 targetAdditive_Color = new Color(0, 0, 0);
                 targetMultiplyColor = new Color(1, 1, 1);
@@ -89,6 +91,8 @@ public class UiCanvasManager : MonoBehaviour
     private GameObject menuScreen;
     [SerializeField]
     private GameObject createUnitScreen;
+    [SerializeField]
+    private GameObject congratulatoryScreen;
 
     private bool transitionLock = false;
 
@@ -170,6 +174,16 @@ public class UiCanvasManager : MonoBehaviour
         createUnitScreen.SetActive(false);
     }
 
+    IEnumerator CongratulatoryScreenState()
+    {
+        congratulatoryScreen.SetActive(true);
+        while (currentState == GameState.CongratulatoryScreen)
+        {
+            yield return null;
+        }
+        congratulatoryScreen.SetActive(false);
+    }
+
     public void ChangeState(GameState newState)
     {
         if (transitionLock) return;
@@ -196,6 +210,11 @@ public class UiCanvasManager : MonoBehaviour
     public void CreateUnitScreen()
     {
         ChangeState(GameState.CreateUnitScreen);
+    }
+
+    public void CongratulatoryScreen()
+    {
+        ChangeState(GameState.CongratulatoryScreen);
     }
     
 }

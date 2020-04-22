@@ -231,7 +231,7 @@ public class CreateUnitScreen : MonoBehaviour
                     {
                         SelectedLivingArrangement = (LivingArrangement)tempInt;
                         //Debug.LogWarning(((LivingArrangement)tempInt).ToString());
-                        NextQuestion();
+                        //NextQuestion();
                     });
                     q0ButtonTranforms.Add(button);
                 }
@@ -244,7 +244,7 @@ public class CreateUnitScreen : MonoBehaviour
                     button.GetComponent<Button>().onClick.AddListener(() =>
                     {
                         SelectedAgeGroup = (AgeGroup)tempInt;
-                        NextQuestion();
+                        //NextQuestion();
                     });
                     q1ButtonTranforms.Add(button);
                 }
@@ -333,14 +333,14 @@ public class CreateUnitScreen : MonoBehaviour
                 }
                 break;
             case 5:
-                for (int i = 0; i < questions[questionNum].transform.childCount; i++)
+                for (int i = 0; i < questions[questionNum].transform.GetChild(1).childCount; i++)
                 {
                     int tempInt = i;
-                    Transform button = questions[questionNum].transform.GetChild(tempInt);
+                    Transform button = questions[questionNum].transform.GetChild(1).GetChild(tempInt);
                     button.GetComponent<Button>().onClick.AddListener(() =>
                     {
                         SelectedLocation = tempInt;
-                        NextQuestion();
+                        //NextQuestion();
                     });
                     q5ButtonTranforms.Add(button);
                 }
@@ -405,7 +405,7 @@ public class CreateUnitScreen : MonoBehaviour
         foreach (SharedSpace ss in SelectedSharedSpaces)
             userInput.preferredSharedSpaces.Add(ss.ToString());
         string inputJson = Newtonsoft.Json.JsonConvert.SerializeObject(userInput);
-        Debug.LogError(inputJson);
+        //Debug.LogError(inputJson);
         ConnectionManager.Instance.UploadUserInput(inputJson);
     }
 

@@ -10,20 +10,16 @@ public class ParcelationManager : MonoBehaviour
     float yOffset = 0.0454f;
     [SerializeField]
     int floorCount = 34;
-
-    private Dictionary<string, RoomUnitColor> roomUnitColor = new Dictionary<string, RoomUnitColor>()
-        {
-            { "0", new RoomUnitColor(new Color(1,0,0,0.5f),new Color(1,0,0)) },
-            { "1", new RoomUnitColor(new Color(0,1,0,0.5f),new Color(0,1,0)) },
-            { "2", new RoomUnitColor(new Color(0,0,1,0.5f),new Color(0,0,1)) },
-        };
-
+    
     //floors generated at runtime which index corresponds to level
     private List<Floor> floors = new List<Floor>();
 
     // Start is called before the first frame update
     void Awake()
     {
+        for (int i = 0; i < transform.childCount; i++)
+            Destroy(transform.GetChild(i));
+
         float yPos = 0;
 
         for (int i = 0; i < floorCount; i++)
@@ -33,12 +29,14 @@ public class ParcelationManager : MonoBehaviour
             o.transform.localPosition = new Vector3(0, yPos, 0);
             floors.Add(o.GetComponent<Floor>());
 
-            List<RoomUnitColor> roomUnitColors = new List<RoomUnitColor>();
+            List<int> roomUnitTypes = new List<int>();
             for (int j = 0; j < 16; j++)
             {
-                roomUnitColors.Add(roomUnitColor["0"]);
+                int t = j % Floor.unitColor.Count;
+                roomUnitTypes.Add(t);
+                print(t);
             }
-            floors[i].SetUnitColorArray(roomUnitColors);
+            floors[i].SetUnitArray(roomUnitTypes);
             yPos += yOffset;
         }        
     }
@@ -50,14 +48,3 @@ public class ParcelationManager : MonoBehaviour
     }
 }
 
-public class RoomUnitColor
-{
-    public Color _Color { get; set; }
-    public Color _EmissionColor { get; set; }
-
-    public RoomUnitColor(Color color, Color emissionColor)
-    {
-        _Color = color;
-        _EmissionColor = emissionColor;
-    }
-}

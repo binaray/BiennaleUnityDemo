@@ -69,6 +69,7 @@ public class ConnectionManager : MonoBehaviour
             //Debug.LogError(res.unitId);
             //Debug.LogError(res.state);
             //BuildingStateManager.Instance.UpdateBuildingState(res.state);
+            UiCanvasManager.Instance.CongratulatoryScreen();
         }));
     }
 
