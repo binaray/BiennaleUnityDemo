@@ -5,7 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/BiennaleScene.unity
     guid: 692e015f66d52450aab7bb96786c3004
+  - enabled: 1
+    path: Assets/Scenes/NoAR.unity
+    guid: cfcf64a5217d66d4284ec3ee9af93379
   m_configObjects: {}

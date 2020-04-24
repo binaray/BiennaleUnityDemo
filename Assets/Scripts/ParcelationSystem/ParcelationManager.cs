@@ -79,16 +79,14 @@ public class ParcelationManager : MonoBehaviour
             //List<string> data = new List<string>();
             for (int j = 0; j < 16; j++)
             {
-                float r = Random.value;
-                print(r);
-                if (r < bubbleSpanProb)
+                if (Random.value < bubbleSpanProb)
                 {
                     GameObject o = Instantiate(bubblePrefab);
                     o.transform.SetParent(floors[i].roomUnits[j].transform);
                     if (j < 8)
                     {
                         o.transform.localPosition = new Vector3(-0.316f, 0.132f, -0.111f);
-                        if (j==2 || j==3 || j == 7 || j == 8 || j == 12 || j == 13)
+                        if (j == 2 || j == 3 || j == 7 || j == 8 || j == 12 || j == 13) 
                             o.transform.localPosition = new Vector3(-0.316f, 0.132f, -0.189f);
                     }
                     else
