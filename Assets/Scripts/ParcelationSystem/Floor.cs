@@ -44,6 +44,14 @@ public class Floor : MonoBehaviour
         }
     }
 
+    public void SetBubbleArray(List<string> st)
+    {
+        for (int i = 0; i < roomUnits.Count; i++)
+        {
+
+        }
+    }
+
     public void SetRoomMode(bool b)
     {
         for (int i = 0; i < roomUnits.Count; i++)
