@@ -7,7 +7,9 @@ public class ParcelationManager : MonoBehaviour
     [SerializeField]
     private GameObject floorPrefab;
     [SerializeField]
-    private GameObject bubblePrefab;
+    private GameObject bubbleLeftPrefab;
+    [SerializeField]
+    private GameObject bubbleRightPrefab;
     [SerializeField]
     float yOffset = 0.0454f;
     [SerializeField]
@@ -81,21 +83,25 @@ public class ParcelationManager : MonoBehaviour
             {
                 if (Random.value < bubbleSpanProb)
                 {
-                    GameObject o = Instantiate(bubblePrefab);
-                    o.transform.SetParent(floors[i].roomUnits[j].transform);
+                    GameObject o;
                     if (j < 8)
                     {
-                        o.transform.localPosition = new Vector3(-0.316f, 0.132f, -0.111f);
-                        if (j == 2 || j == 3 || j == 7 || j == 8 || j == 12 || j == 13) 
-                            o.transform.localPosition = new Vector3(-0.316f, 0.132f, -0.189f);
+                        o = Instantiate(bubbleLeftPrefab);
+                        o.transform.SetParent(floors[i].roomUnits[j].transform);
+                        o.transform.localPosition = new Vector3(-0.112f, 0.062f, -0.111f);
+                        if (j == 2 || j == 3 || j == 7) 
+                            o.transform.localPosition = new Vector3(-0.112f, 0.062f, -0.189f);
                     }
                     else
                     {
-                        o.transform.localPosition = new Vector3(0.321f, 0.132f, -0.111f);
-                        if (j == 2 || j == 3 || j == 7 || j == 8 || j == 12 || j == 13)
-                            o.transform.localPosition = new Vector3(0.321f, 0.132f, -0.189f);
+                        print(string.Format("x={0} y={1}", j, i));
+                        o = Instantiate(bubbleRightPrefab);
+                        o.transform.SetParent(floors[i].roomUnits[j].transform);
+                        o.transform.localPosition = new Vector3(0.112f, 0.062f, -0.111f);
+                        if (j == 8 || j == 12 || j == 13)
+                            o.transform.localPosition = new Vector3(0.112f, 0.062f, -0.189f);
                     }
-                    o.transform.localRotation = Quaternion.Euler(0, 0, 0);
+                    o.transform.localRotation = Quaternion.Euler(-90, 0, 180);
                     o.GetComponent<Bubble>().SetText("Bob ran down the hill to catch snails.");                    
                 }
             }
