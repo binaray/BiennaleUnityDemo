@@ -529,6 +529,13 @@ public class CreateUnitScreen : MonoBehaviour
     {
         if (!transitionLock)
         {
+            if (newQuestionNum == 2 && skipQ2Flag)
+            {
+                if (currentQuestionNum < 2)
+                    newQuestionNum += 1;
+                else
+                    newQuestionNum -= 1;
+            }
             questionTextMesh.text = questionTexts[newQuestionNum];
             StartCoroutine(QuestionTransition(newQuestionNum));
             ToggleNav(newQuestionNum);
