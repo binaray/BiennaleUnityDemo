@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        UiCanvasManager.Instance.ChangeState(UiCanvasManager.GameState.StartScreen);
+        UiCanvasManager.Instance.StartScreen();
     }
 
     // Update is called once per frame

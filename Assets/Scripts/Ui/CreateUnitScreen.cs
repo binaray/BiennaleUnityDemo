@@ -423,6 +423,7 @@ public class CreateUnitScreen : MonoBehaviour
         string inputJson = Newtonsoft.Json.JsonConvert.SerializeObject(userInput);
         //Debug.LogError(inputJson);
         ConnectionManager.Instance.UploadUserInput(inputJson);
+        UiCanvasManager.Instance.CongratulatoryScreen();
     }
 
     void Refresh()

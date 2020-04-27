@@ -197,6 +197,11 @@ public class UiCanvasManager : MonoBehaviour
         Debug.Log("Current state: " + currentState);
     }
 
+    public void StartScreen()
+    {
+        ChangeState(GameState.StartScreen);
+    }
+
     public void ParcelationVisScreen()
     {
         ChangeState(GameState.ParcelationVisScreen);
