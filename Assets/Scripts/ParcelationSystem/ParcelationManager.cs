@@ -37,6 +37,15 @@ public class ParcelationManager : MonoBehaviour
     [SerializeField]
     private float generationTime = 5;
 
+    private static Color[] bubbleColors = 
+    {
+        new Color(0.031f, 0.612f, 0.533f),
+        new Color(0.643f, 0.137f, 0.506f),
+        new Color(1f, 0.773f, 0.235f),
+        new Color(0.922f, 0.329f, 0.467f),
+        new Color(0.388f, 0.647f, 0.329f)
+    };
+
     public static ParcelationManager Instance { get; private set; }
     void Awake()
     {
@@ -76,6 +85,7 @@ public class ParcelationManager : MonoBehaviour
 
     IEnumerator GenerateSpeechBubble()
     {
+        int colorSeed = Random.Range(0, bubbleColors.Length);
         for (int i = 0; i < floorCount; i++)
         {
             //List<string> data = new List<string>();
@@ -102,7 +112,10 @@ public class ParcelationManager : MonoBehaviour
                             o.transform.localPosition = new Vector3(0.112f, 0.062f, -0.189f);
                     }
                     o.transform.localRotation = Quaternion.Euler(-90, 0, 180);
-                    o.GetComponent<Bubble>().SetText("Bob ran down the hill to catch snails.");                    
+                    o.GetComponent<Bubble>().SetText("Bob ran down the hill to catch snails.");
+                    int c = colorSeed++ % bubbleColors.Length;
+                    o.GetComponent<Renderer>().material.SetColor("_Color", bubbleColors[c]);
+                    o.GetComponent<Renderer>().material.SetColor("_EmissionColor", bubbleColors[c]);
                 }
             }
             //floors[i].SetBubbleArray(data);
