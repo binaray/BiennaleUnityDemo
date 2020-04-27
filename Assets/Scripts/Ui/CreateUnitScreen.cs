@@ -43,6 +43,7 @@ public class CreateUnitScreen : MonoBehaviour
         { ButtonState.Selected, new Color(0, 0, 0, 1)},
         { ButtonState.Unselected, new Color(.75f, .75f, .75f, .5f)}
     };
+    private List<bool> isQuestionDone = new List<bool>();
 
     //q0 params
     private List<Transform> q0ButtonTranforms = new List<Transform>();
@@ -232,9 +233,12 @@ public class CreateUnitScreen : MonoBehaviour
                         SelectedLivingArrangement = (LivingArrangement)tempInt;
                         //Debug.LogWarning(((LivingArrangement)tempInt).ToString());
                         //NextQuestion();
+                        isQuestionDone[0] = true;
+                        ToggleNav(0);
                     });
                     q0ButtonTranforms.Add(button);
                 }
+                isQuestionDone.Add(false);
                 break;
             case 1:
                 for (int i = 0; i < questions[questionNum].transform.childCount; i++)
@@ -244,10 +248,13 @@ public class CreateUnitScreen : MonoBehaviour
                     button.GetComponent<Button>().onClick.AddListener(() =>
                     {
                         SelectedAgeGroup = (AgeGroup)tempInt;
+                        isQuestionDone[1] = true;
+                        ToggleNav(1);
                         //NextQuestion();
                     });
                     q1ButtonTranforms.Add(button);
                 }
+                isQuestionDone.Add(false);
                 break;
             case 2:
                 TMPro.TextMeshProUGUI txt = questions[questionNum].transform.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>();
@@ -258,20 +265,24 @@ public class CreateUnitScreen : MonoBehaviour
                     SelectedPax = (int)value;
                     Debug.LogWarning(string.Format("Selected pax: {0}", SelectedPax));
                 });
+                isQuestionDone.Add(true);
                 break;
             case 3:
                 buttonYes = questions[questionNum].transform.GetChild(0);
                 buttonYes.GetComponent<Button>().onClick.AddListener(() =>
                 {
                     SelectedAffordable = ButtonState.Selected;
+                    isQuestionDone[3] = true;
                     NextQuestion();
                 });
                 buttonNo = questions[questionNum].transform.GetChild(1);
                 buttonNo.GetComponent<Button>().onClick.AddListener(() =>
                 {
                     SelectedAffordable = ButtonState.Unselected;
+                    isQuestionDone[3] = true;
                     NextQuestion();
                 });
+                isQuestionDone.Add(false);
                 break;
             case 4:
                 {
@@ -331,6 +342,7 @@ public class CreateUnitScreen : MonoBehaviour
                         SelectedRequiredRooms[RequiredRooms.Study] = value;
                     });
                 }
+                isQuestionDone.Add(true);
                 break;
             case 5:
                 for (int i = 0; i < questions[questionNum].transform.GetChild(1).childCount; i++)
@@ -340,10 +352,13 @@ public class CreateUnitScreen : MonoBehaviour
                     button.GetComponent<Button>().onClick.AddListener(() =>
                     {
                         SelectedLocation = tempInt;
+                        isQuestionDone[5] = true;
+                        ToggleNav(5);
                         //NextQuestion();
                     });
                     q5ButtonTranforms.Add(button);
                 }
+                isQuestionDone.Add(false);
                 break;
             case 6:
                 for (int i = 0; i < questions[questionNum].transform.childCount; i++)
@@ -368,6 +383,7 @@ public class CreateUnitScreen : MonoBehaviour
                     });
                     q6ButtonTransforms.Add(button);
                 }
+                isQuestionDone.Add(true);
                 break;
             default:
                 break;
@@ -415,6 +431,10 @@ public class CreateUnitScreen : MonoBehaviour
         for (int i = 0; i < questions.Count; i++)
         {
             questions[i].SetActive(false);
+            if (i == 2 || i == 4 || i == 6)
+                isQuestionDone[i] = true;
+            else
+                isQuestionDone[i] = false;
         }
         SelectedLivingArrangement = LivingArrangement.None;
         SelectedAgeGroup = AgeGroup.None;
@@ -456,12 +476,9 @@ public class CreateUnitScreen : MonoBehaviour
             txt.SetActive(false);
     }
 
-    void ChangeQuestion(int newQuestionNum)
+    void ToggleNav(int newQuestionNum)
     {
-        if (!transitionLock)
-        {
-            questionTextMesh.text = questionTexts[newQuestionNum];
-            StartCoroutine(QuestionTransition(newQuestionNum));
+        if (isQuestionDone[newQuestionNum])
             if (newQuestionNum < 1)
             {
                 nextButton.localPosition = new Vector3(0, 0, 0);
@@ -484,6 +501,37 @@ public class CreateUnitScreen : MonoBehaviour
                 prevButton.gameObject.SetActive(true);
                 submitButton.gameObject.SetActive(true);
             }
+        else
+            if (newQuestionNum < 1)
+            {
+                nextButton.gameObject.SetActive(false);
+                prevButton.gameObject.SetActive(false);
+                submitButton.gameObject.SetActive(false);
+            }
+            else if (newQuestionNum < questionCount - 1)
+            {
+                prevButton.localPosition = new Vector3(0, 0, 0);
+                nextButton.gameObject.SetActive(false);
+                prevButton.gameObject.SetActive(true);
+                submitButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                prevButton.localPosition = new Vector3(0, 0, 0);
+                nextButton.gameObject.SetActive(false);
+                prevButton.gameObject.SetActive(true);
+                submitButton.gameObject.SetActive(false);
+            }
+
+    }
+
+    void ChangeQuestion(int newQuestionNum)
+    {
+        if (!transitionLock)
+        {
+            questionTextMesh.text = questionTexts[newQuestionNum];
+            StartCoroutine(QuestionTransition(newQuestionNum));
+            ToggleNav(newQuestionNum);
             //Debug.LogWarning("single: "+ SelectedRequiredRooms[RequiredRooms.SingleBedroom]);
             //Debug.LogWarning("shared: " + SelectedRequiredRooms[RequiredRooms.SharedBedroom]);
             //Debug.LogWarning("study:  " + SelectedRequiredRooms[RequiredRooms.Study]);
