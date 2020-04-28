@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Firework : MonoBehaviour
 {
+    [SerializeField]
     GameObject flare;
+    [SerializeField]
     GameObject sparkles;
     public bool stopFun = false;
 
@@ -26,7 +28,7 @@ public class Firework : MonoBehaviour
         ParticleSystem p = f.GetComponent<ParticleSystem>();
         p.startSize = size;
         p.Play();
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1.8f);
         Destroy(f);
 
         GameObject s = Instantiate(sparkles, transform);
@@ -36,6 +38,6 @@ public class Firework : MonoBehaviour
         yield return new WaitForSeconds(Random.Range(3f, 6f));
         Destroy(s);
         if (!stopFun)
-            BANGPARAPARA();
+            StartCoroutine(BANGPARAPARA());
     }
 }
