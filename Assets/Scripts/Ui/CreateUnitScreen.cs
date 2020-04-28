@@ -46,6 +46,17 @@ public class CreateUnitScreen : MonoBehaviour
     private List<bool> isQuestionDone = new List<bool>();
 
     //q0 params
+    private static string[] cohabitationSt =
+    {
+        "Single",
+        "Couple without children",
+        "Single Parent family",
+        "Nuclear family",
+        "Assisted Living",
+        "Flatshare / Co-housing",
+        "Multi-generational / Extended family"
+    };
+    TMPro.TextMeshProUGUI q0StDisp;
     private List<Transform> q0ButtonTranforms = new List<Transform>();
     private LivingArrangement _selectedLivingArrangement;
     public LivingArrangement SelectedLivingArrangement {
@@ -57,16 +68,25 @@ public class CreateUnitScreen : MonoBehaviour
         {
             //Debug.LogWarning(((LivingArrangement)value).ToString());
             if (value != LivingArrangement.None)
+            {
                 for (int i = 0; i < q0ButtonTranforms.Count; i++)
                 {
                     if (i == (int)value)
+                    {
+                        print("lv =" + value.ToString());
                         SetButtonState(q0ButtonTranforms[i], ButtonState.Selected);
+                        q0StDisp.text = cohabitationSt[i];
+                    }
                     else
                         SetButtonState(q0ButtonTranforms[i], ButtonState.Unselected);
                 }
+            }
             else
+            {
+                q0StDisp.text = "";
                 foreach (Transform button in q0ButtonTranforms)
                     SetButtonState(button, ButtonState.None);
+            }
             switch (value)
             {
                 case LivingArrangement.Single:
@@ -224,13 +244,14 @@ public class CreateUnitScreen : MonoBehaviour
         switch (questionNum)
         {
             case 0:
-                for (int i = 0; i < questions[questionNum].transform.childCount; i++)
+                q0StDisp = questions[questionNum].transform.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>();
+                for (int i = 1; i < questions[questionNum].transform.childCount; i++)
                 {
                     int tempInt = i;
                     Transform button = questions[questionNum].transform.GetChild(tempInt);
                     button.GetComponent<Button>().onClick.AddListener(() =>
                     {
-                        SelectedLivingArrangement = (LivingArrangement)tempInt;
+                        SelectedLivingArrangement = (LivingArrangement)(tempInt-1);
                         //Debug.LogWarning(((LivingArrangement)tempInt).ToString());
                         //NextQuestion();
                         isQuestionDone[0] = true;
@@ -467,14 +488,15 @@ public class CreateUnitScreen : MonoBehaviour
 
     private void SetButtonState(Transform button, ButtonState state)
     {
+        print("state changed!");
         RawImage img = button.GetChild(0).GetComponent<RawImage>();
-        GameObject txt = button.GetChild(1).gameObject;
-
+        //GameObject txt = button.GetChild(1).gameObject;
+        print(img);
         img.color = buttonStateColors[state];
-        if (state == ButtonState.Selected)
-            txt.SetActive(true);
-        else
-            txt.SetActive(false);
+        //if (state == ButtonState.Selected)
+        //    txt.SetActive(true);
+        //else
+        //    txt.SetActive(false);
     }
 
     void ToggleNav(int newQuestionNum)

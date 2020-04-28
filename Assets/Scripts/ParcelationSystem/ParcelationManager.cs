@@ -104,7 +104,7 @@ public class ParcelationManager : MonoBehaviour
                     }
                     else
                     {
-                        print(string.Format("x={0} y={1}", j, i));
+                        //print(string.Format("x={0} y={1}", j, i));
                         o = Instantiate(bubbleRightPrefab);
                         o.transform.SetParent(floors[i].roomUnits[j].transform);
                         o.transform.localPosition = new Vector3(0.112f, 0.062f, -0.111f);
