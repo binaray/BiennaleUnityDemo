@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ParcelationManager : MonoBehaviour
@@ -36,6 +37,8 @@ public class ParcelationManager : MonoBehaviour
     private float bubbleSpanProb = 0.1f;
     [SerializeField]
     private float generationTime = 5;
+
+    private Dictionary<int, BuildingUnit> currentBuildingState = new Dictionary<int, BuildingUnit>();
 
     private static Color[] bubbleColors = 
     {
@@ -81,6 +84,7 @@ public class ParcelationManager : MonoBehaviour
     private void Start()
     {
         StartCoroutine(GenerateSpeechBubble());
+        UpdateParcelation();
     }
 
     IEnumerator GenerateSpeechBubble()
@@ -125,10 +129,79 @@ public class ParcelationManager : MonoBehaviour
         StartCoroutine(GenerateSpeechBubble());
     }
 
-    // Update is called once per frame
-    void Update()
+    public void UpdateParcelation()
     {
-        
+        List<BuildingUnit> l = new List<BuildingUnit>();
+        //generate test data
+        for (int i = 0; i < 4; i++)
+        {
+            BuildingUnit u = new BuildingUnit(i, i, i, 3, "Single");
+            l.Add(u);
+        }
+        Dictionary<int, BuildingUnit> newState = l.ToDictionary(u => u.index, u => u);
+
+        HashSet<int> newKeys = new HashSet<int>(newState.Keys);
+        HashSet<int> oldKeys = new HashSet<int>(currentBuildingState.Keys);
+        HashSet<int> toModify = new HashSet<int>(oldKeys);
+
+        //Delete
+        toModify.ExceptWith(newKeys);
+        foreach(int k in toModify)
+        {
+            int i = currentBuildingState[k].location[0];
+            int j = currentBuildingState[k].location[1];
+            floors[i].DeleteUnit(currentBuildingState[k]);
+        }
+
+        //Check and Edit
+        toModify = new HashSet<int>(newKeys);
+        toModify.IntersectWith(oldKeys);
+        foreach (int k in toModify)
+        {
+            int i_o = currentBuildingState[k].location[0];
+            int j_o = currentBuildingState[k].location[1];
+            int i_n = newState[k].location[0];
+            int j_n = newState[k].location[1];
+
+            if (i_n != i_o || j_n != j_o || newState[k].roomCount != currentBuildingState[k].roomCount)
+            {
+                floors[i_o].DeleteUnit(currentBuildingState[k]);
+                floors[i_n].AddUnit(newState[k]);
+            }
+        }
+
+        //New insertion
+        toModify = new HashSet<int>(newKeys);
+        toModify.ExceptWith(oldKeys);
+        foreach (int k in toModify)
+        {
+            int i = newState[k].location[0];
+            int j = newState[k].location[1];
+            floors[i].AddUnit(newState[k]);
+        }
+
+        currentBuildingState = newState;
     }
 }
 
+[System.Serializable]
+public class BuildingUnit
+{
+    public int index;
+    public int[] location = { -1, -1 };
+    public int roomCount = -1;
+    public string type = "";
+
+    public BuildingUnit()
+    {
+
+    }
+    public BuildingUnit(int index, int row, int col, int roomCount, string type)
+    {
+        this.index = index;
+        location[0] = row;
+        location[1] = col;
+        this.roomCount = roomCount;
+        this.type = type;
+    }
+}

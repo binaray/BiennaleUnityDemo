@@ -28,6 +28,44 @@ public class Floor : MonoBehaviour
         
     }
 
+    public void DeleteUnit(BuildingUnit u)
+    {
+        int j = u.location[1];
+        for (int x = 0; x < u.roomCount; x++)
+        {
+            roomUnits[j + x].SetActive(false);
+        }
+    }
+
+    public void AddUnit(BuildingUnit u)
+    {
+        int j = u.location[1];
+        int unitTypeIndex;
+        
+        if (System.Enum.TryParse(u.type, out LivingArrangement lv))
+        {
+            unitTypeIndex = (int)lv;
+        }
+        else
+        {
+            if (System.Enum.TryParse(u.type, out SharedSpace ss))
+                unitTypeIndex = (int)ss;
+            else
+                unitTypeIndex = -1;
+        }
+
+        for (int x = 0; x < u.roomCount; x++)
+        {
+            int col = j + x;
+            roomUnits[col].SetActive(true);
+            Renderer r = roomUnits[col].transform.GetChild(1).GetComponent<Renderer>();
+            r.material.SetColor("_Color", unitColor[unitTypeIndex]._Color);
+            r.material.SetColor("_EmissionColor", unitColor[unitTypeIndex]._EmissionColor);
+            roomUnits[col].transform.GetChild(2).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/UI/add");
+        }
+    }
+
+    //To be deprecated- use add delete-edit-add unit instead
     public void SetUnitArray(List<int> roomUnitTypes)
     {
         if (roomUnitTypes.Count != roomUnits.Count)
@@ -37,20 +75,14 @@ public class Floor : MonoBehaviour
         }
         for (int i = 0; i < roomUnitTypes.Count; i++)
         {
-            roomUnits[0].transform.GetChild(1).GetComponent<Renderer>().material.SetColor("_Color", unitColor[roomUnitTypes[i]]._Color);
+            //roomUnits[0].transform.GetChild(1).GetComponent<Renderer>().material.SetColor("_Color", unitColor[roomUnitTypes[i]]._Color);
             Renderer r = roomUnits[i].transform.GetChild(1).GetComponent<Renderer>();
             r.material.SetColor("_Color", unitColor[roomUnitTypes[i]]._Color);
             r.material.SetColor("_EmissionColor", unitColor[roomUnitTypes[i]]._EmissionColor);
         }
     }
+    
 
-    public void SetBubbleArray(List<string> st)
-    {
-        for (int i = 0; i < roomUnits.Count; i++)
-        {
-
-        }
-    }
 
     public void SetRoomMode(bool b)
     {
