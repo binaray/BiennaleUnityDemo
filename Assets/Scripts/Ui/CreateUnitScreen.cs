@@ -294,14 +294,14 @@ public class CreateUnitScreen : MonoBehaviour
                 {
                     SelectedAffordable = ButtonState.Selected;
                     isQuestionDone[3] = true;
-                    NextQuestion();
+                    //NextQuestion();
                 });
                 buttonNo = questions[questionNum].transform.GetChild(1);
                 buttonNo.GetComponent<Button>().onClick.AddListener(() =>
                 {
                     SelectedAffordable = ButtonState.Unselected;
                     isQuestionDone[3] = true;
-                    NextQuestion();
+                    //NextQuestion();
                 });
                 isQuestionDone.Add(false);
                 break;
