@@ -15,7 +15,7 @@ public class ParcelationVisScreen : MonoBehaviour
         toggleOff = Resources.Load<Texture2D>("Sprites/UI/toggle-off");
         toggleOn = Resources.Load<Texture2D>("Sprites/UI/toggle-on");
 
-        ParcelationManager.Instance.RoomMode = false;
+        //ParcelationManager.Instance.RoomMode = false;
         RawImage toggleImage = toggleButtonTransform.GetChild(0).GetComponent<RawImage>();
         TMPro.TextMeshProUGUI toggleText = toggleButtonTransform.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>();
         toggleImage.texture = toggleOff;
@@ -24,7 +24,7 @@ public class ParcelationVisScreen : MonoBehaviour
 
     public void ToggleRoomMode()
     {
-        ParcelationManager.Instance.RoomMode = !ParcelationManager.Instance.RoomMode;
+        //ParcelationManager.Instance.RoomMode = !ParcelationManager.Instance.RoomMode;
         RawImage toggleImage = toggleButtonTransform.GetChild(0).GetComponent<RawImage>();
         TMPro.TextMeshProUGUI toggleText = toggleButtonTransform.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>();
         if (ParcelationManager.Instance.RoomMode)

@@ -48,6 +48,8 @@ public class ParcelationManager : MonoBehaviour
         new Color(0.922f, 0.329f, 0.467f),
         new Color(0.388f, 0.647f, 0.329f)
     };
+    
+    public static List<Sprite> sprites = new List<Sprite>();
 
     public static ParcelationManager Instance { get; private set; }
     void Awake()
@@ -62,6 +64,12 @@ public class ParcelationManager : MonoBehaviour
 
         float yPos = 0;
 
+        for (int i = 0; i < 9; i++)
+        {
+            string str = "Sprites/Parcelation/" + (i).ToString();
+            sprites.Add(Resources.Load<Sprite>(str));
+        }
+
         for (int i = 0; i < floorCount; i++)
         {
             GameObject o = Instantiate(floorPrefab);
@@ -72,7 +80,7 @@ public class ParcelationManager : MonoBehaviour
             //List<int> roomUnitTypes = new List<int>();
             //for (int j = 0; j < 16; j++)
             //{
-            //    int t = j % Floor.unitColor.Count;
+            //    int t = j % 7;
             //    roomUnitTypes.Add(t);
             //    print(t);
             //}
@@ -85,6 +93,7 @@ public class ParcelationManager : MonoBehaviour
 
     private void Start()
     {
+        //TODO: running check
         StartCoroutine(GenerateSpeechBubble());
         UpdateParcelation();
     }
@@ -131,6 +140,15 @@ public class ParcelationManager : MonoBehaviour
         StartCoroutine(GenerateSpeechBubble());
     }
 
+    IEnumerator UpdateParcelationSprites()
+    {
+        foreach (BuildingUnit u in currentBuildingState.Values)
+        {
+            floors[u.location[0]].RandomizeUnitSprite(u);
+        }
+        yield return null;
+    }
+
     public void UpdateParcelation()
     {
         List<BuildingUnit> l = new List<BuildingUnit>();
@@ -140,6 +158,12 @@ public class ParcelationManager : MonoBehaviour
             BuildingUnit u = new BuildingUnit(i, i, i, 3, "Single");
             l.Add(u);
         }
+        for (int i = 0; i < 6; i++)
+        {
+            BuildingUnit u = new BuildingUnit(i+4, i+7, i, 6, "CoupleWoChildren");
+            l.Add(u);
+        }
+
         Dictionary<int, BuildingUnit> newState = l.ToDictionary(u => u.index, u => u);
 
         HashSet<int> newKeys = new HashSet<int>(newState.Keys);
@@ -183,7 +207,7 @@ public class ParcelationManager : MonoBehaviour
         }
 
         currentBuildingState = newState;
-        Debug.LogWarning(currentBuildingState);
+        StartCoroutine(UpdateParcelationSprites());
     }
 }
 
