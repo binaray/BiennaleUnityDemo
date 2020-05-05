@@ -69,14 +69,16 @@ public class ParcelationManager : MonoBehaviour
             o.transform.localPosition = new Vector3(0, yPos, 0);
             floors.Add(o.GetComponent<Floor>());
 
-            List<int> roomUnitTypes = new List<int>();
-            for (int j = 0; j < 16; j++)
-            {
-                int t = j % Floor.unitColor.Count;
-                roomUnitTypes.Add(t);
-                print(t);
-            }
-            floors[i].SetUnitArray(roomUnitTypes);
+            //List<int> roomUnitTypes = new List<int>();
+            //for (int j = 0; j < 16; j++)
+            //{
+            //    int t = j % Floor.unitColor.Count;
+            //    roomUnitTypes.Add(t);
+            //    print(t);
+            //}
+            //floors[i].SetUnitArray(roomUnitTypes);
+            floors[i].SetEmptyState();
+
             yPos += yOffset;
         }        
     }
@@ -181,6 +183,7 @@ public class ParcelationManager : MonoBehaviour
         }
 
         currentBuildingState = newState;
+        Debug.LogWarning(currentBuildingState);
     }
 }
 

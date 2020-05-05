@@ -28,6 +28,14 @@ public class Floor : MonoBehaviour
         
     }
 
+    public void SetEmptyState()
+    {
+        foreach (GameObject o in roomUnits)
+        {
+            o.SetActive(false);
+        }
+    }
+
     public void DeleteUnit(BuildingUnit u)
     {
         int j = u.location[1];
@@ -61,7 +69,10 @@ public class Floor : MonoBehaviour
             Renderer r = roomUnits[col].transform.GetChild(1).GetComponent<Renderer>();
             r.material.SetColor("_Color", unitColor[unitTypeIndex]._Color);
             r.material.SetColor("_EmissionColor", unitColor[unitTypeIndex]._EmissionColor);
-            roomUnits[col].transform.GetChild(2).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/UI/add");
+            r.material.renderQueue = 3002;
+            SpriteRenderer s = roomUnits[col].transform.GetChild(2).GetComponent<SpriteRenderer>();
+            s.sprite = Resources.Load<Sprite>("Sprites/UI/add");
+            s.material.renderQueue = 3002;
         }
     }
 
@@ -86,10 +97,11 @@ public class Floor : MonoBehaviour
 
     public void SetRoomMode(bool b)
     {
-        for (int i = 0; i < roomUnits.Count; i++)
+        foreach (GameObject o in roomUnits)
         {
-            roomUnits[i].transform.GetChild(0).gameObject.SetActive(b);
-            roomUnits[i].transform.GetChild(1).gameObject.SetActive(!b);
+            o.transform.GetChild(0).gameObject.SetActive(b);
+            o.transform.GetChild(1).gameObject.SetActive(!b);
+            o.transform.GetChild(2).gameObject.SetActive(!b);
         }
     }
 }
