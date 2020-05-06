@@ -48,7 +48,9 @@ public class ParcelationManager : MonoBehaviour
         new Color(0.922f, 0.329f, 0.467f),
         new Color(0.388f, 0.647f, 0.329f)
     };
-    
+
+    [SerializeField]
+    private float spriteUpdateTime = 1f;
     public static List<Sprite> sprites = new List<Sprite>();
 
     public static ParcelationManager Instance { get; private set; }
@@ -95,6 +97,7 @@ public class ParcelationManager : MonoBehaviour
     {
         //TODO: running check
         StartCoroutine(GenerateSpeechBubble());
+        StartCoroutine(UpdateParcelationSprites());
         UpdateParcelation();
     }
 
@@ -146,7 +149,8 @@ public class ParcelationManager : MonoBehaviour
         {
             floors[u.location[0]].RandomizeUnitSprite(u);
         }
-        yield return null;
+        yield return new WaitForSeconds(spriteUpdateTime);
+        StartCoroutine(UpdateParcelationSprites());
     }
 
     public void UpdateParcelation()
@@ -207,7 +211,6 @@ public class ParcelationManager : MonoBehaviour
         }
 
         currentBuildingState = newState;
-        StartCoroutine(UpdateParcelationSprites());
     }
 }
 
