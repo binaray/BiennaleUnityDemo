@@ -54,6 +54,7 @@ public class ConnectionManager : MonoBehaviour
                 {
                     Debug.LogWarning(u.ToString());
                 }
+                ParcelationManager.Instance.UpdateParcelation(newState);
             }
             isConnecting = false;
         }

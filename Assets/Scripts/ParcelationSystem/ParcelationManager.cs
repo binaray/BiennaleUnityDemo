@@ -38,7 +38,7 @@ public class ParcelationManager : MonoBehaviour
     [SerializeField]
     private float generationTime = 5;
 
-    private Dictionary<int, BuildingUnit> currentBuildingState = new Dictionary<int, BuildingUnit>();
+    private Dictionary<double, BuildingUnit> currentBuildingState = new Dictionary<double, BuildingUnit>();
 
     private static Color[] bubbleColors = 
     {
@@ -153,65 +153,73 @@ public class ParcelationManager : MonoBehaviour
     //    StartCoroutine(UpdateParcelationSprites());
     //}
 
-    //public void UpdateParcelation()
-    //{
-    //    List<BuildingUnit> l = new List<BuildingUnit>();
-    //    //generate test data
-    //    for (int i = 0; i < 4; i++)
-    //    {
-    //        BuildingUnit u = new BuildingUnit(i, i, i, 3, "Single");
-    //        l.Add(u);
-    //    }
-    //    for (int i = 0; i < 6; i++)
-    //    {
-    //        BuildingUnit u = new BuildingUnit(i+4, i+7, i, 6, "CoupleWoChildren");
-    //        l.Add(u);
-    //    }
+    public void UpdateParcelation(List<BuildingUnit> l)
+    {
+        //List<BuildingUnit> l = new List<BuildingUnit>();
+        ////generate test data
+        //for (int i = 0; i < 4; i++)
+        //{
+        //    BuildingUnit u = new BuildingUnit(i, i, i, 3, "Single");
+        //    l.Add(u);
+        //}
+        //for (int i = 0; i < 6; i++)
+        //{
+        //    BuildingUnit u = new BuildingUnit(i+4, i+7, i, 6, "CoupleWoChildren");
+        //    l.Add(u);
+        //}
 
-    //    Dictionary<int, BuildingUnit> newState = l.ToDictionary(u => u.index, u => u);
+        Dictionary<double, BuildingUnit> newState = new Dictionary<double, BuildingUnit>();
+        foreach (BuildingUnit u in l)
+        {
+            while (newState.ContainsKey(u.user_id))
+            {
+                u.user_id += 0.01;
+            }
+            newState.Add(u.user_id, u);
+        }
+        
+        HashSet<double> newKeys = new HashSet<double>(newState.Keys);
+        HashSet<double> oldKeys = new HashSet<double>(currentBuildingState.Keys);
+        HashSet<double> toModify = new HashSet<double>(oldKeys);
 
-    //    HashSet<int> newKeys = new HashSet<int>(newState.Keys);
-    //    HashSet<int> oldKeys = new HashSet<int>(currentBuildingState.Keys);
-    //    HashSet<int> toModify = new HashSet<int>(oldKeys);
+        //Delete
+        toModify.ExceptWith(newKeys);
+        foreach(double k in toModify)
+        {
+            int i = currentBuildingState[k].floor;
+            int j = currentBuildingState[k].loc[0];
+            floors[i].DeleteUnit(currentBuildingState[k]);
+        }
 
-    //    //Delete
-    //    toModify.ExceptWith(newKeys);
-    //    foreach(int k in toModify)
-    //    {
-    //        int i = (int) currentBuildingState[k].loc[0];
-    //        int j = ((int[]) currentBuildingState[k].loc[1])[0];
-    //        floors[i].DeleteUnit(currentBuildingState[k]);
-    //    }
+        //Check and Edit
+        toModify = new HashSet<double>(newKeys);
+        toModify.IntersectWith(oldKeys);
+        foreach (double k in toModify)
+        {
+            int i_o = currentBuildingState[k].floor;
+            int j_o = currentBuildingState[k].loc[0];
+            int i_n = newState[k].floor;
+            int j_n = newState[k].loc[0];
 
-    //    //Check and Edit
-    //    toModify = new HashSet<int>(newKeys);
-    //    toModify.IntersectWith(oldKeys);
-    //    foreach (int k in toModify)
-    //    {
-    //        int i_o = (int) currentBuildingState[k].loc[0];
-    //        int j_o = ((int[]) currentBuildingState[k].loc[1])[0];
-    //        int i_n = (int) newState[k].loc[0];
-    //        int j_n = ((int[]) newState[k].loc[1])[0];
+            if (i_n != i_o || j_n != j_o || newState[k].loc[1] != currentBuildingState[k].loc[1])
+            {
+                floors[i_o].DeleteUnit(currentBuildingState[k]);
+                floors[i_n].AddUnit(newState[k]);
+            }
+        }
 
-    //        if (i_n != i_o || j_n != j_o || newState[k].roomCount != currentBuildingState[k].roomCount)
-    //        {
-    //            floors[i_o].DeleteUnit(currentBuildingState[k]);
-    //            floors[i_n].AddUnit(newState[k]);
-    //        }
-    //    }
+        //New insertion
+        toModify = new HashSet<double>(newKeys);
+        toModify.ExceptWith(oldKeys);
+        foreach (double k in toModify)
+        {
+            int i = newState[k].floor;
+            int j = newState[k].loc[0];
+            floors[i].AddUnit(newState[k]);
+        }
 
-    //    //New insertion
-    //    toModify = new HashSet<int>(newKeys);
-    //    toModify.ExceptWith(oldKeys);
-    //    foreach (int k in toModify)
-    //    {
-    //        int i = (int) newState[k].loc[0];
-    //        int j = ((int[])newState[k].loc[1])[0];
-    //        floors[i].AddUnit(newState[k]);
-    //    }
-
-    //    currentBuildingState = newState;
-    //}
+        currentBuildingState = newState;
+    }
 }
 
 [System.Serializable]

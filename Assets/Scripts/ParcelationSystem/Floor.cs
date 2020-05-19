@@ -73,42 +73,42 @@ public class Floor : MonoBehaviour
         }
     }
 
-    //public void DeleteUnit(BuildingUnit u)
-    //{
-    //    int j = u.location[1];
-    //    for (int x = 0; x < u.roomCount; x++)
-    //    {
-    //        roomUnits[j + x].SetActive(false);
-    //    }
-    //}
+    public void DeleteUnit(BuildingUnit u)
+    {
+        int j = u.loc[0];
+        for (int x = 0; x <= u.loc[1]; x++)
+        {
+            roomUnits[j + x].SetActive(false);
+        }
+    }
 
-    //public void AddUnit(BuildingUnit u)
-    //{
-    //    int j = u.location[1];
-    //    int unitTypeIndex;
-        
-    //    if (System.Enum.TryParse(u.type, out LivingArrangement lv))
-    //    {
-    //        unitTypeIndex = (int)lv;
-    //    }
-    //    else
-    //    {
-    //        if (System.Enum.TryParse(u.type, out SharedSpace ss))
-    //            unitTypeIndex = (int)ss;
-    //        else
-    //            unitTypeIndex = -1;
-    //    }
-    //    //TODO: handle shared spaces
-    //    for (int x = 0; x < u.roomCount; x++)
-    //    {
-    //        int col = j + x;
-    //        roomUnits[col].SetActive(true);
-    //        Renderer r = roomUnits[col].transform.GetChild(1).GetComponent<Renderer>();
-    //        r.material.SetColor("_Color", unitType[unitTypeIndex]._Color);
-    //        r.material.SetColor("_EmissionColor", unitType[unitTypeIndex]._EmissionColor);
-    //        r.material.renderQueue = 3002;
-    //    }
-    //}
+    public void AddUnit(BuildingUnit u)
+    {
+        int j = u.loc[0];
+        int unitTypeIndex;
+
+        if (System.Enum.TryParse(u.type, out LivingArrangement lv))
+        {
+            unitTypeIndex = (int)lv;
+        }
+        else
+        {
+            if (System.Enum.TryParse(u.type, out SharedSpace ss))
+                unitTypeIndex = (int)ss;
+            else
+                unitTypeIndex = -1;
+        }
+        //TODO: handle shared spaces
+        for (int x = 0; x <= u.loc[1]; x++)
+        {
+            int col = j + x;
+            roomUnits[col].SetActive(true);
+            Renderer r = roomUnits[col].transform.GetChild(1).GetComponent<Renderer>();
+            r.material.SetColor("_Color", unitType[unitTypeIndex]._Color);
+            r.material.SetColor("_EmissionColor", unitType[unitTypeIndex]._EmissionColor);
+            r.material.renderQueue = 3002;
+        }
+    }
 
     //To be deprecated- use add delete-edit-add unit instead
     public void SetUnitArray(List<int> roomUnitTypes)
