@@ -97,7 +97,7 @@ public class ParcelationManager : MonoBehaviour
     {
         //TODO: running check
         StartCoroutine(GenerateSpeechBubble());
-        //StartCoroutine(UpdateParcelationSprites());
+        StartCoroutine(UpdateParcelationSprites());
         //UpdateParcelation();
     }
 
@@ -143,15 +143,15 @@ public class ParcelationManager : MonoBehaviour
         StartCoroutine(GenerateSpeechBubble());
     }
 
-    //IEnumerator UpdateParcelationSprites()
-    //{
-    //    foreach (BuildingUnit u in currentBuildingState.Values)
-    //    {
-    //        floors[u.location[0]].RandomizeUnitSprite(u);
-    //    }
-    //    yield return new WaitForSeconds(spriteUpdateTime);
-    //    StartCoroutine(UpdateParcelationSprites());
-    //}
+    IEnumerator UpdateParcelationSprites()
+    {
+        foreach (BuildingUnit u in currentBuildingState.Values)
+        {
+            floors[u.floor].RandomizeUnitSprite(u);
+        }
+        yield return new WaitForSeconds(spriteUpdateTime);
+        StartCoroutine(UpdateParcelationSprites());
+    }
 
     public void UpdateParcelation(List<BuildingUnit> l)
     {

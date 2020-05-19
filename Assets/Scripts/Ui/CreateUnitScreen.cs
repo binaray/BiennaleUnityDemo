@@ -438,14 +438,15 @@ public class CreateUnitScreen : MonoBehaviour
         userInput.requiredRooms[RequiredRooms.SharedBedroom.ToString()] = SelectedRequiredRooms[RequiredRooms.SharedBedroom];
         userInput.requiredRooms[RequiredRooms.Study.ToString()] = SelectedRequiredRooms[RequiredRooms.Study];
         int row = SelectedLocation / colSt.Length;
-        int col = SelectedLocation - row * colSt.Length + 1;
+        int col = SelectedLocation - row * colSt.Length;
+        //print(string.Format("[{0},{1}]", row, col));
         userInput.location[0] = rowSt[row]; //row
         userInput.location[1] = colSt[col]; //col
         foreach (SharedSpace ss in SelectedSharedSpaces)
             userInput.preferredSharedSpaces.Add(ss.ToString());
         string inputJson = Newtonsoft.Json.JsonConvert.SerializeObject(userInput);
         ConnectionManager.Instance.UploadUserInput(inputJson);
-        UiCanvasManager.Instance.CongratulatoryScreen();
+        //UiCanvasManager.Instance.CongratulatoryScreen();
     }
 
     void Refresh()
