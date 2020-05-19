@@ -192,8 +192,8 @@ public class CreateUnitScreen : MonoBehaviour
 
     //q5 params
     //int rowCount = 4, colCount = 3;
-    string[] rowSt = { "1-8","9-16","17-24","25-34" };
-    string[] colSt = { "left", "mid", "right" };
+    string[] rowSt = { "0","1","2","3" };
+    string[] colSt = { "0", "1", "2" };
     List<Transform> q5ButtonTranforms = new List<Transform>();
     private int _selectedLocation;
     public int SelectedLocation {
@@ -294,6 +294,7 @@ public class CreateUnitScreen : MonoBehaviour
                 {
                     SelectedAffordable = ButtonState.Selected;
                     isQuestionDone[3] = true;
+                    ToggleNav(3);
                     //NextQuestion();
                 });
                 buttonNo = questions[questionNum].transform.GetChild(1);
@@ -301,6 +302,7 @@ public class CreateUnitScreen : MonoBehaviour
                 {
                     SelectedAffordable = ButtonState.Unselected;
                     isQuestionDone[3] = true;
+                    ToggleNav(3);
                     //NextQuestion();
                 });
                 isQuestionDone.Add(false);
@@ -671,12 +673,12 @@ public enum RequiredRooms
 
 public enum SharedSpace
 {
-    Retail,
-    SharedLivingRoom,
-    Playscape,
-    EventSpace,
-    MakerSpace,
-    EbikeStation,
+    Cafeteria,
+    CommunityFarm,
+    FitnessCenter,
+    CommunityMarket,
+    Salon,
+    StudyRoom,
     HealthClinic,
     Farm,
     CoWorking,
