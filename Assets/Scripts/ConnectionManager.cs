@@ -5,6 +5,8 @@ using UnityEngine.Networking;
 
 public class ConnectionManager : MonoBehaviour
 {
+    private string PARCELATION_URL = "http://127.0.0.1:5000/parcelation";
+
     [SerializeField]
     private float updateDuration = 5.0f;
     [SerializeField]
@@ -24,7 +26,7 @@ public class ConnectionManager : MonoBehaviour
 
     void Start()
     {
-        //StartCoroutine(IERetrieveServerState());
+        StartCoroutine(IERetrieveServerState());
     }
 
     private IEnumerator IERetrieveServerState()
@@ -33,9 +35,8 @@ public class ConnectionManager : MonoBehaviour
         if (!isConnecting)
         {
             isConnecting = true;
-            WWWForm form = new WWWForm();
 
-            UnityWebRequest www = UnityWebRequest.Post(Constants.ServerEnpoint + "state.php", form);
+            UnityWebRequest www = UnityWebRequest.Get(PARCELATION_URL);
             yield return www.SendWebRequest();
 
             if (www.isNetworkError || www.isHttpError)
@@ -47,13 +48,12 @@ public class ConnectionManager : MonoBehaviour
                 // TODO: error handle if return is invalid
                 Debug.Log("Server state response: "+ www.downloadHandler.text);
                 if (string.IsNullOrEmpty(www.downloadHandler.text))
-                    BuildingStateManager.Instance.ClearBuildingState();
-                else
+                    Debug.LogError("Error");
+                List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(www.downloadHandler.text);
+                foreach (BuildingUnit u in newState)
                 {
-                    Dictionary<int, Unit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<int, Unit>>(www.downloadHandler.text);
-                    BuildingStateManager.Instance.UpdateBuildingState(newState);
+                    Debug.LogWarning(u.ToString());
                 }
-                StartCoroutine(IERetrieveServerState());
             }
             isConnecting = false;
         }
@@ -62,10 +62,11 @@ public class ConnectionManager : MonoBehaviour
 
     public void UploadUserInput(string jsonInput)
     {
+        Debug.LogError(jsonInput);
         StartCoroutine(IEUploadUserInput(jsonInput, callback: result =>
         {
             Debug.LogWarning(result);
-            //UserInputResult res = Newtonsoft.Json.JsonConvert.DeserializeObject<UserInputResult>(result);
+            BuildingUnit res = Newtonsoft.Json.JsonConvert.DeserializeObject<BuildingUnit>(result);
             //Debug.LogError(res.unitId);
             //Debug.LogError(res.state);
             //BuildingStateManager.Instance.UpdateBuildingState(res.state);
@@ -82,7 +83,7 @@ public class ConnectionManager : MonoBehaviour
             form.AddField("UserInput", jsonInput);
 
             //UnityWebRequest www = UnityWebRequest.Post(Constants.ServerEnpoint + "input.php", form);
-            UnityWebRequest www = UnityWebRequest.Post("https://ptsv2.com/t/biennale2020/post", form);
+            UnityWebRequest www = UnityWebRequest.Post(PARCELATION_URL, form);
             yield return www.SendWebRequest();
 
             if (www.isNetworkError || www.isHttpError)
@@ -107,5 +108,14 @@ public class ConnectionManager : MonoBehaviour
             yield return new WaitForSeconds(.5f);
             StartCoroutine(IEUploadUserInput(jsonInput, retries));
         }
+    }
+}
+
+[System.Serializable]
+public class InputResult
+{
+    InputResult()
+    {
+
     }
 }

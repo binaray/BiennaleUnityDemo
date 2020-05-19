@@ -97,8 +97,8 @@ public class ParcelationManager : MonoBehaviour
     {
         //TODO: running check
         StartCoroutine(GenerateSpeechBubble());
-        StartCoroutine(UpdateParcelationSprites());
-        UpdateParcelation();
+        //StartCoroutine(UpdateParcelationSprites());
+        //UpdateParcelation();
     }
 
     IEnumerator GenerateSpeechBubble()
@@ -143,95 +143,109 @@ public class ParcelationManager : MonoBehaviour
         StartCoroutine(GenerateSpeechBubble());
     }
 
-    IEnumerator UpdateParcelationSprites()
-    {
-        foreach (BuildingUnit u in currentBuildingState.Values)
-        {
-            floors[u.location[0]].RandomizeUnitSprite(u);
-        }
-        yield return new WaitForSeconds(spriteUpdateTime);
-        StartCoroutine(UpdateParcelationSprites());
-    }
+    //IEnumerator UpdateParcelationSprites()
+    //{
+    //    foreach (BuildingUnit u in currentBuildingState.Values)
+    //    {
+    //        floors[u.location[0]].RandomizeUnitSprite(u);
+    //    }
+    //    yield return new WaitForSeconds(spriteUpdateTime);
+    //    StartCoroutine(UpdateParcelationSprites());
+    //}
 
-    public void UpdateParcelation()
-    {
-        List<BuildingUnit> l = new List<BuildingUnit>();
-        //generate test data
-        for (int i = 0; i < 4; i++)
-        {
-            BuildingUnit u = new BuildingUnit(i, i, i, 3, "Single");
-            l.Add(u);
-        }
-        for (int i = 0; i < 6; i++)
-        {
-            BuildingUnit u = new BuildingUnit(i+4, i+7, i, 6, "CoupleWoChildren");
-            l.Add(u);
-        }
+    //public void UpdateParcelation()
+    //{
+    //    List<BuildingUnit> l = new List<BuildingUnit>();
+    //    //generate test data
+    //    for (int i = 0; i < 4; i++)
+    //    {
+    //        BuildingUnit u = new BuildingUnit(i, i, i, 3, "Single");
+    //        l.Add(u);
+    //    }
+    //    for (int i = 0; i < 6; i++)
+    //    {
+    //        BuildingUnit u = new BuildingUnit(i+4, i+7, i, 6, "CoupleWoChildren");
+    //        l.Add(u);
+    //    }
 
-        Dictionary<int, BuildingUnit> newState = l.ToDictionary(u => u.index, u => u);
+    //    Dictionary<int, BuildingUnit> newState = l.ToDictionary(u => u.index, u => u);
 
-        HashSet<int> newKeys = new HashSet<int>(newState.Keys);
-        HashSet<int> oldKeys = new HashSet<int>(currentBuildingState.Keys);
-        HashSet<int> toModify = new HashSet<int>(oldKeys);
+    //    HashSet<int> newKeys = new HashSet<int>(newState.Keys);
+    //    HashSet<int> oldKeys = new HashSet<int>(currentBuildingState.Keys);
+    //    HashSet<int> toModify = new HashSet<int>(oldKeys);
 
-        //Delete
-        toModify.ExceptWith(newKeys);
-        foreach(int k in toModify)
-        {
-            int i = currentBuildingState[k].location[0];
-            int j = currentBuildingState[k].location[1];
-            floors[i].DeleteUnit(currentBuildingState[k]);
-        }
+    //    //Delete
+    //    toModify.ExceptWith(newKeys);
+    //    foreach(int k in toModify)
+    //    {
+    //        int i = (int) currentBuildingState[k].loc[0];
+    //        int j = ((int[]) currentBuildingState[k].loc[1])[0];
+    //        floors[i].DeleteUnit(currentBuildingState[k]);
+    //    }
 
-        //Check and Edit
-        toModify = new HashSet<int>(newKeys);
-        toModify.IntersectWith(oldKeys);
-        foreach (int k in toModify)
-        {
-            int i_o = currentBuildingState[k].location[0];
-            int j_o = currentBuildingState[k].location[1];
-            int i_n = newState[k].location[0];
-            int j_n = newState[k].location[1];
+    //    //Check and Edit
+    //    toModify = new HashSet<int>(newKeys);
+    //    toModify.IntersectWith(oldKeys);
+    //    foreach (int k in toModify)
+    //    {
+    //        int i_o = (int) currentBuildingState[k].loc[0];
+    //        int j_o = ((int[]) currentBuildingState[k].loc[1])[0];
+    //        int i_n = (int) newState[k].loc[0];
+    //        int j_n = ((int[]) newState[k].loc[1])[0];
 
-            if (i_n != i_o || j_n != j_o || newState[k].roomCount != currentBuildingState[k].roomCount)
-            {
-                floors[i_o].DeleteUnit(currentBuildingState[k]);
-                floors[i_n].AddUnit(newState[k]);
-            }
-        }
+    //        if (i_n != i_o || j_n != j_o || newState[k].roomCount != currentBuildingState[k].roomCount)
+    //        {
+    //            floors[i_o].DeleteUnit(currentBuildingState[k]);
+    //            floors[i_n].AddUnit(newState[k]);
+    //        }
+    //    }
 
-        //New insertion
-        toModify = new HashSet<int>(newKeys);
-        toModify.ExceptWith(oldKeys);
-        foreach (int k in toModify)
-        {
-            int i = newState[k].location[0];
-            int j = newState[k].location[1];
-            floors[i].AddUnit(newState[k]);
-        }
+    //    //New insertion
+    //    toModify = new HashSet<int>(newKeys);
+    //    toModify.ExceptWith(oldKeys);
+    //    foreach (int k in toModify)
+    //    {
+    //        int i = (int) newState[k].loc[0];
+    //        int j = ((int[])newState[k].loc[1])[0];
+    //        floors[i].AddUnit(newState[k]);
+    //    }
 
-        currentBuildingState = newState;
-    }
+    //    currentBuildingState = newState;
+    //}
 }
 
 [System.Serializable]
 public class BuildingUnit
 {
-    public int index;
-    public int[] location = { -1, -1 };
-    public int roomCount = -1;
+    public double user_id;
+    public int floor;
+    public int[] loc;
+    //public int[] location = { -1, -1 };
+    //public int roomCount = -1;
     public string type = "";
+    public QuestionResults user_input;
 
     public BuildingUnit()
     {
 
     }
-    public BuildingUnit(int index, int row, int col, int roomCount, string type)
+    public BuildingUnit(double user_id, int row, int col, int roomCount, string type)
     {
-        this.index = index;
-        location[0] = row;
-        location[1] = col;
-        this.roomCount = roomCount;
+        this.user_id = user_id;
+        this.floor = row;
+        this.loc = new int[] { col, col + roomCount - 1 };
+        //location[0] = row;
+        //location[1] = col;
+        //this.roomCount = roomCount;
         this.type = type;
+    }
+
+    public override string ToString()
+    {
+        LivingArrangement lv;
+        if (System.Enum.TryParse<LivingArrangement>(type, out lv))
+            return string.Format("id: {0}, loc: [{1},{2}-{3}], type: {4}, Votes: ", user_id, floor, loc[0], loc[1], type) + user_input.ToString();
+        else
+            return string.Format("id: {0}, loc: [{1},{2}-{3}], type: {4}", user_id, floor, loc[0], loc[1], type);
     }
 }

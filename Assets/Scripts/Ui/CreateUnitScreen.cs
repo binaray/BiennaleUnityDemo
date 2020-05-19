@@ -98,15 +98,15 @@ public class CreateUnitScreen : MonoBehaviour
                     skipQ2Flag = true;
                     break;
                 default:
-                case LivingArrangement.AssistedLiving:
-                case LivingArrangement.FlatshareCoHousing:
-                case LivingArrangement.SingleParentFamily:
+                case LivingArrangement.Assisted:
+                case LivingArrangement.Flatshare:
+                case LivingArrangement.SingleParent:
                     q2Slider.value = 2;
                     q2Slider.minValue = 2;
                     skipQ2Flag = false;
                     break;
-                case LivingArrangement.NuclearFamily:
-                case LivingArrangement.MultigenerationalExtended:
+                case LivingArrangement.Nuclear:
+                case LivingArrangement.Multi:
                     q2Slider.value = 3;
                     q2Slider.minValue = 3;
                     skipQ2Flag = false;
@@ -444,7 +444,6 @@ public class CreateUnitScreen : MonoBehaviour
         foreach (SharedSpace ss in SelectedSharedSpaces)
             userInput.preferredSharedSpaces.Add(ss.ToString());
         string inputJson = Newtonsoft.Json.JsonConvert.SerializeObject(userInput);
-        //Debug.LogError(inputJson);
         ConnectionManager.Instance.UploadUserInput(inputJson);
         UiCanvasManager.Instance.CongratulatoryScreen();
     }
@@ -649,11 +648,11 @@ public enum LivingArrangement
     None = -1,
     Single,
     CoupleWoChildren,
-    SingleParentFamily,
-    NuclearFamily,
-    AssistedLiving,
-    FlatshareCoHousing,
-    MultigenerationalExtended
+    SingleParent,
+    Nuclear,
+    Assisted,
+    Flatshare,
+    Multi
 }
 
 public enum AgeGroup
@@ -673,18 +672,18 @@ public enum RequiredRooms
 
 public enum SharedSpace
 {
-    Cafeteria,
-    CommunityFarm,
-    FitnessCenter,
-    CommunityMarket,
-    Salon,
-    StudyRoom,
-    HealthClinic,
     Farm,
-    CoWorking,
-    SharedKitchen,
-    SensoryGarden,
-    Fitness
+    Lounge,
+    Makerspace,
+    Cafes,
+    Clinic,
+    Eldercare,
+    Childcare,
+    Salon,
+    Gym,
+    Market,
+    Library,
+    Playscape
 }
 
 [System.Serializable]
@@ -702,4 +701,9 @@ public class QuestionResults
     };
     public string[] location = new string[2];
     public List<string> preferredSharedSpaces = new List<string>();
+
+    public override string ToString()
+    {
+        return string.Join(", ", preferredSharedSpaces);
+    }
 }
