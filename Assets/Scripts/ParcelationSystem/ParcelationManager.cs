@@ -98,7 +98,11 @@ public class ParcelationManager : MonoBehaviour
         //TODO: running check
         StartCoroutine(GenerateSpeechBubble());
         StartCoroutine(UpdateParcelationSprites());
-        //UpdateParcelation();
+
+        ////debugging test code-implementation at connection routine
+        //string res = "[{\"user_id\":0.0,\"floor\":1,\"loc\":[0,9],\"type\":\"Farm\",\"user_input\":{\"livingArrangement\":\"Farm\"}},{\"user_id\":1589892632.7520728111,\"floor\":1,\"loc\":[10,14],\"type\":\"Flatshare\",\"user_input\":{\"livingArrangement\":\"Flatshare\",\"ageGroup\":\"Elderly\",\"pax\":2,\"affordable\":true,\"requiredRooms\":{\"SingleBedroom\":0,\"SharedBedroom\":0,\"Study\":0},\"location\":[\"0\",\"1\"],\"preferredSharedSpaces\":[]}},{\"user_id\":3.0,\"floor\":15,\"loc\":[3,12],\"type\":\"Cafes\",\"user_input\":{\"livingArrangement\":\"Cafes\"}},{\"user_id\":4.0,\"floor\":17,\"loc\":[0,9],\"type\":\"Clinic\",\"user_input\":{\"livingArrangement\":\"Clinic\"}},{\"user_id\":1.0,\"floor\":32,\"loc\":[3,12],\"type\":\"Lounge\",\"user_input\":{\"livingArrangement\":\"Lounge\"}},{\"user_id\":2.0,\"floor\":33,\"loc\":[3,12],\"type\":\"Makerspace\",\"user_input\":{\"livingArrangement\":\"Makerspace\"}}]";
+        //List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(res);
+        //UpdateParcelation(newState);
     }
 
     IEnumerator GenerateSpeechBubble()
@@ -176,6 +180,7 @@ public class ParcelationManager : MonoBehaviour
                 u.user_id += 0.01;
             }
             newState.Add(u.user_id, u);
+            Debug.LogWarning(u.ToString());
         }
         
         HashSet<double> newKeys = new HashSet<double>(newState.Keys);

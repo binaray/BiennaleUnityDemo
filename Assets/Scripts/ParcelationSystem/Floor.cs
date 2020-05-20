@@ -24,7 +24,6 @@ public class Floor : MonoBehaviour
 
     public void RandomizeUnitSprite(BuildingUnit u)
     {
-        int j = u.loc[0];
         int unitTypeIndex;
         if (System.Enum.TryParse(u.type, out LivingArrangement lv))
         {
@@ -43,14 +42,17 @@ public class Floor : MonoBehaviour
         System.Random r = new System.Random();
         int n = 0;
         int[] sI = unitType[unitTypeIndex].spriteIndices;
-        foreach (int i in Enumerable.Range(0, u.loc[1]+1).OrderBy(x => r.Next()))
+
+
+        //Debug.LogError(string.Format("Fetching from [{0},{1}], count: {2}", u.loc[0], u.loc[1], u.loc[1] + 1 - u.loc[0]));
+        
+        foreach (int i in Enumerable.Range(u.loc[0], u.loc[1]+1-u.loc[0]).OrderBy(x => r.Next()))
         {
-            int col = i + j;
             if (n < sI.Length)
             {
-                //Debug.LogWarning("row "+u.location[0]+" col "+ col + " fetching: " + sI[n].ToString());
-                sprites[col].SetActive(true);
-                SpriteRenderer s = sprites[col].GetComponent<SpriteRenderer>();
+                //Debug.LogWarning("row "+u.floor+" col "+ i + " fetching: " + sI[n].ToString());
+                sprites[i].SetActive(true);
+                SpriteRenderer s = sprites[i].GetComponent<SpriteRenderer>();
 
                 s.sprite = ParcelationManager.sprites[sI[n]];
                 s.color = Color.black;
@@ -60,7 +62,7 @@ public class Floor : MonoBehaviour
             else
             {
                 //Debug.LogError("TURNING OFF row " + u.location[0] + " col " + col);
-                sprites[col].SetActive(false);
+                sprites[i].SetActive(false);
             }
         }
     }
@@ -75,16 +77,14 @@ public class Floor : MonoBehaviour
 
     public void DeleteUnit(BuildingUnit u)
     {
-        int j = u.loc[0];
-        for (int x = 0; x <= u.loc[1]; x++)
+        for (int x = u.loc[0]; x <= u.loc[1]; x++)
         {
-            roomUnits[j + x].SetActive(false);
+            roomUnits[x].SetActive(false);
         }
     }
 
     public void AddUnit(BuildingUnit u)
     {
-        int j = u.loc[0];
         int unitTypeIndex;
 
         if (System.Enum.TryParse(u.type, out LivingArrangement lv))
@@ -99,31 +99,13 @@ public class Floor : MonoBehaviour
                 unitTypeIndex = -1;
         }
         //TODO: handle shared spaces
-        for (int x = 0; x <= u.loc[1]; x++)
+        for (int x = u.loc[0]; x <= u.loc[1]; x++)
         {
-            int col = j + x;
-            roomUnits[col].SetActive(true);
-            Renderer r = roomUnits[col].transform.GetChild(1).GetComponent<Renderer>();
+            roomUnits[x].SetActive(true);
+            Renderer r = roomUnits[x].transform.GetChild(1).GetComponent<Renderer>();
             r.material.SetColor("_Color", unitType[unitTypeIndex]._Color);
             r.material.SetColor("_EmissionColor", unitType[unitTypeIndex]._EmissionColor);
             r.material.renderQueue = 3002;
-        }
-    }
-
-    //To be deprecated- use add delete-edit-add unit instead
-    public void SetUnitArray(List<int> roomUnitTypes)
-    {
-        if (roomUnitTypes.Count != roomUnits.Count)
-        {
-            Debug.LogError(string.Format("Array count mismatch!: \n{0} != {1}", roomUnitTypes.Count, roomUnits.Count));
-            return;
-        }
-        for (int i = 0; i < roomUnitTypes.Count; i++)
-        {
-            //roomUnits[0].transform.GetChild(1).GetComponent<Renderer>().material.SetColor("_Color", unitType[roomUnitTypes[i]]._Color);
-            Renderer r = roomUnits[i].transform.GetChild(1).GetComponent<Renderer>();
-            r.material.SetColor("_Color", unitType[roomUnitTypes[i]]._Color);
-            r.material.SetColor("_EmissionColor", unitType[roomUnitTypes[i]]._EmissionColor);
         }
     }
     

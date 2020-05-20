@@ -31,12 +31,11 @@ public class ConnectionManager : MonoBehaviour
         {
             //Debug.LogWarning(result);
             List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(result);
-            foreach (BuildingUnit u in newState)
-            {
-                Debug.LogWarning(u.ToString());
-            }
+            //foreach (BuildingUnit u in newState)
+            //{
+            //    Debug.LogWarning(u.ToString());
+            //}
             ParcelationManager.Instance.UpdateParcelation(newState);
-            UiCanvasManager.Instance.CongratulatoryScreen();
         }));
     }
 
