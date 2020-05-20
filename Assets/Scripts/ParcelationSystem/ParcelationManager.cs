@@ -132,24 +132,20 @@ public class ParcelationManager : MonoBehaviour
             int colorSeed = Random.Range(0, bubbleColors.Length);
             int messageIndex = 0;
 
-            System.Random r = new System.Random();
-
-            //foreach (BuildingUnit u in currentBuildingState.Values)
-            //{
-            //    floors[u.floor].RandomizeUnitSprite(u);
-            //}
-
-            foreach (int i in Enumerable.Range(0, floorCount).OrderBy(x => r.Next()))
+            // Random with limit for units only
+            List<double> rList = (currentBuildingState.Keys.ToList<double>()).OrderBy(a => System.Guid.NewGuid()).ToList(); ;
+            foreach (double i in rList)
             {
                 if (messageIndex < messageTopics[TopicCursor].messages.Count)
                 {
+                    BuildingUnit u = currentBuildingState[i];
                     System.Random n = new System.Random();
-                    int j = Random.Range(0, 16);
+                    int j = Random.Range(u.loc[0], u.loc[1] + 1);
                     GameObject o;
                     if (j < 8)
                     {
                         o = Instantiate(bubbleLeftPrefab);
-                        o.transform.SetParent(floors[i].roomUnits[j].transform);
+                        o.transform.SetParent(floors[u.floor].roomUnits[j].transform);
                         o.transform.localPosition = new Vector3(-0.112f, 0.062f, -0.111f);
                         if (j == 2 || j == 3 || j == 7)
                             o.transform.localPosition = new Vector3(-0.112f, 0.062f, -0.189f);
@@ -158,7 +154,7 @@ public class ParcelationManager : MonoBehaviour
                     {
                         //print(string.Format("x={0} y={1}", j, i));
                         o = Instantiate(bubbleRightPrefab);
-                        o.transform.SetParent(floors[i].roomUnits[j].transform);
+                        o.transform.SetParent(floors[u.floor].roomUnits[j].transform);
                         o.transform.localPosition = new Vector3(0.112f, 0.062f, -0.111f);
                         if (j == 8 || j == 12 || j == 13)
                             o.transform.localPosition = new Vector3(0.112f, 0.062f, -0.189f);
@@ -174,7 +170,43 @@ public class ParcelationManager : MonoBehaviour
                 }
                 else break;
             }
-            _messageLock = false;
+
+            // Random with limit for entire building
+            //foreach (int i in Enumerable.Range(0, floorCount).OrderBy(x => r.Next()))
+            //{
+            //    if (messageIndex < messageTopics[TopicCursor].messages.Count)
+            //    {
+            //        System.Random n = new System.Random();
+            //        int j = Random.Range(0, 16);
+            //        GameObject o;
+            //        if (j < 8)
+            //        {
+            //            o = Instantiate(bubbleLeftPrefab);
+            //            o.transform.SetParent(floors[i].roomUnits[j].transform);
+            //            o.transform.localPosition = new Vector3(-0.112f, 0.062f, -0.111f);
+            //            if (j == 2 || j == 3 || j == 7)
+            //                o.transform.localPosition = new Vector3(-0.112f, 0.062f, -0.189f);
+            //        }
+            //        else
+            //        {
+            //            //print(string.Format("x={0} y={1}", j, i));
+            //            o = Instantiate(bubbleRightPrefab);
+            //            o.transform.SetParent(floors[i].roomUnits[j].transform);
+            //            o.transform.localPosition = new Vector3(0.112f, 0.062f, -0.111f);
+            //            if (j == 8 || j == 12 || j == 13)
+            //                o.transform.localPosition = new Vector3(0.112f, 0.062f, -0.189f);
+            //        }
+            //        o.transform.localRotation = Quaternion.Euler(-90, 0, 180);
+            //        o.GetComponent<Bubble>().SetText(messageTopics[TopicCursor].messages[messageIndex].message);
+            //        print(string.Format("Message spawned at [{0},{1}]", i, j));
+            //        //print(string.Format("message topic: {0}: {1}. {2}", TopicCursor, messageIndex, messageTopics[TopicCursor].messages[messageIndex].message));
+            //        int c = colorSeed++ % bubbleColors.Length;
+            //        o.GetComponent<Renderer>().material.SetColor("_Color", bubbleColors[c]);
+            //        o.GetComponent<Renderer>().material.SetColor("_EmissionColor", bubbleColors[c]);
+            //        messageIndex++;
+            //    }
+            //    else break;
+            //}
 
             // Binomial Randomization
             //for (int i = 0; i < floorCount; i++)
@@ -210,6 +242,7 @@ public class ParcelationManager : MonoBehaviour
             //        }
             //    }
             //}
+            _messageLock = false;
         }
         yield return new WaitForSeconds(generationTime);
         StartCoroutine(GenerateSpeechBubble());
