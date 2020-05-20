@@ -33,6 +33,10 @@ public class ParcelationManager : MonoBehaviour
             _roomMode = value;
         }
     }
+    public bool ShowMessages { get; set; }
+    public bool _messageLock = false;
+    public int TopicCursor { get; set; }
+    public List<MessageTopic> messageTopics;
     [SerializeField]
     private float bubbleSpanProb = 0.1f;
     [SerializeField]
@@ -105,23 +109,46 @@ public class ParcelationManager : MonoBehaviour
         //UpdateParcelation(newState);
     }
 
+    public static IEnumerable<TValue> RandomValues<TKey, TValue>(IDictionary<TKey, TValue> dict)
+    {
+        System.Random rand = new System.Random();
+        List<TValue> values = Enumerable.ToList(dict.Values);
+        int size = dict.Count;
+        while (true)
+        {
+            yield return values[rand.Next(size)];
+        }
+    }
+
     IEnumerator GenerateSpeechBubble()
     {
-        int colorSeed = Random.Range(0, bubbleColors.Length);
-        for (int i = 0; i < floorCount; i++)
+        if (ShowMessages)
         {
-            //List<string> data = new List<string>();
-            for (int j = 0; j < 16; j++)
+            _messageLock = true;
+            TopicCursor = (TopicCursor + 1) % messageTopics.Count;
+            int colorSeed = Random.Range(0, bubbleColors.Length);
+            int messageIndex = 0;
+
+            System.Random r = new System.Random();
+
+            //foreach (BuildingUnit u in currentBuildingState.Values)
+            //{
+            //    floors[u.floor].RandomizeUnitSprite(u);
+            //}
+
+            foreach (int i in Enumerable.Range(0, floorCount).OrderBy(x => r.Next()))
             {
-                if (Random.value < bubbleSpanProb)
+                if (messageIndex < messageTopics[TopicCursor].messages.Count)
                 {
+                    System.Random n = new System.Random();
+                    int j = Random.Range(0, 16);
                     GameObject o;
                     if (j < 8)
                     {
                         o = Instantiate(bubbleLeftPrefab);
                         o.transform.SetParent(floors[i].roomUnits[j].transform);
                         o.transform.localPosition = new Vector3(-0.112f, 0.062f, -0.111f);
-                        if (j == 2 || j == 3 || j == 7) 
+                        if (j == 2 || j == 3 || j == 7)
                             o.transform.localPosition = new Vector3(-0.112f, 0.062f, -0.189f);
                     }
                     else
@@ -134,15 +161,53 @@ public class ParcelationManager : MonoBehaviour
                             o.transform.localPosition = new Vector3(0.112f, 0.062f, -0.189f);
                     }
                     o.transform.localRotation = Quaternion.Euler(-90, 0, 180);
-                    o.GetComponent<Bubble>().SetText("Bob ran down the hill to catch snails.");
+                    o.GetComponent<Bubble>().SetText(messageTopics[TopicCursor].messages[messageIndex].message);
+                    print(string.Format("Message spawned at [{0},{1}]", i, j));
+                    //print(string.Format("message topic: {0}: {1}. {2}", TopicCursor, messageIndex, messageTopics[TopicCursor].messages[messageIndex].message));
                     int c = colorSeed++ % bubbleColors.Length;
                     o.GetComponent<Renderer>().material.SetColor("_Color", bubbleColors[c]);
                     o.GetComponent<Renderer>().material.SetColor("_EmissionColor", bubbleColors[c]);
+                    messageIndex++;
                 }
+                else break;
             }
-            //floors[i].SetBubbleArray(data);
+            _messageLock = false;
+
+            // Binomial Randomization
+            //for (int i = 0; i < floorCount; i++)
+            //{
+            //    //List<string> data = new List<string>();
+            //    for (int j = 0; j < 16; j++)
+            //    {
+            //        if (Random.value < bubbleSpanProb)
+            //        {
+            //            GameObject o;
+            //            if (j < 8)
+            //            {
+            //                o = Instantiate(bubbleLeftPrefab);
+            //                o.transform.SetParent(floors[i].roomUnits[j].transform);
+            //                o.transform.localPosition = new Vector3(-0.112f, 0.062f, -0.111f);
+            //                if (j == 2 || j == 3 || j == 7)
+            //                    o.transform.localPosition = new Vector3(-0.112f, 0.062f, -0.189f);
+            //            }
+            //            else
+            //            {
+            //                //print(string.Format("x={0} y={1}", j, i));
+            //                o = Instantiate(bubbleRightPrefab);
+            //                o.transform.SetParent(floors[i].roomUnits[j].transform);
+            //                o.transform.localPosition = new Vector3(0.112f, 0.062f, -0.111f);
+            //                if (j == 8 || j == 12 || j == 13)
+            //                    o.transform.localPosition = new Vector3(0.112f, 0.062f, -0.189f);
+            //            }
+            //            o.transform.localRotation = Quaternion.Euler(-90, 0, 180);
+            //            o.GetComponent<Bubble>().SetText("Bob ran down the hill to catch snails.");
+            //            int c = colorSeed++ % bubbleColors.Length;
+            //            o.GetComponent<Renderer>().material.SetColor("_Color", bubbleColors[c]);
+            //            o.GetComponent<Renderer>().material.SetColor("_EmissionColor", bubbleColors[c]);
+            //        }
+            //    }
+            //}
         }
-        
         yield return new WaitForSeconds(generationTime);
         StartCoroutine(GenerateSpeechBubble());
     }
@@ -260,5 +325,19 @@ public class BuildingUnit
             return string.Format("id: {0}, loc: [{1},{2}-{3}], type: {4}, Votes: ", user_id, floor, loc[0], loc[1], type) + user_input.ToString();
         else
             return string.Format("id: {0}, loc: [{1},{2}-{3}], type: {4}", user_id, floor, loc[0], loc[1], type);
+    }
+}
+
+[System.Serializable]
+public class Message
+{
+    public int messageId;
+    public string message;
+    public string reply;
+    public int timestamp;
+
+    public override string ToString()
+    {
+        return string.Format("{0}: {1}", messageId, message);
     }
 }

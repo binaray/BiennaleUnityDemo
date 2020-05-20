@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 public class ConnectionManager : MonoBehaviour
 {
     private string PARCELATION_URL = "http://127.0.0.1:5000/parcelation";
-    private string PARCELATION_INPUT_URL = "http://127.0.0.1:5000/test";
+    private string MESSAGES_URL = "http://127.0.0.1:5000/message";
 
     [SerializeField]
     private float updateDuration = 5.0f;
@@ -28,36 +28,34 @@ public class ConnectionManager : MonoBehaviour
     void Start()
     {
         StartCoroutine(IERetrieveServerState());
+        StartCoroutine(IEGetMessages());
     }
 
     private IEnumerator IERetrieveServerState()
-    {
-        yield return new WaitForSeconds(updateDuration);
-        
-            UnityWebRequest www = UnityWebRequest.Get(PARCELATION_URL);
-            yield return www.SendWebRequest();
+    {        
+        UnityWebRequest www = UnityWebRequest.Get(PARCELATION_URL);
+        yield return www.SendWebRequest();
 
-            if (www.isNetworkError || www.isHttpError)
-            {
-                Debug.LogError(www.error);
-            }
+        if (www.isNetworkError || www.isHttpError)
+        {
+            Debug.LogError(www.error);
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(www.downloadHandler.text))
+                Debug.LogError("No parcelation found..");
             else
             {
-                // TODO: error handle if return is invalid
-                //Debug.Log("Server state response: "+ www.downloadHandler.text);
-                if (string.IsNullOrEmpty(www.downloadHandler.text))
-                    Debug.LogError("No parcelation found..");
-                else
-                {
-                    //Debug.LogWarning(result);
-                    List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(www.downloadHandler.text);
-                    //foreach (BuildingUnit u in newState)
-                    //{
-                    //    Debug.LogWarning(u.ToString());
-                    //}
-                    ParcelationManager.Instance.UpdateParcelation(newState);
-                }
+                //Debug.LogWarning(result);
+                List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(www.downloadHandler.text);
+                //foreach (BuildingUnit u in newState)
+                //{
+                //    Debug.LogWarning(u.ToString());
+                //}
+                ParcelationManager.Instance.UpdateParcelation(newState);
             }
+        }
+        yield return new WaitForSeconds(updateDuration);
         StartCoroutine(IERetrieveServerState());
     }
 
@@ -111,6 +109,33 @@ public class ConnectionManager : MonoBehaviour
             StartCoroutine(IEUploadUserInput(jsonInput, retries));
         }
     }
+
+    private IEnumerator IEGetMessages()
+    {
+        UnityWebRequest www = UnityWebRequest.Get(MESSAGES_URL);
+        yield return www.SendWebRequest();
+
+        if (www.isNetworkError || www.isHttpError)
+        {
+            Debug.LogError(www.error);
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(www.downloadHandler.text))
+                Debug.LogError("No messages found..");
+            else
+            {
+                Debug.LogWarning(www.downloadHandler.text);
+                List<MessageTopic> newMessageTopics = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MessageTopic>>(www.downloadHandler.text);
+                if (!ParcelationManager.Instance._messageLock)
+                {
+                    ParcelationManager.Instance.messageTopics = newMessageTopics;
+                }
+            }
+        }
+        yield return new WaitForSeconds(updateDuration);
+        StartCoroutine(IEGetMessages());
+    }
 }
 
 [System.Serializable]
@@ -118,8 +143,12 @@ public class InputResult
 {
     public double userId;
     public string parcelation;
-    InputResult()
-    {
+}
 
-    }
+[System.Serializable]
+public class MessageTopic
+{
+    public string topic;
+    public int topicId;
+    public List<Message> messages;
 }
