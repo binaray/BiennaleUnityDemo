@@ -27,7 +27,7 @@ public class Floor : MonoBehaviour
         int unitTypeIndex;
         if (System.Enum.TryParse(u.type, out LivingArrangement lv))
         {
-            print(lv.ToString());
+            //print(lv.ToString());
             unitTypeIndex = (int)lv;
         }
         else

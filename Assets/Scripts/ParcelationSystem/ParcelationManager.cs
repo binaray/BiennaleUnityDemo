@@ -180,7 +180,7 @@ public class ParcelationManager : MonoBehaviour
                 u.user_id += 0.01;
             }
             newState.Add(u.user_id, u);
-            Debug.LogWarning(u.ToString());
+            //Debug.LogWarning(u.ToString());
         }
         
         HashSet<double> newKeys = new HashSet<double>(newState.Keys);

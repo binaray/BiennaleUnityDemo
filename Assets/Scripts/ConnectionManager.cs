@@ -27,25 +27,13 @@ public class ConnectionManager : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(IERetrieveServerState(callback: result =>
-        {
-            //Debug.LogWarning(result);
-            List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(result);
-            //foreach (BuildingUnit u in newState)
-            //{
-            //    Debug.LogWarning(u.ToString());
-            //}
-            ParcelationManager.Instance.UpdateParcelation(newState);
-        }));
+        StartCoroutine(IERetrieveServerState());
     }
 
-    private IEnumerator IERetrieveServerState(System.Action<string> callback = null)
+    private IEnumerator IERetrieveServerState()
     {
         yield return new WaitForSeconds(updateDuration);
-        if (!isConnecting)
-        {
-            isConnecting = true;
-
+        
             UnityWebRequest www = UnityWebRequest.Get(PARCELATION_URL);
             yield return www.SendWebRequest();
 
@@ -58,28 +46,34 @@ public class ConnectionManager : MonoBehaviour
                 // TODO: error handle if return is invalid
                 //Debug.Log("Server state response: "+ www.downloadHandler.text);
                 if (string.IsNullOrEmpty(www.downloadHandler.text))
-                    Debug.LogError("Error");
+                    Debug.LogError("No parcelation found..");
                 else
-                    callback(www.downloadHandler.text);
+                {
+                    //Debug.LogWarning(result);
+                    List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(www.downloadHandler.text);
+                    //foreach (BuildingUnit u in newState)
+                    //{
+                    //    Debug.LogWarning(u.ToString());
+                    //}
+                    ParcelationManager.Instance.UpdateParcelation(newState);
+                }
             }
-            isConnecting = false;
-        }
         StartCoroutine(IERetrieveServerState());
     }
 
     public void UploadUserInput(string jsonInput)
     {
-        Debug.LogError(jsonInput);
+        //Debug.LogError(jsonInput);
         StartCoroutine(IEUploadUserInput(jsonInput, callback: result =>
         {
             Debug.LogWarning(result);
             InputResult res = Newtonsoft.Json.JsonConvert.DeserializeObject<InputResult>(result);
-            //List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(res.parcelation);
-            //ParcelationManager.Instance.UpdateParcelation(newState);
+            List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(res.parcelation);
+            ParcelationManager.Instance.UpdateParcelation(newState);
             //Debug.LogError(res.unitId);
             //Debug.LogError(res.state);
             //BuildingStateManager.Instance.UpdateBuildingState(res.state);
-            UiCanvasManager.Instance.CongratulatoryScreen();
+            //UiCanvasManager.Instance.CongratulatoryScreen();
         }));
     }
 
@@ -103,7 +97,6 @@ public class ConnectionManager : MonoBehaviour
             else
             {
                 // Show results as text
-                Debug.Log(www.downloadHandler.text);
                 callback(www.downloadHandler.text);
             }
             isConnecting = false;
