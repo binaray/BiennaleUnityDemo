@@ -38,6 +38,8 @@ public class CongratulatoryScreen : MonoBehaviour
 
     private void OnDisable()
     {
+        ParcelationManager.Instance.currentUserId = -1;
+        ParcelationManager.Instance.ReloadParcelationVis();
         fireworkSystem.stopFun = true;
         irq = true;
     }

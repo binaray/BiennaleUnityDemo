@@ -62,16 +62,16 @@ public class ConnectionManager : MonoBehaviour
     public void UploadUserInput(string jsonInput)
     {
         //Debug.LogError(jsonInput);
+        //Show loader
         StartCoroutine(IEUploadUserInput(jsonInput, callback: result =>
         {
             Debug.LogWarning(result);
             InputResult res = Newtonsoft.Json.JsonConvert.DeserializeObject<InputResult>(result);
             List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(res.parcelation);
+            ParcelationManager.Instance.currentUserId = res.userId;
             ParcelationManager.Instance.UpdateParcelation(newState);
-            //Debug.LogError(res.unitId);
-            //Debug.LogError(res.state);
-            //BuildingStateManager.Instance.UpdateBuildingState(res.state);
-            //UiCanvasManager.Instance.CongratulatoryScreen();
+            //Hide loader overlay
+            UiCanvasManager.Instance.CongratulatoryScreen();
         }));
     }
 

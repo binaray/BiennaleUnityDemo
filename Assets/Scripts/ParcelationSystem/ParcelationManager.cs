@@ -57,6 +57,9 @@ public class ParcelationManager : MonoBehaviour
     private float spriteUpdateTime = 1f;
     public static List<Sprite> sprites = new List<Sprite>();
 
+    [HideInInspector]
+    public double currentUserId = -1;
+
     public static ParcelationManager Instance { get; private set; }
     void Awake()
     {
@@ -220,6 +223,15 @@ public class ParcelationManager : MonoBehaviour
         }
         yield return new WaitForSeconds(spriteUpdateTime);
         StartCoroutine(UpdateParcelationSprites());
+    }
+
+    public void ReloadParcelationVis()
+    {
+        foreach (BuildingUnit u in currentBuildingState.Values)
+        {
+            int i = u.floor;
+            floors[i].AddUnit(u);
+        }
     }
 
     public void UpdateParcelation(List<BuildingUnit> l)

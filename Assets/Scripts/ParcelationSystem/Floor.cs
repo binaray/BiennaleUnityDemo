@@ -19,7 +19,8 @@ public class Floor : MonoBehaviour
             { 3, new UnitType(new Color(0.95f,1,0.4f,0.5f),new Color(1,1,0), new int[] { 7, 2, 3 }) },
             { 4, new UnitType(new Color(0.9f,0.15f,1,0.5f),new Color(0.85f,0.12f,1), new int[] { 4, 8 }) },
             { 5, new UnitType(new Color(1,.7f,0,0.5f),new Color(.5f,.2f,0), new int[] { 0, 1, 5, 6, 7 }) },
-            { 6, new UnitType(new Color(.4f,.5f,1,0.5f),new Color(.06f,0f,1), new int[] { 4, 5, 6, 7, 8 }) }
+            { 6, new UnitType(new Color(.4f,.5f,1,0.5f),new Color(.06f,0f,1), new int[] { 4, 5, 6, 7, 8 }) },
+            { 100, new UnitType(new Color(1f,.1f,1,0.5f),new Color(1f,1f,1), new int[] { }) }
         };
 
     public void RandomizeUnitSprite(BuildingUnit u)
@@ -99,13 +100,27 @@ public class Floor : MonoBehaviour
                 unitTypeIndex = -1;
         }
         //TODO: handle shared spaces
-        for (int x = u.loc[0]; x <= u.loc[1]; x++)
+        if (u.user_id == ParcelationManager.Instance.currentUserId)
         {
-            roomUnits[x].SetActive(true);
-            Renderer r = roomUnits[x].transform.GetChild(1).GetComponent<Renderer>();
-            r.material.SetColor("_Color", unitType[unitTypeIndex]._Color);
-            r.material.SetColor("_EmissionColor", unitType[unitTypeIndex]._EmissionColor);
-            r.material.renderQueue = 3002;
+            for (int x = u.loc[0]; x <= u.loc[1]; x++)
+            {
+                roomUnits[x].SetActive(true);
+                Renderer r = roomUnits[x].transform.GetChild(1).GetComponent<Renderer>();
+                r.material.SetColor("_Color", unitType[100]._Color);
+                r.material.SetColor("_EmissionColor", unitType[100]._EmissionColor);
+                r.material.renderQueue = 3002;
+            }
+        }
+        else
+        {
+            for (int x = u.loc[0]; x <= u.loc[1]; x++)
+            {
+                roomUnits[x].SetActive(true);
+                Renderer r = roomUnits[x].transform.GetChild(1).GetComponent<Renderer>();
+                r.material.SetColor("_Color", unitType[unitTypeIndex]._Color);
+                r.material.SetColor("_EmissionColor", unitType[unitTypeIndex]._EmissionColor);
+                r.material.renderQueue = 3002;
+            }
         }
     }
     
