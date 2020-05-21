@@ -36,7 +36,7 @@ public class ParcelationManager : MonoBehaviour
     public bool ShowMessages { get; set; }
     public bool _messageLock = false;
     public int TopicCursor { get; set; }
-    public List<MessageTopic> messageTopics;
+    public List<MessageTopic> messageTopics = null;
     [SerializeField]
     private float bubbleSpanProb = 0.1f;
     [SerializeField]
@@ -78,6 +78,7 @@ public class ParcelationManager : MonoBehaviour
             string str = "Sprites/Parcelation/" + (i).ToString();
             sprites.Add(Resources.Load<Sprite>(str));
         }
+        sprites.Add(Resources.Load<Sprite>("Sprites/Parcelation/work"));
 
         for (int i = 0; i < floorCount; i++)
         {
@@ -104,7 +105,7 @@ public class ParcelationManager : MonoBehaviour
     {
         //TODO: running check
         StartCoroutine(GenerateSpeechBubble());
-        StartCoroutine(UpdateParcelationSprites());
+        //StartCoroutine(UpdateParcelationSprites());
 
         ////debugging test code-implementation at connection routine
         //string res = "[{\"user_id\":0.0,\"floor\":1,\"loc\":[0,9],\"type\":\"Farm\",\"user_input\":{\"livingArrangement\":\"Farm\"}},{\"user_id\":1589892632.7520728111,\"floor\":1,\"loc\":[10,14],\"type\":\"Flatshare\",\"user_input\":{\"livingArrangement\":\"Flatshare\",\"ageGroup\":\"Elderly\",\"pax\":2,\"affordable\":true,\"requiredRooms\":{\"SingleBedroom\":0,\"SharedBedroom\":0,\"Study\":0},\"location\":[\"0\",\"1\"],\"preferredSharedSpaces\":[]}},{\"user_id\":3.0,\"floor\":15,\"loc\":[3,12],\"type\":\"Cafes\",\"user_input\":{\"livingArrangement\":\"Cafes\"}},{\"user_id\":4.0,\"floor\":17,\"loc\":[0,9],\"type\":\"Clinic\",\"user_input\":{\"livingArrangement\":\"Clinic\"}},{\"user_id\":1.0,\"floor\":32,\"loc\":[3,12],\"type\":\"Lounge\",\"user_input\":{\"livingArrangement\":\"Lounge\"}},{\"user_id\":2.0,\"floor\":33,\"loc\":[3,12],\"type\":\"Makerspace\",\"user_input\":{\"livingArrangement\":\"Makerspace\"}}]";
@@ -125,7 +126,7 @@ public class ParcelationManager : MonoBehaviour
 
     IEnumerator GenerateSpeechBubble()
     {
-        if (ShowMessages)
+        if (ShowMessages && messageTopics != null)
         {
             _messageLock = true;
             TopicCursor = (TopicCursor + 1) % messageTopics.Count;
@@ -332,7 +333,7 @@ public class ParcelationManager : MonoBehaviour
             int j = newState[k].loc[0];
             floors[i].AddUnit(newState[k]);
         }
-
+        
         currentBuildingState = newState;
     }
 }

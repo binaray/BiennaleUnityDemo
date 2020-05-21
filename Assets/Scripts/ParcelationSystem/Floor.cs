@@ -46,9 +46,26 @@ public class Floor : MonoBehaviour
 
 
         //Debug.LogError(string.Format("Fetching from [{0},{1}], count: {2}", u.loc[0], u.loc[1], u.loc[1] + 1 - u.loc[0]));
-        
+        int study = u.user_input.requiredRooms[RequiredRooms.Study.ToString()];
         foreach (int i in Enumerable.Range(u.loc[0], u.loc[1]+1-u.loc[0]).OrderBy(x => r.Next()))
         {
+            //output study on facade
+            if (study > 0)
+            {
+                if ((i > 1 && i < 4) || (i > 6 && i < 9) || (i > 11 && i < 14)) { }
+                else
+                {
+                    sprites[i].SetActive(true);
+                    SpriteRenderer s = sprites[i].GetComponent<SpriteRenderer>();
+
+                    s.sprite = ParcelationManager.sprites[ParcelationManager.sprites.Count - 1];
+                    s.color = Color.black;
+                    s.material.renderQueue = 3002;
+                    study--;
+                    continue;
+                }
+            }
+            //output cohabitation otherwise
             if (n < sI.Length)
             {
                 //Debug.LogWarning("row "+u.floor+" col "+ i + " fetching: " + sI[n].ToString());
@@ -122,6 +139,8 @@ public class Floor : MonoBehaviour
                 r.material.renderQueue = 3002;
             }
         }
+
+        RandomizeUnitSprite(u);
     }
     
 
