@@ -47,12 +47,15 @@ public class ConnectionManager : MonoBehaviour
             else
             {
                 //Debug.LogWarning(result);
-                List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(www.downloadHandler.text);
+                GetParcelationResult result = Newtonsoft.Json.JsonConvert.DeserializeObject<GetParcelationResult>(www.downloadHandler.text);
+                List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(result.parcelation);
+                Dictionary<string, int> ssCount = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, int>>(result.ssCount);
                 //foreach (BuildingUnit u in newState)
                 //{
                 //    Debug.LogWarning(u.ToString());
                 //}
                 ParcelationManager.Instance.UpdateParcelation(newState);
+                CreateUnitScreen.Instance.UpdateQ6Counters(ssCount);
             }
         }
         yield return new WaitForSeconds(updateDuration);
@@ -69,6 +72,7 @@ public class ConnectionManager : MonoBehaviour
             InputResult res = Newtonsoft.Json.JsonConvert.DeserializeObject<InputResult>(result);
             List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(res.parcelation);
             ParcelationManager.Instance.currentUserId = res.userId;
+            Debug.LogWarning("UserId: " + res.userId.ToString());
             ParcelationManager.Instance.UpdateParcelation(newState);
             //Hide loader overlay
             UiCanvasManager.Instance.CongratulatoryScreen();
@@ -79,6 +83,7 @@ public class ConnectionManager : MonoBehaviour
     {
         if (!isConnecting)
         {
+            Debug.LogError("Uploading: " + jsonInput);
             isConnecting = true;
             WWWForm form = new WWWForm();
             form.AddField("UserInput", jsonInput);
@@ -136,6 +141,13 @@ public class ConnectionManager : MonoBehaviour
         yield return new WaitForSeconds(updateDuration);
         StartCoroutine(IEGetMessages());
     }
+}
+
+[System.Serializable]
+public class GetParcelationResult
+{
+    public string parcelation;
+    public string ssCount;
 }
 
 [System.Serializable]

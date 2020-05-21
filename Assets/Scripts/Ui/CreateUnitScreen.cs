@@ -225,10 +225,16 @@ public class CreateUnitScreen : MonoBehaviour
     private int maxSharedSpaceSelectionCount = 3;
     private HashSet<SharedSpace> SelectedSharedSpaces = new HashSet<SharedSpace>();
     private List<Transform> q6ButtonTransforms = new List<Transform>();
+    private List<TMPro.TextMeshProUGUI> ssCounterText = new List<TMPro.TextMeshProUGUI>();
 
     // To prevent bug where things get accessed before OnEnable is called
+    public static CreateUnitScreen Instance { get; private set; }
     void Awake()
     {
+        if (Instance != null && Instance != this)
+            Destroy(this.gameObject);
+        else
+            Instance = this;
         questionCount = questionView.transform.childCount;
         for (int i = 0; i < questionCount; ++i)
         {
@@ -405,6 +411,7 @@ public class CreateUnitScreen : MonoBehaviour
                         }
                     });
                     q6ButtonTransforms.Add(button);
+                    ssCounterText.Add(button.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>());
                 }
                 isQuestionDone.Add(true);
                 break;
@@ -413,17 +420,42 @@ public class CreateUnitScreen : MonoBehaviour
         }
     }
 
-
-
     void SetQ5ButtonState(Transform button,bool state)
     {
         if (state)
         {
             button.GetChild(0).GetComponent<RawImage>().color = Color.white;
+            try
+            {
+                button.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().color = Color.white;
+            }
+            catch (System.Exception e) { }
         }
         else
         {
             button.GetChild(0).GetComponent<RawImage>().color = Color.black;
+            try
+            {
+                button.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().color = Color.black;
+            }
+            catch (System.Exception e) { }
+        }
+    }
+
+    public void UpdateQ6Counters(Dictionary<string, int> newCount)
+    {
+        foreach (KeyValuePair<string, int> item in newCount)
+        {
+            SharedSpace ss;
+            if (System.Enum.TryParse<SharedSpace>(item.Key, out ss))
+            {
+                int i = (int)ss;
+                if (i < ssCounterText.Count)
+                {
+                    ssCounterText[i].text = string.Format("Votes: {0}", item.Value);
+                }
+            }
+
         }
     }
 
@@ -437,6 +469,9 @@ public class CreateUnitScreen : MonoBehaviour
         userInput.requiredRooms[RequiredRooms.SingleBedroom.ToString()] = SelectedRequiredRooms[RequiredRooms.SingleBedroom];
         userInput.requiredRooms[RequiredRooms.SharedBedroom.ToString()] = SelectedRequiredRooms[RequiredRooms.SharedBedroom];
         userInput.requiredRooms[RequiredRooms.Study.ToString()] = SelectedRequiredRooms[RequiredRooms.Study];
+        //bug fix to allow algorithm to allocate rooms
+        if (SelectedRequiredRooms[RequiredRooms.SingleBedroom] + SelectedRequiredRooms[RequiredRooms.SharedBedroom] + SelectedRequiredRooms[RequiredRooms.Study] == 0)
+            SelectedRequiredRooms[RequiredRooms.SingleBedroom] = 1;
         int row = SelectedLocation / colSt.Length;
         int col = SelectedLocation - row * colSt.Length;
         //print(string.Format("[{0},{1}]", row, col));
