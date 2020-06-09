@@ -33,6 +33,12 @@ public class ParcelationManager : MonoBehaviour
             _roomMode = value;
         }
     }
+
+    public Camera cam;
+    [SerializeField]
+    private RectTransform messageOverlay;
+    [SerializeField]
+    private GameObject messageBubble2D;
     public bool ShowMessages { get; set; }
     public bool _messageLock = false;
     public int TopicCursor { get; set; }
@@ -142,31 +148,50 @@ public class ParcelationManager : MonoBehaviour
                     BuildingUnit u = currentBuildingState[i];
                     System.Random n = new System.Random();
                     int j = Random.Range(u.loc[0], u.loc[1] + 1);
-                    GameObject o;
-                    if (j < 8)
+                    
+                    Vector3 pos = floors[u.floor].roomUnits[j].transform.position;
+                    Vector3 camPos = cam.WorldToScreenPoint(floors[u.floor].roomUnits[j].transform.position);
+                    //Debug.LogError("ScreenPos:");
+                    //Debug.LogError(camPos);
+
+                    if (camPos.z > 0)
                     {
-                        o = Instantiate(bubbleLeftPrefab);
-                        o.transform.SetParent(floors[u.floor].roomUnits[j].transform);
-                        o.transform.localPosition = new Vector3(-0.112f, 0.062f, -0.111f);
-                        if (j == 2 || j == 3 || j == 7)
-                            o.transform.localPosition = new Vector3(-0.112f, 0.062f, -0.189f);
+                        //TODO: update position in local script
+                        GameObject m = Instantiate(messageBubble2D, cam.WorldToScreenPoint(floors[u.floor].roomUnits[j].transform.position), messageBubble2D.transform.rotation, messageOverlay);
+                        m.transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = messageTopics[TopicCursor].messages[messageIndex].message;
+                        m.GetComponent<MessageBubble2D>().trackedPos = pos;
+                        //GameObject m = Instantiate(messageBubble2D);
+                        //m.transform.SetParent(messageOverlay);
+                        //m.GetComponent<RectTransform>().anchoredPosition = screenPos;
                     }
-                    else
-                    {
-                        //print(string.Format("x={0} y={1}", j, i));
-                        o = Instantiate(bubbleRightPrefab);
-                        o.transform.SetParent(floors[u.floor].roomUnits[j].transform);
-                        o.transform.localPosition = new Vector3(0.112f, 0.062f, -0.111f);
-                        if (j == 8 || j == 12 || j == 13)
-                            o.transform.localPosition = new Vector3(0.112f, 0.062f, -0.189f);
-                    }
-                    o.transform.localRotation = Quaternion.Euler(-90, 0, 180);
-                    o.GetComponent<Bubble>().SetText(messageTopics[TopicCursor].messages[messageIndex].message);
-                    print(string.Format("Message spawned at [{0},{1}]", i, j));
-                    //print(string.Format("message topic: {0}: {1}. {2}", TopicCursor, messageIndex, messageTopics[TopicCursor].messages[messageIndex].message));
-                    int c = colorSeed++ % bubbleColors.Length;
-                    o.GetComponent<Renderer>().material.SetColor("_Color", bubbleColors[c]);
-                    o.GetComponent<Renderer>().material.SetColor("_EmissionColor", bubbleColors[c]);
+
+                    //--Scene spawn mesh method
+                    //GameObject o;
+                    //if (j < 8)
+                    //{
+                    //    o = Instantiate(bubbleLeftPrefab);
+                    //    o.transform.SetParent(floors[u.floor].roomUnits[j].transform);
+                    //    o.transform.localPosition = new Vector3(-0.112f, 0.062f, -0.111f);
+                    //    if (j == 2 || j == 3 || j == 7)
+                    //        o.transform.localPosition = new Vector3(-0.112f, 0.062f, -0.189f);
+                    //}
+                    //else
+                    //{
+                    //    //print(string.Format("x={0} y={1}", j, i));
+                    //    o = Instantiate(bubbleRightPrefab);
+                    //    o.transform.SetParent(floors[u.floor].roomUnits[j].transform);
+                    //    o.transform.localPosition = new Vector3(0.112f, 0.062f, -0.111f);
+                    //    if (j == 8 || j == 12 || j == 13)
+                    //        o.transform.localPosition = new Vector3(0.112f, 0.062f, -0.189f);
+                    //}
+                    //o.transform.localRotation = Quaternion.Euler(-90, 0, 180);
+                    //o.GetComponent<Bubble>().SetText(messageTopics[TopicCursor].messages[messageIndex].message);
+                    //print(string.Format("Message spawned at [{0},{1}]", i, j));
+                    ////print(string.Format("message topic: {0}: {1}. {2}", TopicCursor, messageIndex, messageTopics[TopicCursor].messages[messageIndex].message));
+                    //int c = colorSeed++ % bubbleColors.Length;
+                    //o.GetComponent<Renderer>().material.SetColor("_Color", bubbleColors[c]);
+                    //o.GetComponent<Renderer>().material.SetColor("_EmissionColor", bubbleColors[c]);
+
                     messageIndex++;
                 }
                 else break;

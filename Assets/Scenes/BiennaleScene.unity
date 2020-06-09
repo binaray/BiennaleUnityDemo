@@ -580,6 +580,12 @@ Transform:
   m_Father: {fileID: 405069954}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!224 &474297237 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7247942880342748324, guid: 1fe7ba326e934f747ade3a1bd21bae09,
+    type: 3}
+  m_PrefabInstance: {fileID: 582407019}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &582407019
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4164,6 +4170,10 @@ MonoBehaviour:
     type: 3}
   yOffset: 0.0455
   floorCount: 34
+  cam: {fileID: 837464074}
+  messageOverlay: {fileID: 474297237}
+  messageBubble2D: {fileID: 6266869036343800767, guid: 11b15d2bee119674e8a25c54ffddc1da,
+    type: 3}
   _messageLock: 0
   messageTopics: []
   bubbleSpanProb: 0.01
