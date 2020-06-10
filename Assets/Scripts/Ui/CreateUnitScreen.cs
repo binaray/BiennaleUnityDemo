@@ -452,7 +452,7 @@ public class CreateUnitScreen : MonoBehaviour
                 int i = (int)ss;
                 if (i < ssCounterText.Count)
                 {
-                    ssCounterText[i].text = string.Format("Votes: {0}", item.Value);
+                    ssCounterText[i].text = string.Format("{0} votes", item.Value);
                 }
             }
 
