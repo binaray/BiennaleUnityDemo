@@ -204,4 +204,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db0d35defe6d87d41b5d5240adaa72fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  x: 2
+  x: 4
+  trackedPos: {x: 0, y: 0, z: 0}

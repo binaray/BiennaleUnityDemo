@@ -61,7 +61,8 @@ public class ParcelationManager : MonoBehaviour
 
     [SerializeField]
     private float spriteUpdateTime = 1f;
-    public static List<Sprite> sprites = new List<Sprite>();
+    // public static List<Sprite> sprites = new List<Sprite>();
+    public static Dictionary<int, Sprite> sprites = new Dictionary<int, Sprite>();
 
     [HideInInspector]
     public double currentUserId = -1;
@@ -82,9 +83,14 @@ public class ParcelationManager : MonoBehaviour
         for (int i = 0; i < 9; i++)
         {
             string str = "Sprites/Parcelation/" + (i).ToString();
-            sprites.Add(Resources.Load<Sprite>(str));
+            sprites.Add(i, Resources.Load<Sprite>(str));
         }
-        sprites.Add(Resources.Load<Sprite>("Sprites/Parcelation/work"));
+        sprites.Add(9, Resources.Load<Sprite>("Sprites/Parcelation/work"));
+        for (int i = 100; i < 116; i++)
+        {
+            string str = "Sprites/Parcelation/" + (i).ToString();
+            sprites.Add(i, Resources.Load<Sprite>(str));
+        }
 
         for (int i = 0; i < floorCount; i++)
         {

@@ -708,18 +708,22 @@ public enum RequiredRooms
 
 public enum SharedSpace
 {
-    Farm,
+    Cafeteria,
+    CommunityFarm,
+    FitnessCentre,
+    SportsHall,
     Lounge,
-    Makerspace,
-    Cafes,
-    Clinic,
-    Eldercare,
-    Childcare,
     Salon,
-    Gym,
-    Market,
     Library,
-    Playscape
+    Tailor,
+    Market,
+    Playscape,
+    PlayRoom,
+    Restaurant,
+    MultiGenCenter,
+    HealthcareClinic,
+    Makerspace,
+    Childcare
 }
 
 [System.Serializable]
