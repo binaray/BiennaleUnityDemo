@@ -183,6 +183,10 @@ public class CreateUnitScreen : MonoBehaviour
     TMPro.TMP_Dropdown singleBedroomsDropdown;
     TMPro.TMP_Dropdown sharedBedroomsDropdown;
     TMPro.TMP_Dropdown studyroomsDropdown;
+    List<Button> singleBedroomButtons;
+    List<Button> sharedBedroomButtons;
+    List<Button> studyroomButtons;
+
     public Dictionary<RequiredRooms, int> SelectedRequiredRooms = new Dictionary<RequiredRooms, int>()
     {
         { RequiredRooms.SingleBedroom, 0 },
@@ -428,6 +432,7 @@ public class CreateUnitScreen : MonoBehaviour
             try
             {
                 button.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().color = Color.white;
+                button.GetChild(2).GetComponent<TMPro.TextMeshProUGUI>().color = Color.white;
             }
             catch (System.Exception e) { }
         }
@@ -437,6 +442,7 @@ public class CreateUnitScreen : MonoBehaviour
             try
             {
                 button.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().color = Color.black;
+                button.GetChild(2).GetComponent<TMPro.TextMeshProUGUI>().color = Color.black;
             }
             catch (System.Exception e) { }
         }

@@ -119,9 +119,6 @@ public class Floor : MonoBehaviour
             else
                 unitTypeIndex = -1;
         }
-
-        //TODO: handle shared spaces
-        
     }
 
     public void SetEmptyState()
@@ -142,33 +139,34 @@ public class Floor : MonoBehaviour
 
     public void AddUnit(BuildingUnit u)
     {
-        int unitTypeIndex;
 
-        if (System.Enum.TryParse(u.type, out LivingArrangement lv))
-        {
-            unitTypeIndex = (int)lv;
-        }
-        else
-        {
-            if (System.Enum.TryParse(u.type, out SharedSpace ss))
-                unitTypeIndex = (int)ss;
-            else
-                unitTypeIndex = -1;
-        }
-        //TODO: handle shared spaces
         if (u.user_id == ParcelationManager.Instance.currentUserId)
         {
             for (int x = u.loc[0]; x <= u.loc[1]; x++)
             {
                 roomUnits[x].SetActive(true);
                 Renderer r = roomUnits[x].transform.GetChild(1).GetComponent<Renderer>();
-                r.material.SetColor("_Color", unitType[100]._Color);
+                r.material.SetColor("_Color", unitType[100]._Color);    //TODO: Additional Hightlights
                 r.material.SetColor("_EmissionColor", unitType[100]._EmissionColor);
                 r.material.renderQueue = 3002;
             }
         }
         else
         {
+
+            int unitTypeIndex;
+
+            if (System.Enum.TryParse(u.type, out LivingArrangement lv))
+            {
+                unitTypeIndex = (int)lv;
+            }
+            else
+            {
+                if (System.Enum.TryParse(u.type, out SharedSpace ss))
+                    unitTypeIndex = 100 + (int)ss;
+                else
+                    unitTypeIndex = -1;
+            }
             for (int x = u.loc[0]; x <= u.loc[1]; x++)
             {
                 roomUnits[x].SetActive(true);
