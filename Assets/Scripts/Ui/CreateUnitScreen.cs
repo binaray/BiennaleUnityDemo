@@ -118,6 +118,13 @@ public class CreateUnitScreen : MonoBehaviour
     }
 
     //q1 params
+    private static string[] AgeGroupSt =
+    {
+        "YOUTH & ADULT | <40",
+        "MIDLIFE | 40-60",
+        "ELDERLY | >60"
+    };
+    TMPro.TextMeshProUGUI q1StDisp;
     private List<Transform> q1ButtonTranforms = new List<Transform>();
     private AgeGroup _selectedAgeGroup;
     public AgeGroup SelectedAgeGroup
@@ -129,16 +136,26 @@ public class CreateUnitScreen : MonoBehaviour
         private set
         {
             if (value != AgeGroup.None)
+            {
                 for (int i = 0; i < q1ButtonTranforms.Count; i++)
                 {
                     if (i == (int)value)
-                        SetShowTextButtonState(q1ButtonTranforms[i], ButtonState.Selected);
+                    {
+                        SetButtonState(q1ButtonTranforms[i], ButtonState.Selected);
+                        q1StDisp.text = AgeGroupSt[i];
+                        Debug.LogWarning(AgeGroupSt[i]);
+                    }
                     else
-                        SetShowTextButtonState(q1ButtonTranforms[i], ButtonState.Unselected);
+                        SetButtonState(q1ButtonTranforms[i], ButtonState.Unselected);
                 }
+            }
             else
+            {
+                q1StDisp.text = "";
+                Debug.LogWarning("AgeGroupSt unset");
                 foreach (Transform button in q1ButtonTranforms)
-                    SetShowTextButtonState(button, ButtonState.None);
+                    SetButtonState(button, ButtonState.None);
+            }
             _selectedAgeGroup = value;
         }
     }
@@ -272,13 +289,14 @@ public class CreateUnitScreen : MonoBehaviour
                 isQuestionDone.Add(false);
                 break;
             case 1:
-                for (int i = 0; i < questions[questionNum].transform.childCount; i++)
+                q1StDisp = questions[questionNum].transform.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>();
+                for (int i = 1; i < questions[questionNum].transform.childCount; i++)
                 {
                     int tempInt = i;
                     Transform button = questions[questionNum].transform.GetChild(tempInt);
                     button.GetComponent<Button>().onClick.AddListener(() =>
                     {
-                        SelectedAgeGroup = (AgeGroup)tempInt;
+                        SelectedAgeGroup = (AgeGroup)(tempInt-1);
                         isQuestionDone[1] = true;
                         ToggleNav(1);
                         //NextQuestion();
