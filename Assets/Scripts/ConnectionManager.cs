@@ -14,6 +14,7 @@ public class ConnectionManager : MonoBehaviour
     private int maxRetries = 5;
     public int SuggestedUnitTypeIndex { get; set; }
     private bool isConnecting = false;
+    public CreateUnitScreen createUnitScreen;
 
     public static ConnectionManager Instance { get; private set; }
     private void Awake()
@@ -27,7 +28,7 @@ public class ConnectionManager : MonoBehaviour
     void Start()
     {
         //StartCoroutine(IERetrieveServerState());
-        //StartCoroutine(IEGetMessages());
+        StartCoroutine(IEGetMessages());
 
         string pTest = "{\"parcelation\": \"[{\\\"user_id\\\":0.0,\\\"floor\\\":0,\\\"loc\\\":[0,9],\\\"type\\\":\\\"Cafeteria\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Cafeteria\\\",\\\"ss\\\":1}},{\\\"user_id\\\":1591783415.5496323109,\\\"floor\\\":0,\\\"loc\\\":[13,15],\\\"type\\\":\\\"Assisted\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Assisted\\\",\\\"ageGroup\\\":\\\"Elderly\\\",\\\"pax\\\":2,\\\"affordable\\\":true,\\\"requiredRooms\\\":{\\\"SingleBedroom\\\":0,\\\"SharedBedroom\\\":0,\\\"Study\\\":2},\\\"location\\\":[\\\"0\\\",\\\"1\\\"],\\\"preferredSharedSpaces\\\":[\\\"Lounge\\\",\\\"Salon\\\",\\\"Cafeteria\\\"]}},{\\\"user_id\\\":2.0,\\\"floor\\\":13,\\\"loc\\\":[3,12],\\\"type\\\":\\\"FitnessCentre\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"FitnessCentre\\\",\\\"ss\\\":1}},{\\\"user_id\\\":4.0,\\\"floor\\\":17,\\\"loc\\\":[0,9],\\\"type\\\":\\\"Lounge\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Lounge\\\",\\\"ss\\\":1}},{\\\"user_id\\\":1.0,\\\"floor\\\":31,\\\"loc\\\":[1,10],\\\"type\\\":\\\"CommunityFarm\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"CommunityFarm\\\",\\\"ss\\\":1}},{\\\"user_id\\\":3.0,\\\"floor\\\":32,\\\"loc\\\":[1,10],\\\"type\\\":\\\"SportsHall\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"SportsHall\\\",\\\"ss\\\":1}}]\", \"ssCount\": \"{\\\"Cafeteria\\\": 1, \\\"CommunityFarm\\\": 0, \\\"FitnessCentre\\\": 0, \\\"SportsHall\\\": 0, \\\"Lounge\\\": 1, \\\"Salon\\\": 1, \\\"Library\\\": 0, \\\"Tailor\\\": 0, \\\"Market\\\": 0, \\\"Playscape\\\": 0, \\\"PlayRoom\\\": 0, \\\"Restaurant\\\": 0, \\\"MultiGenCenter\\\": 0, \\\"HealthcareClinic\\\": 0, \\\"Makerspace\\\": 0, \\\"Childcare\\\": 0}\", \"inputCount\": 1}";
         GetParcelationResult result = Newtonsoft.Json.JsonConvert.DeserializeObject<GetParcelationResult>(pTest);
@@ -36,9 +37,6 @@ public class ConnectionManager : MonoBehaviour
         ParcelationManager.Instance.UpdateParcelation(newState);
         CreateUnitScreen.Instance.UpdateQ6Counters(ssCount);
 
-        string mTest = "[{\"topic\": \"How do we live together?\", \"topicId\": 1, \"messages\": [{\"messageId\": 2, \"message\": \"Sport Utiliy Wear\", \"reply\": -1, \"timestamp\": 1590364108}, {\"messageId\": 1, \"message\": \"Hello everyone!\", \"reply\": -1, \"timestamp\": 1590364108}]}, {\"topic\": \"What will the world be in 20 years?\", \"topicId\": 2, \"messages\": [{\"messageId\": 5, \"message\": \"Magnificient bear cubs\", \"reply\": -1, \"timestamp\": 1590364108}, {\"messageId\": 4, \"message\": \"Save the turtles\", \"reply\": \"Sport Utiliy Wear\", \"timestamp\": 1590364108}, {\"messageId\": 3, \"message\": \"Tiger skin for sale\", \"reply\": -1, \"timestamp\": 1590364108}]}]";
-        List<MessageTopic> newMessageTopics = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MessageTopic>>(mTest);
-        ParcelationManager.Instance.messageTopics = newMessageTopics;
     }
 
     private IEnumerator IERetrieveServerState()
@@ -142,6 +140,9 @@ public class ConnectionManager : MonoBehaviour
         if (www.isNetworkError || www.isHttpError)
         {
             Debug.LogError(www.error);
+            string mTest = "[{\"topic\": \"How do we live together?\", \"topicId\": 1, \"messages\": [{\"messageId\": 2, \"message\": \"Sport Utiliy Wear\", \"reply\": -1, \"timestamp\": 1590364108}, {\"messageId\": 1, \"message\": \"Hello everyone!\", \"reply\": -1, \"timestamp\": 1590364108}]}, {\"topic\": \"What will the world be in 20 years?\", \"topicId\": 2, \"messages\": [{\"messageId\": 5, \"message\": \"Magnificient bear cubs\", \"reply\": -1, \"timestamp\": 1590364108}, {\"messageId\": 4, \"message\": \"Save the turtles\", \"reply\": \"Sport Utiliy Wear\", \"timestamp\": 1590364108}, {\"messageId\": 3, \"message\": \"Tiger skin for sale\", \"reply\": -1, \"timestamp\": 1590364108}]}]";
+            List<MessageTopic> newMessageTopics = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MessageTopic>>(mTest);
+            ParcelationManager.Instance.messageTopics = newMessageTopics;
         }
         else
         {

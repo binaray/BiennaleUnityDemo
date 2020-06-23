@@ -138,7 +138,8 @@ public class ParcelationManager : MonoBehaviour
 
     IEnumerator GenerateSpeechBubble()
     {
-        if (ShowMessages && messageTopics != null)
+        print(messageTopics.Count);
+        if (ShowMessages && messageTopics != null && messageTopics.Count != 0)
         {
             _messageLock = true;
             TopicCursor = (TopicCursor + 1) % messageTopics.Count;

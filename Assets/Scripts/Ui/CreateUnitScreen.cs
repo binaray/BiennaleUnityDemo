@@ -43,6 +43,12 @@ public class CreateUnitScreen : MonoBehaviour
         { ButtonState.Selected, new Color(0, 0, 0, 1)},
         { ButtonState.Unselected, new Color(.75f, .75f, .75f, .5f)}
     };
+    private Dictionary<ButtonState, Color> q4buttonStateColors = new Dictionary<ButtonState, Color>()
+    {
+        { ButtonState.None, new Color(0, 0, 0, 1f)},
+        { ButtonState.Selected, new Color(1f, 0, 0, 1)},
+        { ButtonState.Unselected, new Color(.75f, .75f, .75f, .5f)}
+    };
     private List<bool> isQuestionDone = new List<bool>();
 
     //q0 params
@@ -197,12 +203,190 @@ public class CreateUnitScreen : MonoBehaviour
 
     //q4 params //NO GETTER SETTER FOR THIS. STATIC IMPLEMENTATION IN SETUP
     private int maxRoomCount = 6;
-    TMPro.TMP_Dropdown singleBedroomsDropdown;
-    TMPro.TMP_Dropdown sharedBedroomsDropdown;
-    TMPro.TMP_Dropdown studyroomsDropdown;
-    List<Button> singleBedroomButtons;
-    List<Button> sharedBedroomButtons;
-    List<Button> studyroomButtons;
+    TMPro.TMP_Dropdown singleBedroomsDropdown, sharedBedroomsDropdown, studyroomsDropdown;
+    List<Transform> singleBedroomButtons = new List<Transform>(), sharedBedroomButtons = new List<Transform>(), studyroomButtons = new List<Transform>();
+    private int _singleBedroomCount = 0;
+    int SingleBedroomCount {
+        get { return _singleBedroomCount; }
+        set
+        {
+            int singleBedroomsMax = maxRoomCount - SharedBedroomCount - StudyRoomCount;
+            for (int i = 0; i < singleBedroomButtons.Count; i++)
+            {
+                int tempInt = i;
+                if (tempInt == value)
+                {
+                    SetQ4ButtonState(singleBedroomButtons[tempInt], ButtonState.Selected);
+                }
+                else if (tempInt <= singleBedroomsMax)
+                {
+                    SetQ4ButtonState(singleBedroomButtons[tempInt], ButtonState.None);
+                }
+                else
+                {
+                    SetQ4ButtonState(singleBedroomButtons[tempInt], ButtonState.Unselected);
+                }
+            }
+            int sharedBedroomsMax = maxRoomCount - value - StudyRoomCount;
+            for (int i = 0; i < sharedBedroomButtons.Count; i++)
+            {
+                int tempInt = i;
+                if (tempInt == SharedBedroomCount)
+                {
+                    SetQ4ButtonState(sharedBedroomButtons[tempInt], ButtonState.Selected);
+                }
+                else if (tempInt <= sharedBedroomsMax)
+                {
+                    SetQ4ButtonState(sharedBedroomButtons[tempInt], ButtonState.None);
+                }
+                else {
+                    SetQ4ButtonState(sharedBedroomButtons[tempInt], ButtonState.Unselected);
+                }
+            }
+            int studyroomMax = maxRoomCount - value - SharedBedroomCount;
+            for (int i = 0; i < studyroomButtons.Count; i++)
+            {
+                int tempInt = i;
+                if (tempInt == StudyRoomCount)
+                {
+                    SetQ4ButtonState(studyroomButtons[tempInt], ButtonState.Selected);
+                }
+                else if (tempInt <= studyroomMax)
+                {
+                    SetQ4ButtonState(studyroomButtons[tempInt], ButtonState.None);
+                }
+                else
+                {
+                    SetQ4ButtonState(studyroomButtons[tempInt], ButtonState.Unselected);
+                }
+            }
+            print(value);
+            _singleBedroomCount = value;
+        }
+    }
+    private int _sharedBedroomCount = 0;
+    int SharedBedroomCount
+    {
+        get { return _sharedBedroomCount; }
+        set
+        {
+            int sharedBedroomsMax = maxRoomCount - SingleBedroomCount - StudyRoomCount;
+            for (int i = 0; i < sharedBedroomButtons.Count; i++)
+            {
+                int tempInt = i;
+                if (tempInt == value)
+                {
+                    SetQ4ButtonState(sharedBedroomButtons[tempInt], ButtonState.Selected);
+                }
+                else if (tempInt <= sharedBedroomsMax)
+                {
+                    SetQ4ButtonState(sharedBedroomButtons[tempInt], ButtonState.None);
+                }
+                else
+                {
+                    SetQ4ButtonState(sharedBedroomButtons[tempInt], ButtonState.Unselected);
+                }
+            }
+            int singleBedroomMax = maxRoomCount - value - StudyRoomCount;
+            for (int i = 0; i < singleBedroomButtons.Count; i++)
+            {
+                int tempInt = i;
+                if (tempInt == SingleBedroomCount)
+                {
+                    SetQ4ButtonState(singleBedroomButtons[tempInt], ButtonState.Selected);
+                }
+                else if (tempInt <= singleBedroomMax)
+                {
+                    SetQ4ButtonState(singleBedroomButtons[tempInt], ButtonState.None);
+                }
+                else
+                {
+                    SetQ4ButtonState(singleBedroomButtons[tempInt], ButtonState.Unselected);
+                }
+            }
+            int studyroomMax = maxRoomCount - value - SingleBedroomCount;
+            for (int i = 0; i < studyroomButtons.Count; i++)
+            {
+                int tempInt = i;
+                if (tempInt == StudyRoomCount)
+                {
+                    SetQ4ButtonState(studyroomButtons[tempInt], ButtonState.Selected);
+                }
+                else if (tempInt <= studyroomMax)
+                {
+                    SetQ4ButtonState(studyroomButtons[tempInt], ButtonState.None);
+                }
+                else
+                {
+                    SetQ4ButtonState(studyroomButtons[tempInt], ButtonState.Unselected);
+                }
+            }
+            print(value);
+            _sharedBedroomCount = value;
+        }
+    }
+    private int _studyRoomCount = 0;
+    int StudyRoomCount
+    {
+        get { return _studyRoomCount; }
+        set
+        {
+            int studyRoomsMax = maxRoomCount - SingleBedroomCount - SharedBedroomCount;
+            for (int i = 0; i < studyroomButtons.Count; i++)
+            {
+                int tempInt = i;
+                if (tempInt == value)
+                {
+                    SetQ4ButtonState(studyroomButtons[tempInt], ButtonState.Selected);
+                }
+                else if (tempInt <= studyRoomsMax)
+                {
+                    SetQ4ButtonState(studyroomButtons[tempInt], ButtonState.None);
+                }
+                else
+                {
+                    SetQ4ButtonState(studyroomButtons[tempInt], ButtonState.Unselected);
+                }
+            }
+            int singleBedroomMax = maxRoomCount - value - SharedBedroomCount;
+            for (int i = 0; i < singleBedroomButtons.Count; i++)
+            {
+                int tempInt = i;
+                if (tempInt == SingleBedroomCount)
+                {
+                    SetQ4ButtonState(singleBedroomButtons[tempInt], ButtonState.Selected);
+                }
+                else if (tempInt <= singleBedroomMax)
+                {
+                    SetQ4ButtonState(singleBedroomButtons[tempInt], ButtonState.None);
+                }
+                else
+                {
+                    SetQ4ButtonState(singleBedroomButtons[tempInt], ButtonState.Unselected);
+                }
+            }
+            int sharedBedroomsMax = maxRoomCount - value - SingleBedroomCount;
+            for (int i = 0; i < sharedBedroomButtons.Count; i++)
+            {
+                int tempInt = i;
+                if (tempInt == SharedBedroomCount)
+                {
+                    SetQ4ButtonState(sharedBedroomButtons[tempInt], ButtonState.Selected);
+                }
+                else if (tempInt <= sharedBedroomsMax)
+                {
+                    SetQ4ButtonState(sharedBedroomButtons[tempInt], ButtonState.None);
+                }
+                else
+                {
+                    SetQ4ButtonState(sharedBedroomButtons[tempInt], ButtonState.Unselected);
+                }
+            }
+            print(value);
+            _studyRoomCount = value;
+        }
+    }
+
 
     public Dictionary<RequiredRooms, int> SelectedRequiredRooms = new Dictionary<RequiredRooms, int>()
     {
@@ -392,6 +576,21 @@ public class CreateUnitScreen : MonoBehaviour
                         sharedBedroomsDropdown.value = SelectedRequiredRooms[RequiredRooms.SharedBedroom];
                         SelectedRequiredRooms[RequiredRooms.Study] = value;
                     });
+
+                    for (int i = 1; i < questions[questionNum].transform.GetChild(3).childCount; i++)
+                    {
+                        singleBedroomButtons.Add(questions[questionNum].transform.GetChild(3).GetChild(i));
+                        sharedBedroomButtons.Add(questions[questionNum].transform.GetChild(4).GetChild(i));
+                        studyroomButtons.Add(questions[questionNum].transform.GetChild(5).GetChild(i));
+                    }
+
+                    for (int i = 0; i < singleBedroomButtons.Count; i++)
+                    {
+                        int tempInt = i;
+                        singleBedroomButtons[tempInt].GetChild(0).GetComponent<Button>().onClick.AddListener(() => { SingleBedroomCount = tempInt; });
+                        sharedBedroomButtons[tempInt].GetChild(0).GetComponent<Button>().onClick.AddListener(() => { SharedBedroomCount = tempInt; });
+                        studyroomButtons[tempInt].GetChild(0).GetComponent<Button>().onClick.AddListener(() => { StudyRoomCount = tempInt; });
+                    }
                 }
                 isQuestionDone.Add(true);
                 break;
@@ -421,14 +620,14 @@ public class CreateUnitScreen : MonoBehaviour
                         if (SelectedSharedSpaces.Contains((SharedSpace)tempInt))
                         {
                             SelectedSharedSpaces.Remove((SharedSpace)tempInt);
-                            SetQ5ButtonState(button, false);
+                            SetQ6ButtonState(button, false);
                         }
                         else
                         {
                             if (SelectedSharedSpaces.Count < maxSharedSpaceSelectionCount)
                             {
                                 SelectedSharedSpaces.Add((SharedSpace)tempInt);
-                                SetQ5ButtonState(button, true);
+                                SetQ6ButtonState(button, true);
                             }
                         }
                     });
@@ -441,8 +640,18 @@ public class CreateUnitScreen : MonoBehaviour
                 break;
         }
     }
-
-    void SetQ5ButtonState(Transform button,bool state)
+    void SetQ5ButtonState(Transform button, bool state)
+    {
+        if (state)
+        {
+            button.GetChild(0).GetComponent<RawImage>().color = new Color(1, 0, 0, 0.5803922f);
+        }
+        else
+        {
+            button.GetChild(0).GetComponent<RawImage>().color = Color.clear;
+        }
+    }
+    void SetQ6ButtonState(Transform button,bool state)
     {
         if (state)
         {
@@ -526,10 +735,13 @@ public class CreateUnitScreen : MonoBehaviour
         singleBedroomsDropdown.value = 0;
         sharedBedroomsDropdown.value = 0;
         studyroomsDropdown.value = 0;
+        SingleBedroomCount = 0;
+        SharedBedroomCount = 0;
+        StudyRoomCount = 0;
         SelectedLocation = -1;
         SelectedSharedSpaces.Clear();
         foreach (Transform t in q6ButtonTransforms)
-            SetQ5ButtonState(t, false);
+            SetQ6ButtonState(t, false);
         transitionLock = false;
     }
     
@@ -549,7 +761,6 @@ public class CreateUnitScreen : MonoBehaviour
 
     private void SetButtonState(Transform button, ButtonState state)
     {
-        print("state changed!");
         RawImage img = button.GetChild(0).GetComponent<RawImage>();
         //GameObject txt = button.GetChild(1).gameObject;
         print(img);
@@ -558,6 +769,15 @@ public class CreateUnitScreen : MonoBehaviour
         //    txt.SetActive(true);
         //else
         //    txt.SetActive(false);
+    }
+
+    private void SetQ4ButtonState(Transform button, ButtonState state)
+    {
+        //RawImage img = button.GetChild(0).GetComponent<RawImage>();
+        //GameObject txt = button.GetChild(1).gameObject;
+        button.transform.GetComponent<TMPro.TextMeshProUGUI>().color = q4buttonStateColors[state];
+        if (state == ButtonState.None) button.transform.GetChild(0).gameObject.SetActive(true);
+        else button.transform.GetChild(0).gameObject.SetActive(false);
     }
 
     void ToggleNav(int newQuestionNum)
