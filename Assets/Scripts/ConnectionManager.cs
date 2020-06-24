@@ -27,15 +27,15 @@ public class ConnectionManager : MonoBehaviour
 
     void Start()
     {
-        //StartCoroutine(IERetrieveServerState());
+        StartCoroutine(IERetrieveServerState());
         StartCoroutine(IEGetMessages());
 
-        string pTest = "{\"parcelation\": \"[{\\\"user_id\\\":0.0,\\\"floor\\\":0,\\\"loc\\\":[0,9],\\\"type\\\":\\\"Cafeteria\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Cafeteria\\\",\\\"ss\\\":1}},{\\\"user_id\\\":1591783415.5496323109,\\\"floor\\\":0,\\\"loc\\\":[13,15],\\\"type\\\":\\\"Assisted\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Assisted\\\",\\\"ageGroup\\\":\\\"Elderly\\\",\\\"pax\\\":2,\\\"affordable\\\":true,\\\"requiredRooms\\\":{\\\"SingleBedroom\\\":0,\\\"SharedBedroom\\\":0,\\\"Study\\\":2},\\\"location\\\":[\\\"0\\\",\\\"1\\\"],\\\"preferredSharedSpaces\\\":[\\\"Lounge\\\",\\\"Salon\\\",\\\"Cafeteria\\\"]}},{\\\"user_id\\\":2.0,\\\"floor\\\":13,\\\"loc\\\":[3,12],\\\"type\\\":\\\"FitnessCentre\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"FitnessCentre\\\",\\\"ss\\\":1}},{\\\"user_id\\\":4.0,\\\"floor\\\":17,\\\"loc\\\":[0,9],\\\"type\\\":\\\"Lounge\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Lounge\\\",\\\"ss\\\":1}},{\\\"user_id\\\":1.0,\\\"floor\\\":31,\\\"loc\\\":[1,10],\\\"type\\\":\\\"CommunityFarm\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"CommunityFarm\\\",\\\"ss\\\":1}},{\\\"user_id\\\":3.0,\\\"floor\\\":32,\\\"loc\\\":[1,10],\\\"type\\\":\\\"SportsHall\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"SportsHall\\\",\\\"ss\\\":1}}]\", \"ssCount\": \"{\\\"Cafeteria\\\": 1, \\\"CommunityFarm\\\": 0, \\\"FitnessCentre\\\": 0, \\\"SportsHall\\\": 0, \\\"Lounge\\\": 1, \\\"Salon\\\": 1, \\\"Library\\\": 0, \\\"Tailor\\\": 0, \\\"Market\\\": 0, \\\"Playscape\\\": 0, \\\"PlayRoom\\\": 0, \\\"Restaurant\\\": 0, \\\"MultiGenCenter\\\": 0, \\\"HealthcareClinic\\\": 0, \\\"Makerspace\\\": 0, \\\"Childcare\\\": 0}\", \"inputCount\": 1}";
-        GetParcelationResult result = Newtonsoft.Json.JsonConvert.DeserializeObject<GetParcelationResult>(pTest);
-        List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(result.parcelation);
-        Dictionary<string, int> ssCount = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, int>>(result.ssCount);
-        ParcelationManager.Instance.UpdateParcelation(newState);
-        CreateUnitScreen.Instance.UpdateQ6Counters(ssCount);
+        //string pTest = "{\"parcelation\": \"[{\\\"user_id\\\":0.0,\\\"floor\\\":0,\\\"loc\\\":[0,9],\\\"type\\\":\\\"Cafeteria\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Cafeteria\\\",\\\"ss\\\":1}},{\\\"user_id\\\":1591783415.5496323109,\\\"floor\\\":0,\\\"loc\\\":[13,15],\\\"type\\\":\\\"Assisted\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Assisted\\\",\\\"ageGroup\\\":\\\"Elderly\\\",\\\"pax\\\":2,\\\"affordable\\\":true,\\\"requiredRooms\\\":{\\\"SingleBedroom\\\":0,\\\"SharedBedroom\\\":0,\\\"Study\\\":2},\\\"location\\\":[\\\"0\\\",\\\"1\\\"],\\\"preferredSharedSpaces\\\":[\\\"Lounge\\\",\\\"Salon\\\",\\\"Cafeteria\\\"]}},{\\\"user_id\\\":2.0,\\\"floor\\\":13,\\\"loc\\\":[3,12],\\\"type\\\":\\\"FitnessCentre\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"FitnessCentre\\\",\\\"ss\\\":1}},{\\\"user_id\\\":4.0,\\\"floor\\\":17,\\\"loc\\\":[0,9],\\\"type\\\":\\\"Lounge\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Lounge\\\",\\\"ss\\\":1}},{\\\"user_id\\\":1.0,\\\"floor\\\":31,\\\"loc\\\":[1,10],\\\"type\\\":\\\"CommunityFarm\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"CommunityFarm\\\",\\\"ss\\\":1}},{\\\"user_id\\\":3.0,\\\"floor\\\":32,\\\"loc\\\":[1,10],\\\"type\\\":\\\"SportsHall\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"SportsHall\\\",\\\"ss\\\":1}}]\", \"ssCount\": \"{\\\"Cafeteria\\\": 1, \\\"CommunityFarm\\\": 0, \\\"FitnessCentre\\\": 0, \\\"SportsHall\\\": 0, \\\"Lounge\\\": 1, \\\"Salon\\\": 1, \\\"Library\\\": 0, \\\"Tailor\\\": 0, \\\"Market\\\": 0, \\\"Playscape\\\": 0, \\\"PlayRoom\\\": 0, \\\"Restaurant\\\": 0, \\\"MultiGenCenter\\\": 0, \\\"HealthcareClinic\\\": 0, \\\"Makerspace\\\": 0, \\\"Childcare\\\": 0}\", \"inputCount\": 1}";
+        //GetParcelationResult result = Newtonsoft.Json.JsonConvert.DeserializeObject<GetParcelationResult>(pTest);
+        //List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(result.parcelation);
+        //Dictionary<string, int> ssCount = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, int>>(result.ssCount);
+        //ParcelationManager.Instance.UpdateParcelation(newState);
+        //CreateUnitScreen.Instance.UpdateQ6Counters(ssCount);
 
     }
 
@@ -73,27 +73,27 @@ public class ConnectionManager : MonoBehaviour
     public void UploadUserInput(string jsonInput)
     {
         //test override code
-        string pTest = "{\"parcelation\": \"[{\\\"user_id\\\":2.0,\\\"floor\\\":2,\\\"loc\\\":[3,12],\\\"type\\\":\\\"FitnessCentre\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"FitnessCentre\\\",\\\"ss\\\":1}},{\\\"user_id\\\":1591783415.5496323109,\\\"floor\\\":2,\\\"loc\\\":[13,15],\\\"type\\\":\\\"Assisted\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Assisted\\\",\\\"ageGroup\\\":\\\"Elderly\\\",\\\"pax\\\":2,\\\"affordable\\\":true,\\\"requiredRooms\\\":{\\\"SingleBedroom\\\":0,\\\"SharedBedroom\\\":0,\\\"Study\\\":2},\\\"location\\\":[\\\"0\\\",\\\"1\\\"],\\\"preferredSharedSpaces\\\":[\\\"Lounge\\\",\\\"Salon\\\",\\\"Cafeteria\\\"]}},{\\\"user_id\\\":3.0,\\\"floor\\\":9,\\\"loc\\\":[0,9],\\\"type\\\":\\\"SportsHall\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"SportsHall\\\",\\\"ss\\\":1}},{\\\"user_id\\\":1591787245.2690422535,\\\"floor\\\":9,\\\"loc\\\":[13,15],\\\"type\\\":\\\"Multi\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Multi\\\",\\\"ageGroup\\\":\\\"Elderly\\\",\\\"pax\\\":3,\\\"affordable\\\":false,\\\"requiredRooms\\\":{\\\"SingleBedroom\\\":0,\\\"SharedBedroom\\\":0,\\\"Study\\\":1},\\\"location\\\":[\\\"2\\\",\\\"1\\\"],\\\"preferredSharedSpaces\\\":[\\\"Salon\\\",\\\"SportsHall\\\",\\\"Cafeteria\\\"]}},{\\\"user_id\\\":1591787369.0874810219,\\\"floor\\\":20,\\\"loc\\\":[4,11],\\\"type\\\":\\\"Multi\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Multi\\\",\\\"ageGroup\\\":\\\"Midlife\\\",\\\"pax\\\":7,\\\"affordable\\\":false,\\\"requiredRooms\\\":{\\\"SingleBedroom\\\":2,\\\"SharedBedroom\\\":2,\\\"Study\\\":2},\\\"location\\\":[\\\"1\\\",\\\"0\\\"],\\\"preferredSharedSpaces\\\":[\\\"Salon\\\",\\\"FitnessCentre\\\",\\\"CommunityFarm\\\"]}},{\\\"user_id\\\":0.0,\\\"floor\\\":23,\\\"loc\\\":[0,9],\\\"type\\\":\\\"Cafeteria\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Cafeteria\\\",\\\"ss\\\":1}},{\\\"user_id\\\":1.0,\\\"floor\\\":31,\\\"loc\\\":[0,9],\\\"type\\\":\\\"CommunityFarm\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"CommunityFarm\\\",\\\"ss\\\":1}},{\\\"user_id\\\":4.0,\\\"floor\\\":27,\\\"loc\\\":[3,12],\\\"type\\\":\\\"Lounge\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Lounge\\\",\\\"ss\\\":1}}]\", \"ssCount\": \"{\\\"Cafeteria\\\": 2, \\\"CommunityFarm\\\": 1, \\\"FitnessCentre\\\": 1, \\\"SportsHall\\\": 1, \\\"Lounge\\\": 1, \\\"Salon\\\": 3, \\\"Library\\\": 0, \\\"Tailor\\\": 0, \\\"Market\\\": 0, \\\"Playscape\\\": 0, \\\"PlayRoom\\\": 0, \\\"Restaurant\\\": 0, \\\"MultiGenCenter\\\": 0, \\\"HealthcareClinic\\\": 0, \\\"Makerspace\\\": 0, \\\"Childcare\\\": 0}\", \"inputCount\": 3}";
-        GetParcelationResult result = Newtonsoft.Json.JsonConvert.DeserializeObject<GetParcelationResult>(pTest);
-        List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(result.parcelation);
-        Dictionary<string, int> ssCount = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, int>>(result.ssCount);
-        ParcelationManager.Instance.UpdateParcelation(newState);
-        CreateUnitScreen.Instance.UpdateQ6Counters(ssCount);
-        UiCanvasManager.Instance.CongratulatoryScreen();
-        Debug.LogError(jsonInput);
+        //string pTest = "{\"parcelation\": \"[{\\\"user_id\\\":2.0,\\\"floor\\\":2,\\\"loc\\\":[3,12],\\\"type\\\":\\\"FitnessCentre\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"FitnessCentre\\\",\\\"ss\\\":1}},{\\\"user_id\\\":1591783415.5496323109,\\\"floor\\\":2,\\\"loc\\\":[13,15],\\\"type\\\":\\\"Assisted\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Assisted\\\",\\\"ageGroup\\\":\\\"Elderly\\\",\\\"pax\\\":2,\\\"affordable\\\":true,\\\"requiredRooms\\\":{\\\"SingleBedroom\\\":0,\\\"SharedBedroom\\\":0,\\\"Study\\\":2},\\\"location\\\":[\\\"0\\\",\\\"1\\\"],\\\"preferredSharedSpaces\\\":[\\\"Lounge\\\",\\\"Salon\\\",\\\"Cafeteria\\\"]}},{\\\"user_id\\\":3.0,\\\"floor\\\":9,\\\"loc\\\":[0,9],\\\"type\\\":\\\"SportsHall\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"SportsHall\\\",\\\"ss\\\":1}},{\\\"user_id\\\":1591787245.2690422535,\\\"floor\\\":9,\\\"loc\\\":[13,15],\\\"type\\\":\\\"Multi\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Multi\\\",\\\"ageGroup\\\":\\\"Elderly\\\",\\\"pax\\\":3,\\\"affordable\\\":false,\\\"requiredRooms\\\":{\\\"SingleBedroom\\\":0,\\\"SharedBedroom\\\":0,\\\"Study\\\":1},\\\"location\\\":[\\\"2\\\",\\\"1\\\"],\\\"preferredSharedSpaces\\\":[\\\"Salon\\\",\\\"SportsHall\\\",\\\"Cafeteria\\\"]}},{\\\"user_id\\\":1591787369.0874810219,\\\"floor\\\":20,\\\"loc\\\":[4,11],\\\"type\\\":\\\"Multi\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Multi\\\",\\\"ageGroup\\\":\\\"Midlife\\\",\\\"pax\\\":7,\\\"affordable\\\":false,\\\"requiredRooms\\\":{\\\"SingleBedroom\\\":2,\\\"SharedBedroom\\\":2,\\\"Study\\\":2},\\\"location\\\":[\\\"1\\\",\\\"0\\\"],\\\"preferredSharedSpaces\\\":[\\\"Salon\\\",\\\"FitnessCentre\\\",\\\"CommunityFarm\\\"]}},{\\\"user_id\\\":0.0,\\\"floor\\\":23,\\\"loc\\\":[0,9],\\\"type\\\":\\\"Cafeteria\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Cafeteria\\\",\\\"ss\\\":1}},{\\\"user_id\\\":1.0,\\\"floor\\\":31,\\\"loc\\\":[0,9],\\\"type\\\":\\\"CommunityFarm\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"CommunityFarm\\\",\\\"ss\\\":1}},{\\\"user_id\\\":4.0,\\\"floor\\\":27,\\\"loc\\\":[3,12],\\\"type\\\":\\\"Lounge\\\",\\\"user_input\\\":{\\\"livingArrangement\\\":\\\"Lounge\\\",\\\"ss\\\":1}}]\", \"ssCount\": \"{\\\"Cafeteria\\\": 2, \\\"CommunityFarm\\\": 1, \\\"FitnessCentre\\\": 1, \\\"SportsHall\\\": 1, \\\"Lounge\\\": 1, \\\"Salon\\\": 3, \\\"Library\\\": 0, \\\"Tailor\\\": 0, \\\"Market\\\": 0, \\\"Playscape\\\": 0, \\\"PlayRoom\\\": 0, \\\"Restaurant\\\": 0, \\\"MultiGenCenter\\\": 0, \\\"HealthcareClinic\\\": 0, \\\"Makerspace\\\": 0, \\\"Childcare\\\": 0}\", \"inputCount\": 3}";
+        //GetParcelationResult result = Newtonsoft.Json.JsonConvert.DeserializeObject<GetParcelationResult>(pTest);
+        //List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(result.parcelation);
+        //Dictionary<string, int> ssCount = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, int>>(result.ssCount);
+        //ParcelationManager.Instance.UpdateParcelation(newState);
+        //CreateUnitScreen.Instance.UpdateQ6Counters(ssCount);
+        //UiCanvasManager.Instance.CongratulatoryScreen();
+        //Debug.LogError(jsonInput);
 
         //Show loader
-        //StartCoroutine(IEUploadUserInput(jsonInput, callback: result =>
-        //{
-        //    Debug.LogWarning(result);
-        //    InputResult res = Newtonsoft.Json.JsonConvert.DeserializeObject<InputResult>(result);
-        //    List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(res.parcelation);
-        //    ParcelationManager.Instance.currentUserId = res.userId;
-        //    Debug.LogWarning("UserId: " + res.userId.ToString());
-        //    ParcelationManager.Instance.UpdateParcelation(newState);
-        //    //Hide loader overlay
-        //    UiCanvasManager.Instance.CongratulatoryScreen();
-        //}));
+        StartCoroutine(IEUploadUserInput(jsonInput, callback: result =>
+        {
+            Debug.LogWarning(result);
+            InputResult res = Newtonsoft.Json.JsonConvert.DeserializeObject<InputResult>(result);
+            List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(res.parcelation);
+            ParcelationManager.Instance.currentUserId = res.userId;
+            Debug.LogWarning("UserId: " + res.userId.ToString());
+            ParcelationManager.Instance.UpdateParcelation(newState);
+            //Hide loader overlay
+            UiCanvasManager.Instance.CongratulatoryScreen();
+        }));
     }
 
     private IEnumerator IEUploadUserInput(string jsonInput, int retries = 0, System.Action<string> callback = null)
@@ -140,9 +140,10 @@ public class ConnectionManager : MonoBehaviour
         if (www.isNetworkError || www.isHttpError)
         {
             Debug.LogError(www.error);
-            string mTest = "[{\"topic\": \"How do we live together?\", \"topicId\": 1, \"messages\": [{\"messageId\": 2, \"message\": \"Sport Utiliy Wear\", \"reply\": -1, \"timestamp\": 1590364108}, {\"messageId\": 1, \"message\": \"Hello everyone!\", \"reply\": -1, \"timestamp\": 1590364108}]}, {\"topic\": \"What will the world be in 20 years?\", \"topicId\": 2, \"messages\": [{\"messageId\": 5, \"message\": \"Magnificient bear cubs\", \"reply\": -1, \"timestamp\": 1590364108}, {\"messageId\": 4, \"message\": \"Save the turtles\", \"reply\": \"Sport Utiliy Wear\", \"timestamp\": 1590364108}, {\"messageId\": 3, \"message\": \"Tiger skin for sale\", \"reply\": -1, \"timestamp\": 1590364108}]}]";
-            List<MessageTopic> newMessageTopics = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MessageTopic>>(mTest);
-            ParcelationManager.Instance.messageTopics = newMessageTopics;
+            //Test code
+            //string mTest = "[{\"topic\": \"How do we live together?\", \"topicId\": 1, \"messages\": [{\"messageId\": 2, \"message\": \"Sport Utiliy Wear\", \"reply\": -1, \"timestamp\": 1590364108}, {\"messageId\": 1, \"message\": \"Hello everyone!\", \"reply\": -1, \"timestamp\": 1590364108}]}, {\"topic\": \"What will the world be in 20 years?\", \"topicId\": 2, \"messages\": [{\"messageId\": 5, \"message\": \"Magnificient bear cubs\", \"reply\": -1, \"timestamp\": 1590364108}, {\"messageId\": 4, \"message\": \"Save the turtles\", \"reply\": \"Sport Utiliy Wear\", \"timestamp\": 1590364108}, {\"messageId\": 3, \"message\": \"Tiger skin for sale\", \"reply\": -1, \"timestamp\": 1590364108}]}]";
+            //List<MessageTopic> newMessageTopics = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MessageTopic>>(mTest);
+            //ParcelationManager.Instance.messageTopics = newMessageTopics;
         }
         else
         {

@@ -39,7 +39,8 @@ public class ParcelationManager : MonoBehaviour
     private RectTransform messageOverlay;
     [SerializeField]
     private GameObject messageBubble2D;
-    public bool ShowMessages { get; set; }
+    private bool _showMessages;
+    public bool ShowMessages { get { return _showMessages; } set { messageOverlay.gameObject.SetActive(value); _showMessages = value; } }
     public bool _messageLock = false;
     public int TopicCursor { get; set; }
     public List<MessageTopic> messageTopics = null;
@@ -52,11 +53,14 @@ public class ParcelationManager : MonoBehaviour
 
     private static Color[] bubbleColors = 
     {
-        new Color(0.031f, 0.612f, 0.533f),
-        new Color(0.643f, 0.137f, 0.506f),
-        new Color(1f, 0.773f, 0.235f),
-        new Color(0.922f, 0.329f, 0.467f),
-        new Color(0.388f, 0.647f, 0.329f)
+        new Color(0.91f, 0.00f, 0.02f),
+        new Color(0.00f, 0.46f, 0.80f),
+        new Color(1.00f, 0.69f, 0.82f),
+        new Color(0.71f, 0.67f, 0.84f),
+        new Color(1.00f, 0.80f, 0.10f),
+        new Color(0.52f, 0.89f, 0.71f),
+        new Color(0.65f, 0.73f, 0.78f),
+        new Color(0.82f, 0.89f, 0.62f)
     };
 
     [SerializeField]
@@ -66,6 +70,13 @@ public class ParcelationManager : MonoBehaviour
 
     [HideInInspector]
     public double currentUserId = -1;
+    [HideInInspector]
+    public List<Renderer> userUnitR = new List<Renderer>();
+    private Vector4 _uColor, currentUColor;
+    [HideInInspector]
+    public Vector4 UColor { get { return _uColor; } set { currentUColor = value; _uColor = value; } }
+    [HideInInspector]
+    public Vector4 uDelta = Vector4.zero;
 
     public static ParcelationManager Instance { get; private set; }
     void Awake()
@@ -118,11 +129,32 @@ public class ParcelationManager : MonoBehaviour
         //TODO: running check
         StartCoroutine(GenerateSpeechBubble());
         //StartCoroutine(UpdateParcelationSprites());
+        StartCoroutine(FlashUserUnit());
 
         ////debugging test code-implementation at connection routine
         //string res = "[{\"user_id\":0.0,\"floor\":1,\"loc\":[0,9],\"type\":\"Farm\",\"user_input\":{\"livingArrangement\":\"Farm\"}},{\"user_id\":1589892632.7520728111,\"floor\":1,\"loc\":[10,14],\"type\":\"Flatshare\",\"user_input\":{\"livingArrangement\":\"Flatshare\",\"ageGroup\":\"Elderly\",\"pax\":2,\"affordable\":true,\"requiredRooms\":{\"SingleBedroom\":0,\"SharedBedroom\":0,\"Study\":0},\"location\":[\"0\",\"1\"],\"preferredSharedSpaces\":[]}},{\"user_id\":3.0,\"floor\":15,\"loc\":[3,12],\"type\":\"Cafes\",\"user_input\":{\"livingArrangement\":\"Cafes\"}},{\"user_id\":4.0,\"floor\":17,\"loc\":[0,9],\"type\":\"Clinic\",\"user_input\":{\"livingArrangement\":\"Clinic\"}},{\"user_id\":1.0,\"floor\":32,\"loc\":[3,12],\"type\":\"Lounge\",\"user_input\":{\"livingArrangement\":\"Lounge\"}},{\"user_id\":2.0,\"floor\":33,\"loc\":[3,12],\"type\":\"Makerspace\",\"user_input\":{\"livingArrangement\":\"Makerspace\"}}]";
         //List<BuildingUnit> newState = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BuildingUnit>>(res);
         //UpdateParcelation(newState);
+    }
+
+    IEnumerator FlashUserUnit()
+    {
+        if (uDelta != Vector4.zero)
+        {
+            print(uDelta);
+            currentUColor =  currentUColor + uDelta;
+            if (currentUColor.magnitude <= UColor.magnitude || currentUColor.magnitude >= 1f)
+            {
+                uDelta *= -1;
+                currentUColor = new Vector4(Mathf.Clamp(currentUColor.x, UColor.x, 1), Mathf.Clamp(currentUColor.y, UColor.y, 1), Mathf.Clamp(currentUColor.z, UColor.z, 1));
+            }
+            for(int i = 0; i < userUnitR.Count; i++)
+            {
+                userUnitR[i].material.SetColor("_EmissionColor", currentUColor);
+            }
+        }
+        yield return new WaitForSeconds(.5f);
+        StartCoroutine(FlashUserUnit());
     }
 
     public static IEnumerable<TValue> RandomValues<TKey, TValue>(IDictionary<TKey, TValue> dict)
@@ -144,7 +176,8 @@ public class ParcelationManager : MonoBehaviour
             TopicCursor = (TopicCursor + 1) % messageTopics.Count;
             int colorSeed = Random.Range(0, bubbleColors.Length);
             int messageIndex = 0;
-
+            int maxCount = 10;
+            //TODO: set message limit?
             // Random with limit for units only
             List<double> rList = (currentBuildingState.Keys.ToList<double>()).OrderBy(a => System.Guid.NewGuid()).ToList(); ;
             foreach (double i in rList)
@@ -165,6 +198,8 @@ public class ParcelationManager : MonoBehaviour
                         //TODO: update position in local script
                         GameObject m = Instantiate(messageBubble2D, cam.WorldToScreenPoint(floors[u.floor].roomUnits[j].transform.position), messageBubble2D.transform.rotation, messageOverlay);
                         m.transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = messageTopics[TopicCursor].messages[messageIndex].message;
+                        int c = colorSeed++ % bubbleColors.Length;
+                        m.GetComponent<UnityEngine.UI.Image>().color = bubbleColors[c];//TopicCursor % bubbleColors.Length];
                         m.GetComponent<MessageBubble2D>().trackedPos = pos;
                         //GameObject m = Instantiate(messageBubble2D);
                         //m.transform.SetParent(messageOverlay);
@@ -199,6 +234,8 @@ public class ParcelationManager : MonoBehaviour
                     //o.GetComponent<Renderer>().material.SetColor("_EmissionColor", bubbleColors[c]);
 
                     messageIndex++;
+                    maxCount--;
+                    if (maxCount <= 0) break;
                 }
                 else break;
             }

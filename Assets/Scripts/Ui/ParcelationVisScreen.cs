@@ -19,7 +19,7 @@ public class ParcelationVisScreen : MonoBehaviour
         RawImage toggleImage = toggleButtonTransform.GetChild(0).GetComponent<RawImage>();
         TMPro.TextMeshProUGUI toggleText = toggleButtonTransform.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>();
         toggleImage.texture = toggleOn;
-        toggleText.color = Color.white;
+        toggleText.color = Color.red;
         toggleText.text = "Hide Messages";
     }
 
@@ -31,7 +31,7 @@ public class ParcelationVisScreen : MonoBehaviour
         if (ParcelationManager.Instance.ShowMessages)
         {
             toggleImage.texture = toggleOn;
-            toggleText.color = Color.white;
+            toggleText.color = Color.red;
             toggleText.text = "Hide Messages";
         }
         else

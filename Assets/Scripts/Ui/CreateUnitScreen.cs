@@ -39,14 +39,8 @@ public class CreateUnitScreen : MonoBehaviour
     //general UI properties
     private Dictionary<ButtonState, Color> buttonStateColors = new Dictionary<ButtonState, Color>()
     {
-        { ButtonState.None, new Color(.75f, .75f, .75f, 1)},
-        { ButtonState.Selected, new Color(0, 0, 0, 1)},
-        { ButtonState.Unselected, new Color(.75f, .75f, .75f, .5f)}
-    };
-    private Dictionary<ButtonState, Color> q4buttonStateColors = new Dictionary<ButtonState, Color>()
-    {
-        { ButtonState.None, new Color(0, 0, 0, 1f)},
-        { ButtonState.Selected, new Color(1f, 0, 0, 1)},
+        { ButtonState.None, new Color(0, 0, 0, 0.75f)},
+        { ButtonState.Selected, new Color(1, 0, 0, 1)},
         { ButtonState.Unselected, new Color(.75f, .75f, .75f, .5f)}
     };
     private List<bool> isQuestionDone = new List<bool>();
@@ -620,14 +614,14 @@ public class CreateUnitScreen : MonoBehaviour
                         if (SelectedSharedSpaces.Contains((SharedSpace)tempInt))
                         {
                             SelectedSharedSpaces.Remove((SharedSpace)tempInt);
-                            SetQ6ButtonState(button, false);
+                            SetQ6ButtonState(button, ButtonState.Unselected);
                         }
                         else
                         {
                             if (SelectedSharedSpaces.Count < maxSharedSpaceSelectionCount)
                             {
                                 SelectedSharedSpaces.Add((SharedSpace)tempInt);
-                                SetQ6ButtonState(button, true);
+                                SetQ6ButtonState(button, ButtonState.Selected);
                             }
                         }
                     });
@@ -651,28 +645,28 @@ public class CreateUnitScreen : MonoBehaviour
             button.GetChild(0).GetComponent<RawImage>().color = Color.clear;
         }
     }
-    void SetQ6ButtonState(Transform button,bool state)
+    void SetQ6ButtonState(Transform button,ButtonState state)
     {
-        if (state)
+        //if (state==ButtonState.Selected)
         {
-            button.GetChild(0).GetComponent<RawImage>().color = Color.white;
+            button.GetChild(0).GetComponent<RawImage>().color = buttonStateColors[state];
             try
             {
-                button.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().color = Color.white;
-                button.GetChild(2).GetComponent<TMPro.TextMeshProUGUI>().color = Color.white;
+                button.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().color = buttonStateColors[state];
+                button.GetChild(2).GetComponent<TMPro.TextMeshProUGUI>().color = buttonStateColors[state];
             }
             catch (System.Exception e) { }
         }
-        else
-        {
-            button.GetChild(0).GetComponent<RawImage>().color = Color.black;
-            try
-            {
-                button.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().color = Color.black;
-                button.GetChild(2).GetComponent<TMPro.TextMeshProUGUI>().color = Color.black;
-            }
-            catch (System.Exception e) { }
-        }
+        //else
+        //{
+        //    button.GetChild(0).GetComponent<RawImage>().color = Color.black;
+        //    try
+        //    {
+        //        button.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().color = Color.black;
+        //        button.GetChild(2).GetComponent<TMPro.TextMeshProUGUI>().color = Color.black;
+        //    }
+        //    catch (System.Exception e) { }
+        //}
     }
 
     public void UpdateQ6Counters(Dictionary<string, int> newCount)
@@ -741,7 +735,7 @@ public class CreateUnitScreen : MonoBehaviour
         SelectedLocation = -1;
         SelectedSharedSpaces.Clear();
         foreach (Transform t in q6ButtonTransforms)
-            SetQ6ButtonState(t, false);
+            SetQ6ButtonState(t, ButtonState.Unselected);
         transitionLock = false;
     }
     
@@ -775,7 +769,7 @@ public class CreateUnitScreen : MonoBehaviour
     {
         //RawImage img = button.GetChild(0).GetComponent<RawImage>();
         //GameObject txt = button.GetChild(1).gameObject;
-        button.transform.GetComponent<TMPro.TextMeshProUGUI>().color = q4buttonStateColors[state];
+        button.transform.GetComponent<TMPro.TextMeshProUGUI>().color = buttonStateColors[state];
         if (state == ButtonState.None) button.transform.GetChild(0).gameObject.SetActive(true);
         else button.transform.GetChild(0).gameObject.SetActive(false);
     }

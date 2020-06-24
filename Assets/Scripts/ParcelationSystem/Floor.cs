@@ -142,13 +142,26 @@ public class Floor : MonoBehaviour
 
         if (u.user_id == ParcelationManager.Instance.currentUserId)
         {
-            for (int x = u.loc[0]; x <= u.loc[1]; x++)
+            int unitTypeIndex;
+
+            if (System.Enum.TryParse(u.type, out LivingArrangement lv))
             {
-                roomUnits[x].SetActive(true);
-                Renderer r = roomUnits[x].transform.GetChild(1).GetComponent<Renderer>();
-                r.material.SetColor("_Color", unitType[100]._Color);    //TODO: Additional Hightlights
-                r.material.SetColor("_EmissionColor", unitType[100]._EmissionColor);
-                r.material.renderQueue = 3002;
+                ParcelationManager.Instance.userUnitR.Clear();
+                unitTypeIndex = (int)lv;
+                for (int x = u.loc[0]; x <= u.loc[1]; x++)
+                {
+                    roomUnits[x].SetActive(true);
+                    Renderer r = roomUnits[x].transform.GetChild(1).GetComponent<Renderer>();
+                    r.material.SetColor("_Color", unitType[unitTypeIndex]._Color);    //TODO: Additional Hightlights
+                    r.material.SetColor("_EmissionColor", unitType[unitTypeIndex]._EmissionColor);
+                    r.material.renderQueue = 3002;
+                    ParcelationManager.Instance.userUnitR.Add(r);
+                }
+                ParcelationManager.Instance.UColor = unitType[unitTypeIndex]._EmissionColor;
+                Vector4 v = unitType[unitTypeIndex]._EmissionColor;
+                print("v set");
+                ParcelationManager.Instance.uDelta = (Vector4.one - v) / 10f;
+                print(ParcelationManager.Instance.uDelta);
             }
         }
         else
