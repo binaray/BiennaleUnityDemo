@@ -682,7 +682,6 @@ public class CreateUnitScreen : MonoBehaviour
                     ssCounterText[i].text = string.Format("{0} votes", item.Value);
                 }
             }
-
         }
     }
 
@@ -827,12 +826,19 @@ public class CreateUnitScreen : MonoBehaviour
     {
         if (!transitionLock)
         {
+            if (newQuestionNum == 1)
+            {
+                if (currentQuestionNum < 1)
+                    newQuestionNum += 1;
+                else
+                    newQuestionNum -= 1;
+            }
             if (newQuestionNum == 2 && skipQ2Flag)
             {
                 if (currentQuestionNum < 2)
                     newQuestionNum += 1;
                 else
-                    newQuestionNum -= 1;
+                    newQuestionNum -= 2;
             }
             questionTextMesh.text = questionTexts[newQuestionNum];
             StartCoroutine(QuestionTransition(newQuestionNum));
