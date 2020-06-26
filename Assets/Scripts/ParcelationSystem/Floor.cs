@@ -64,7 +64,7 @@ public class Floor : MonoBehaviour
 
                         s.sprite = ParcelationManager.sprites[9];
                         s.color = Color.black;
-                        s.material.renderQueue = 3002;
+                        //s.material.renderQueue = 3002;
                         study--;
                         continue;
                     }
@@ -78,7 +78,7 @@ public class Floor : MonoBehaviour
 
                     s.sprite = ParcelationManager.sprites[sI[n]];
                     s.color = Color.black;
-                    s.material.renderQueue = 3002;
+                    //s.material.renderQueue = 3002;
                     n++;
                 }
                 else
@@ -107,7 +107,7 @@ public class Floor : MonoBehaviour
                         SpriteRenderer s = sprites[i].GetComponent<SpriteRenderer>();
                         s.sprite = ParcelationManager.sprites[sI[0]];
                         s.color = Color.black;
-                        s.material.renderQueue = 3002;
+                        //s.material.renderQueue = 3002;
                     }
                     else
                     {
@@ -154,7 +154,7 @@ public class Floor : MonoBehaviour
                     Renderer r = roomUnits[x].transform.GetChild(1).GetComponent<Renderer>();
                     r.material.SetColor("_Color", unitType[unitTypeIndex]._Color);    //TODO: Additional Hightlights
                     r.material.SetColor("_EmissionColor", unitType[unitTypeIndex]._EmissionColor);
-                    r.material.renderQueue = 3002;
+                    //r.material.renderQueue = 3002;
                     ParcelationManager.Instance.userUnitR.Add(r);
                 }
                 ParcelationManager.Instance.UColor = unitType[unitTypeIndex]._EmissionColor;
@@ -186,7 +186,7 @@ public class Floor : MonoBehaviour
                 Renderer r = roomUnits[x].transform.GetChild(1).GetComponent<Renderer>();
                 r.material.SetColor("_Color", unitType[unitTypeIndex]._Color);
                 r.material.SetColor("_EmissionColor", unitType[unitTypeIndex]._EmissionColor);
-                r.material.renderQueue = 3002;
+                //r.material.renderQueue = 3002;
             }
         }
 

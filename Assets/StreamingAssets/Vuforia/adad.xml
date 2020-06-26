@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig>
+    <Tracking>
+        <ImageTarget name="asdf.Right" size="0.046 0.046"/>
+        <ImageTarget name="asdf.Bottom" size="0.046 0.046"/>
+        <ImageTarget name="asdf.Top" size="0.046 0.046"/>
+        <ImageTarget name="asdf.Left" size="0.046 0.046"/>
+        <ImageTarget name="asdf.Front" size="0.046 0.046"/>
+        <MultiTarget name="asdf">
+            <Part name="asdf.Left" translation="-0.1101 -0.1591 0.5142" rotation="AD: 90 1 0 -90"/>
+            <Part name="asdf.Right" translation="-0.1101 -0.1483 1.0582" rotation="AD: -90 1 0 90"/>
+            <Part name="asdf.Front" translation="0.33 -0.5499 0.785" rotation="AD: 1 -90 0 -90"/>
+            <Part name="asdf.Top" translation="0 0.0186 0" rotation="AD: 1 0 0 0"/>
+            <Part name="asdf.Bottom" translation="-0.33 -0.3029 0.8311" rotation="AD: 1 90 0 -90"/>
+        </MultiTarget>
+    </Tracking>
+</QCARConfig>

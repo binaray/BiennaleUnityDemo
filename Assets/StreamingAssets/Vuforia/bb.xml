@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
-  <Tracking>
-    <ImageTarget name="Picture1" size="0.044000 0.043779" />
-  </Tracking>
+<QCARConfig>
+    <Tracking>
+        <ImageTarget name="arfinal.Left" size="0.03 0.03"/>
+        <ImageTarget name="arfinal.Front" size="0.03 0.03"/>
+        <ImageTarget name="arfinal.Top" size="0.03 0.03"/>
+        <ImageTarget name="arfinal.Bottom" size="0.03 0.03"/>
+        <ImageTarget name="arfinal.Right" size="0.03 0.03"/>
+        <MultiTarget name="arfinal">
+            <Part name="arfinal.Left" translation="-0.2135 -0.1501 0.467" rotation="AD: 90 1 0 -90"/>
+            <Part name="arfinal.Right" translation="-0.215 -0.122 1.285" rotation="AD: -90 1 0 90"/>
+            <Part name="arfinal.Front" translation="0.215 -0.1441 1.102" rotation="AD: 1 0 0 -90"/>
+            <Part name="arfinal.Top" translation="0 0.0186 0" rotation="AD: 1 0 0 0"/>
+            <Part name="arfinal.Bottom" translation="0.215 -0.121 1.468" rotation="AD: 1 0 0 -90"/>
+        </MultiTarget>
+    </Tracking>
 </QCARConfig>

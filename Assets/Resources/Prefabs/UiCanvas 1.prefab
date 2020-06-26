@@ -4089,7 +4089,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3440028047624759949
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9250,7 +9250,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3440028048025423575
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15065,7 +15065,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Welcome User#555 To Year 2050!
+  m_text: Welcome User To Year 2050!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 135152daea59428449abd2eaf13f773e, type: 2}
   m_sharedMaterial: {fileID: 21682450440725202, guid: 135152daea59428449abd2eaf13f773e,
@@ -15135,10 +15135,10 @@ MonoBehaviour:
   m_margin: {x: -203.44571, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 3440028048461516044}
-    characterCount: 30
+    characterCount: 26
     spriteCount: 0
     spaceCount: 4
-    wordCount: 6
+    wordCount: 5
     linkCount: 0
     lineCount: 1
     pageCount: 1
@@ -24458,10 +24458,10 @@ RectTransform:
   m_Father: {fileID: 3440028047624759949}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -61.099976, y: 46.999878}
-  m_SizeDelta: {x: 66.59, y: 60.1}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -61.099976, y: -46}
+  m_SizeDelta: {x: 66.59, y: 60.099976}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3440028049290419340
 CanvasRenderer:
